@@ -1,7 +1,8 @@
 from django.urls import path
 from . import views
+from .mixin_views import UserListCreateMixinView,UserDetailMixinView
 
 urlpatterns=[
-    path('users/',views.User_list),
-    path('users/<int:PK>/',views.user_details)
+    path('users/',UserListCreateMixinView.as_view()),
+    path('users/<int:PK>/',UserDetailMixinView.as_view())
 ]
