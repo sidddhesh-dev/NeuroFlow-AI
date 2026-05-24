@@ -29,3 +29,49 @@ def User_list(request):
         
 
         )
+    
+@api_view(['GET','PUT','DELETE'])
+def user_details(request,PK):
+
+    try :
+        user=UserProfile.objects.get(id=PK)
+
+    except UserProfile.DoesNotExist:
+        return Response(
+            {"Error : User Not Found"},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    
+    if request.method=="GET":
+        serializer=UserProfileSerializer(user)
+        return Response(serializer.data)
+
+    elif request.method=="PUT":
+        serializer=UserProfileSerializer(
+            user,data=request.data
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                serializer.data
+            )
+        
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    elif request.method=="DELETE":
+        user.delete()
+        return Response(
+            {'message' : 'User Deleted Succssfully'},
+            status=status.HTTP_204_NO_CONTENT
+
+        )
+    
+    
+
+
+
+
