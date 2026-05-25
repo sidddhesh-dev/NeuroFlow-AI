@@ -3,6 +3,8 @@ from rest_framework import generics
 
 from .serializers import UserProfileSerializer
 from .models import UserProfile
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 class UserListCreateMixinView(
     mixins.ListModelMixin,
@@ -13,6 +15,8 @@ class UserListCreateMixinView(
     queryset=UserProfile.objects.all()
 
     serializer_class=UserProfileSerializer
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
 
     def get(self,request):
         return self.list(request)
@@ -28,6 +32,8 @@ class UserDetailMixinView(mixins.CreateModelMixin,
 
     queryset=UserProfile.objects.all()
     serializer_class=UserProfileSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get(self,request,Pk):
         return self.retrieve(request,Pk)
