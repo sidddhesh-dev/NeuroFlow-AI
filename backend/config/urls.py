@@ -24,4 +24,5 @@ urlpatterns = [
     path('accounts/',include('apps.accounts.urls')),
     path('api/token/',TokenObtainPairView.as_view()),
     path('api/token/refresh/',TokenRefreshView.as_view()),
+    path('workspace/',include('apps.workspace.urls'))
 ]
