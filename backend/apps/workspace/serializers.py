@@ -18,9 +18,24 @@ class NoteSerializer(serializers.ModelSerializer):
 
 
 class DocumentSerializer(serializers.ModelSerializer):
+    filename = serializers.SerializerMethodField()
+    class Meta:
+        
+        model=Document
+        fields=['id','filename','uploaded_at']
+
+    def get_filename(self, obj):
+        return obj.file.name.split('/')[-1]
+
+class DocumentRetriveSerializer(serializers.ModelSerializer):
+    filename=serializers.SerializerMethodField()
     class Meta:
         model=Document
-        fields=['id','file','uploaded_at']
+        fields=['id','filename','file','uploaded_at']
+
+    def get_filename(self, obj):
+
+        return obj.file.name.split('/')[-1]
 
 
 

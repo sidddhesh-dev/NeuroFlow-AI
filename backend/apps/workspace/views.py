@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Note,Document
 from rest_framework import status
-from apps.workspace.serializers import NoteSerializer,NoteListSerializer,DocumentSerializer
+from apps.workspace.serializers import NoteSerializer,NoteListSerializer,DocumentSerializer,DocumentRetriveSerializer
 from apps.workspace.permissions import IsOwner
 from django.db.models import Q
 
@@ -79,7 +79,7 @@ class DocumentDetailView(APIView):
     def get(self,request,id):
         document=get_object_or_404(Document,id=id)
         self.check_object_permissions(request,document)
-        serializer=DocumentSerializer(document)
+        serializer=DocumentRetriveSerializer(document)
         return Response(serializer.data,status=status.HTTP_200_OK)
     
     def put(self,request,id):
