@@ -13,7 +13,7 @@ class NoteCreateApiView(APIView):
     permission_classes=[IsAuthenticated]
 
     def get(self,request):
-        notes=Note.objects.filter(user=request.user).order_by('-id')
+        notes=Note.objects.filter(user=request.user).order_by('-uploaded_at')
         search=request.GET.get('search')
         if search:
             notes=notes.filter(
@@ -61,7 +61,7 @@ class DocumentCreateView(APIView):
     permission_classes=[IsAuthenticated]
 
     def get(self,request):
-        document=Document.objects.filter(user=request.user).order_by('-id')
+        document=Document.objects.filter(user=request.user).order_by('-uploaded_at')
         serializer=DocumentSerializer(document,many=True)
         return Response(serializer.data)
     
