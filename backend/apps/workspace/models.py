@@ -24,8 +24,9 @@ class Document(models.Model):
     status = models.CharField(
     max_length=20,
     choices=STATUS_CHOICES,
-    default='uploaded'
-    )
+    default='uploaded'),
+    extracted_data=models.TextField(null=True,blank=True)
+    
 
     def __str__(self):
         return self.file.name
