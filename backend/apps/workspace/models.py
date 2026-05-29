@@ -17,6 +17,7 @@ class Document(models.Model):
     ('processing', 'Processing'),
     ('ready', 'Ready'),
     ('failed', 'Failed'),
+    ('not_supported','Not_Supported')
     )
     # title=models.CharField(max_length=200)
     file=models.FileField(upload_to='documents/')

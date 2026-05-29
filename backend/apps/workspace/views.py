@@ -7,6 +7,7 @@ from rest_framework import status
 from apps.workspace.serializers import NoteSerializer,NoteListSerializer,DocumentSerializer,DocumentRetriveSerializer
 from apps.workspace.permissions import IsOwner
 from django.db.models import Q
+from apps.workspace.services.document_processor import DocumentProcessor 
 
 
 class NoteCreateApiView(APIView):
@@ -67,10 +68,27 @@ class DocumentCreateView(APIView):
     
     def post(self,request):
         serializer=DocumentSerializer(data=request.data)
-
+        
         if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
+            document=serializer.save(user=request.user)
+            document.status="processing"
+            document.save()
+        
+            try:
+                text = DocumentProcessor.extract_text(document)
+            
+                if text:
+                    document.extracted_data = text
+                    document.status = 'ready'
+                else:
+                    document.status = 'not_supported'
+            
+            except Exception:
+                document.status = 'failed'
+
+            document.save()
+            
+            return Response({"message":"file created successfully"},status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 class DocumentDetailView(APIView):
