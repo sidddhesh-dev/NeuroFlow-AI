@@ -4,10 +4,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Note,Document
 from rest_framework import status
-from apps.workspace.serializers import NoteSerializer,NoteListSerializer,DocumentSerializer,DocumentRetriveSerializer
+from apps.workspace.serializers import NoteSerializer,NoteListSerializer,DocumentSerializer,DocumentRetriveSerializer,QuerySerializer,AnswerSerializer
 from apps.workspace.permissions import IsOwner
 from django.db.models import Q
 from apps.workspace.services.document_processor import DocumentProcessor 
+from apps.workspace.services.query_engine import QueryEngine
 
 
 class NoteCreateApiView(APIView):
@@ -114,6 +115,20 @@ class DocumentDetailView(APIView):
         self.check_object_permissions(request,document)
         document.delete()
         return Response({"message":"Document removed successfully"},status=status.HTTP_200_OK)
+    
+class DocumentAskQuestionView(APIView):
+    permission_classes=[IsAuthenticated]
+    def post(self,request,id):
+        document=get_object_or_404(Document,id=id)
+        self.check_object_permissions(request,document)
+        serializer=QuerySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        question=serializer.validated_data["question"]
+        answer=QueryEngine.answer_question(document,question)
+        response_serializer=AnswerSerializer({"question":question,"answer":answer,"source_document":document.file.name.split('/')[-1]})
+        return Response(response_serializer.data,status=status.HTTP_200_OK)
+
+
     
 
 

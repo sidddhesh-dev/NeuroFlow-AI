@@ -84,6 +84,27 @@ class DocumentRetriveSerializer(serializers.ModelSerializer):
             return f"{round(size / 1024, 2)} KB"
         else:
             return f"{round(size / (1024 * 1024), 2)} MB"
+        
+class QuerySerializer(serializers.Serializer):
+    question=serializers.CharField()
+    def validate_question(self,value):
+        value=value.strip()
+        if not value:
+            raise serializers.ValidationError(
+                "Question cannot be empty"
+            )
+        return value
+    
+class AnswerSerializer(serializers.Serializer):
+    question =serializers.CharField()
+    answer=serializers.CharField()
+    source_document=serializers.CharField()
+    
+
+
+
+
+        
 
 
 
