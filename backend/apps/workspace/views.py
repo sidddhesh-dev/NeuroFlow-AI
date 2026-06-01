@@ -84,7 +84,8 @@ class DocumentCreateView(APIView):
                 else:
                     document.status = 'not_supported'
             
-            except Exception:
+            except Exception as e:
+                print("EXTRACTION ERROR:", e)
                 document.status = 'failed'
 
             document.save()
