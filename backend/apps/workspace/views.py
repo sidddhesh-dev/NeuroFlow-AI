@@ -2,13 +2,14 @@ from django.shortcuts import render,get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
-from .models import Note,Document
+from .models import Note,Document,DocumentChunk
 from rest_framework import status
 from apps.workspace.serializers import NoteSerializer,NoteListSerializer,DocumentSerializer,DocumentRetriveSerializer,QuerySerializer,AnswerSerializer
 from apps.workspace.permissions import IsOwner
 from django.db.models import Q
 from apps.workspace.services.document_processor import DocumentProcessor 
 from apps.workspace.services.query_engine import QueryEngine
+from apps.workspace.services.chunk_service import ChunkService
 
 
 class NoteCreateApiView(APIView):
@@ -77,10 +78,14 @@ class DocumentCreateView(APIView):
         
             try:
                 text = DocumentProcessor.extract_text(document)
-            
+                
                 if text:
                     document.extracted_data = text
-                    document.status = 'ready'
+                    chunks=ChunkService.create_chunks(text)
+                    for index, chunk in enumerate(chunks):
+                        DocumentChunk.objects.create(document=document,
+                        chunk_text=chunk,chunk_id=index)
+                        document.status = 'ready'
                 else:
                     document.status = 'not_supported'
             
