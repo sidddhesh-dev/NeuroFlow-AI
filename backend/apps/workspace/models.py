@@ -27,3 +27,12 @@ class Document(models.Model):
     
     def __str__(self):
         return self.file.name
+    
+class DocumentChunk(models.Model):
+    document=models.ForeignKey(Document,on_delete=models.CASCADE,related_name='chunks')
+    chunk_text=models.TextField()
+    chunk_id=models.IntegerField()
+    created_at=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f" {self.document.id} - chunk {self.chunk_id}"
