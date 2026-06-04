@@ -34,5 +34,7 @@ class DocumentChunk(models.Model):
     chunk_id=models.IntegerField()
     created_at=models.DateTimeField(auto_now_add=True)
 
+    embeddings=models.BooleanField(default=False)
+
     def __str__(self):
         return f" {self.document.id} - chunk {self.chunk_id}"
