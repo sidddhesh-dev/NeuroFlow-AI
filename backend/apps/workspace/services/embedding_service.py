@@ -7,4 +7,4 @@ class EmbeddingService:
     @staticmethod
     def generate_embedding(text):
         embedding=EmbeddingService.model.encode(text)
-        return embedding .tolist()
+        return embedding.tolist()
