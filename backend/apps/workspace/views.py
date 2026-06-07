@@ -8,8 +8,10 @@ from apps.workspace.serializers import NoteSerializer,NoteListSerializer,Documen
 from apps.workspace.permissions import IsOwner
 from django.db.models import Q
 from apps.workspace.services.document_processor import DocumentProcessor 
-from apps.workspace.services.query_engine import QueryEngine
 from apps.workspace.services.chunk_service import ChunkService
+from apps.workspace.services.ai_service import AiService
+
+
 
 
 class NoteCreateApiView(APIView):
@@ -130,9 +132,8 @@ class DocumentAskQuestionView(APIView):
         serializer=QuerySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         question=serializer.validated_data["question"]
-        answer=QueryEngine.answer_question(document,question)
-        response_serializer=AnswerSerializer({"question":question,"answer":answer,"source_document":document.file.name.split('/')[-1]})
-        return Response(response_serializer.data,status=status.HTTP_200_OK)
+        answer=AiService.generate_answer(question,document)
+        return Response({"answer":answer},status=status.HTTP_200_OK)
 
 
     

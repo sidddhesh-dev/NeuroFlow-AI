@@ -1,6 +1,9 @@
 import os
 from google import genai
 from dotenv import load_dotenv
+from apps.workspace.models import Document
+from apps.workspace.services.retrival_service import RetrivalService
+
 
 load_dotenv()
 
@@ -30,13 +33,19 @@ class AiService:
         return client
     
     @staticmethod
-    def generate_answer(question,context):
+    def generate_answer(question,document):
+        context=RetrivalService.find_best_chunk(question,document)
         prompt=AiService.build_prompt(question,context)
         client=AiService.get_client()
-        response=client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt )
-        return response.text
+        try:
+            response=client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt )
+            return response.text
+        except Exception as e:
+            return "Server is Temporarily unavailable"
+        
+            
 
 
         
