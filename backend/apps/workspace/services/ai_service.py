@@ -1,3 +1,9 @@
+import os
+from google import genai
+from dotenv import load_dotenv
+
+load_dotenv()
+
 class AiService:
     @staticmethod
     def build_prompt(question,context):
@@ -18,7 +24,19 @@ class AiService:
         return prompt
     
     @staticmethod
-    def generate_answer(prompt):
-        ...
+    def get_client():
+        api_key=os.getenv("GEMINI_API_KEY")
+        client=genai.Client(api_key=api_key)
+        return client
+    
+    @staticmethod
+    def generate_answer(question,context):
+        prompt=AiService.build_prompt(question,context)
+        client=AiService.get_client()
+        response=client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt )
+        return response.text
+
 
         
