@@ -3,6 +3,7 @@ from google import genai
 from dotenv import load_dotenv
 from apps.workspace.services.retrival_service import RetrivalService
 from apps.workspace.services.context_service import ContextService
+from apps.workspace.services.chat_service import ChatService
 
 
 load_dotenv()
@@ -79,9 +80,12 @@ class AiService:
         return client
     
     @staticmethod
-    def generate_answer(question,document):
+    def generate_answer(question,user,document):
         retrived_context=RetrivalService.retrive_context(question,document)
-        context=ContextService.context_builder(question=question,retrived_context=retrived_context)
+        session=ChatService.get_chat_history(user,document)
+        chat_hostory=ChatService.get_chat_history(session)
+        context=ContextService.context_builder(question=question,retrived_context=retrived_context,chat_history=chat_hostory)
+
         prompt=AiService.build_prompt(question,context)
         client=AiService.get_client()
         try:

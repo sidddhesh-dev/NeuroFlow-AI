@@ -38,3 +38,22 @@ class DocumentChunk(models.Model):
 
     def __str__(self):
         return f" {self.document.id} - chunk {self.chunk_id}"
+    
+class ChatSession(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    document=models.ForeignKey(Document,on_delete=models.CASCADE)
+    create_at=models.DateTimeField(auto_now_add=True)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "document"],
+                name="unique_user_document_session"
+            )
+        ]
+
+class ChatHistory(models.Model):
+    ROLE_CHOICES=[("user","User"),("assistant","Assistant")]
+    session=models.ForeignKey(ChatSession ,on_delete=models.CASCADE)
+    role=models.CharField(max_length=20,choices=ROLE_CHOICES)
+    content=models.TextField()
+    created_at=models.DateTimeField(auto_now_add=True)
