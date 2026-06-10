@@ -81,9 +81,9 @@ class AiService:
     
     @staticmethod
     def generate_answer(question,user,document):
-        retrived_context=RetrivalService.retrive_context(question,document)
-        session=ChatService.get_chat_history(user,document)
+        session=ChatService.get_or_cteate_session(user,document)
         chat_hostory=ChatService.get_chat_history(session)
+        retrived_context=RetrivalService.retrive_context(question,document)
         context=ContextService.context_builder(question=question,retrived_context=retrived_context,chat_history=chat_hostory)
 
         prompt=AiService.build_prompt(question,context)
