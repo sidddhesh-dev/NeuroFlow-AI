@@ -132,7 +132,7 @@ class DocumentAskQuestionView(APIView):
         serializer=QuerySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         question=serializer.validated_data["question"]
-        answer=AiService.generate_answer(question,document)
+        answer=AiService.generate_answer(question,request.user,document)
         return Response({"answer":answer},status=status.HTTP_200_OK)
 
 

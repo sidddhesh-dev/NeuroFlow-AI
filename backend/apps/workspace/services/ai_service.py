@@ -81,18 +81,23 @@ class AiService:
     
     @staticmethod
     def generate_answer(question,user,document):
-        session=ChatService.get_or_cteate_session(user,document)
-        chat_hostory=ChatService.get_chat_history(session)
+        session=ChatService.get_or_create_session(user,document)
+        chat_history=ChatService.get_chat_history(session)
         retrived_context=RetrivalService.retrive_context(question,document)
-        context=ContextService.context_builder(question=question,retrived_context=retrived_context,chat_history=chat_hostory)
+        context=ContextService.context_builder(question=question,retrived_context=retrived_context,chat_history=chat_history)
 
         prompt=AiService.build_prompt(question,context)
         client=AiService.get_client()
         try:
+            ChatService.save_message(session,"user",question)
             response=client.models.generate_content(
                 model="gemini-2.5-flash",
                 contents=prompt )
-            return response.text
+            answer=response.text
+            
+            ChatService.save_message(session,"assistant",answer)
+
+            return answer
         except Exception as e:
             print(e)
             error = str(e)

@@ -26,7 +26,7 @@ class ChatService:
         return messages
     
     @staticmethod
-    def get_or_cteate_session(user,document):
+    def get_or_create_session(user,document):
         session,created=ChatSession.objects.get_or_create(
             user=user,
             document=document
