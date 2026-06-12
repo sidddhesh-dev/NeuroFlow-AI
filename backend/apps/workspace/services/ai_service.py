@@ -82,6 +82,7 @@ class AiService:
     @staticmethod
     def generate_answer(question,user,document):
         session=ChatService.get_or_create_session(user,document)
+        ChatService.save_messages(session,"user",question)
         chat_history=ChatService.get_chat_history(session)
         retrived_context=RetrivalService.retrive_context(question,document)
         context=ContextService.context_builder(question=question,retrived_context=retrived_context,chat_history=chat_history)
@@ -89,23 +90,26 @@ class AiService:
         prompt=AiService.build_prompt(question,context)
         client=AiService.get_client()
         try:
-            ChatService.save_message(session,"user",question)
             response=client.models.generate_content(
                 model="gemini-2.5-flash",
                 contents=prompt )
             answer=response.text
             
-            ChatService.save_message(session,"assistant",answer)
+            ChatService.save_messages(session,"assistant",answer)
 
             return answer
         except Exception as e:
             print(e)
             error = str(e)
             if "429" in error:
-                return "Daily AI quota exceeded. Please try again tomorrow."
+                answer= "Daily AI quota exceeded. Please try again tomorrow."
+                ChatService.save_messages(session, "assistant", answer)
+                return answer
 
             if "503" in error:
-                return "AI model is currently overloaded. Please try again in a few minutes."
+                answer= "AI model is currently overloaded. Please try again in a few minutes."
+                ChatService.save_messages(session, "assistant", answer)
+                return answer
 
             return "AI service temporarily unavailable."
         

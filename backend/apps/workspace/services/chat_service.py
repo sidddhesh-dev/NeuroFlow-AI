@@ -23,7 +23,14 @@ class ChatService:
     def get_chat_history(session):
         messages=ChatHistory.objects.filter(session=session).order_by('-created_at')[:10]
         messages=reversed(messages)
-        return messages
+        history = []
+
+        for message in messages:
+            history.append(
+                f"{message.role}: {message.content}")
+
+        return "\n".join(history)
+    
     
     @staticmethod
     def get_or_create_session(user,document):
