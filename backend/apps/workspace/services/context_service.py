@@ -37,6 +37,9 @@ class ContextService:
     3. Combine information from previous conversation and document information.
     4. If the user asks "which one", "why", "where is it used", "tell me more", or similar follow-up questions, assume they refer to the most recently discussed entities.
     5. Give a natural conversational answer rather than treating each question independently.
+    6. If multiple entities were discussed previously,choose the most recently compared entities.
+    7. When the question says "which one",assume it refers to the concepts discussed immediately before.
+    8. Give conversational answers and maintain continuity.
 """
 
         return context

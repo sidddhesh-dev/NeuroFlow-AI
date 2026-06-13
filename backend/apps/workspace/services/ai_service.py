@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from apps.workspace.services.retrival_service import RetrivalService
 from apps.workspace.services.context_service import ContextService
 from apps.workspace.services.chat_service import ChatService
+from apps.workspace.services.llm_service import LLMService
 
 
 load_dotenv()
@@ -73,45 +74,24 @@ class AiService:
             """
         return prompt
     
-    @staticmethod
-    def get_client():
-        api_key=os.getenv("GEMINI_API_KEY")
-        client=genai.Client(api_key=api_key)
-        return client
+    
     
     @staticmethod
     def generate_answer(question,user,document):
-        session=ChatService.get_or_create_session(user,document)
+        
         ChatService.save_messages(session,"user",question)
         chat_history=ChatService.get_chat_history(session)
         retrived_context=RetrivalService.retrive_context(question,document)
         context=ContextService.context_builder(question=question,retrived_context=retrived_context,chat_history=chat_history)
 
         prompt=AiService.build_prompt(question,context)
-        client=AiService.get_client()
-        try:
-            response=client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt )
-            answer=response.text
-            
-            ChatService.save_messages(session,"assistant",answer)
-
-            return answer
-        except Exception as e:
-            print(e)
-            error = str(e)
-            if "429" in error:
-                answer= "Daily AI quota exceeded. Please try again tomorrow."
-                ChatService.save_messages(session, "assistant", answer)
-                return answer
-
-            if "503" in error:
-                answer= "AI model is currently overloaded. Please try again in a few minutes."
-                ChatService.save_messages(session, "assistant", answer)
-                return answer
-
-            return "AI service temporarily unavailable."
+        answer=LLMService.generate(prompt)
+        ChatService.save_messages(session,"assistant",answer)
+        print(chat_history)
+        print(context)
+    
+        return answer
+        
         
             
 
