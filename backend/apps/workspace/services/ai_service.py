@@ -78,7 +78,7 @@ class AiService:
     
     @staticmethod
     def generate_answer(question,user,document):
-        
+        session = ChatService.get_or_create_session(user,document)
         ChatService.save_messages(session,"user",question)
         chat_history=ChatService.get_chat_history(session)
         retrived_context=RetrivalService.retrive_context(question,document)
@@ -87,9 +87,6 @@ class AiService:
         prompt=AiService.build_prompt(question,context)
         answer=LLMService.generate(prompt)
         ChatService.save_messages(session,"assistant",answer)
-        print(chat_history)
-        print(context)
-    
         return answer
         
         

@@ -2,9 +2,13 @@ import os
 from google import genai
 from openai import OpenAI
 from groq import Groq
+import time
+import logging
 from dotenv import load_dotenv
 from apps.workspace.services.chat_service import ChatService
 
+
+logger=logging.getLogger(__name__)
 
 class LLMService:
     @staticmethod
@@ -31,11 +35,11 @@ class LLMService:
         response=client.models.generate_content(
             model="gemini-2.5-flash",
             contents=prompt )
-        return response.text
+        answer=response.text
+        if not answer:
+            raise Exception("Empty response from Gemini")
+        return answer
 
-        
-        
-        
     @staticmethod
     def generate_openAI(prompt):
         client=LLMService.get_openAi_client()
@@ -44,7 +48,10 @@ class LLMService:
             model="gpt-4o-mini",
             messages=[
             {"role": "user", "content": prompt}])
-        return response.choices[0].message.content
+        answer=response.choices[0].message.content
+        if not answer:
+            raise Exception("Empty response from OpenAI")
+        return answer
        
             
     @staticmethod
@@ -54,7 +61,26 @@ class LLMService:
             model="llama-3.3-70b-versatile",
             messages=[
                 {"role": "user", "content": prompt}])
-        return response.choices[0].message.content
+        answer= response.choices[0].message.content
+        if not answer:
+            raise Exception("Empty response from Groq")
+       
+    
+    @staticmethod
+    def retry(provider_function, prompt, retries=3):
+
+        for attempt in range(retries):
+
+            try:
+                return provider_function(prompt)
+
+            except Exception as e:
+
+                logger.exception(f"{provider_function.__name__} attempt {attempt + 1} failed")
+
+                time.sleep(2)
+
+            raise Exception(f"{provider_function.__name__} failed after {retries} attempts")
         
 
     @staticmethod

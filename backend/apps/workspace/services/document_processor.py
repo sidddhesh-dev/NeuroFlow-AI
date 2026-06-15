@@ -2,6 +2,7 @@ from pypdf import PdfReader
 from docx import Document as DocxDocument
 from openpyxl import load_workbook
 from pptx import Presentation
+import csv
 
 class DocumentProcessor:
 
@@ -41,6 +42,16 @@ class DocumentProcessor:
                 for shape in slide.shapes:
                     if hasattr(shape, "text"):
                         text += shape.text + "\n"
+            return text
+        elif extension == 'csv':
+            text = ""
+
+            with open(document.file.path, 'r', encoding='utf-8') as file:
+                reader = csv.reader(file)
+
+                for row in reader:
+                    text += " ".join(row) + "\n"
+
             return text
         return None
 
