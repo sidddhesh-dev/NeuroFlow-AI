@@ -1,0 +1,21 @@
+from apps.workspace.models import *
+from apps.workspace.services.llm_service import LLMService
+
+class SummaryService:
+    @staticmethod
+    def create_summary(session):
+        summary,created=ChatSummary.objects.get_or_create(session=session)
+        return summary
+    
+    @staticmethod
+    def update_summary(session,summary_text):
+        summary=SummaryService.create_summary(session)
+        summary.summary=summary_text
+        summary.save()
+        return summary
+    
+    
+    
+    
+    
+        

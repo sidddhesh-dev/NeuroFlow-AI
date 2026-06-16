@@ -5,6 +5,8 @@ from apps.workspace.services.retrival_service import RetrivalService
 from apps.workspace.services.context_service import ContextService
 from apps.workspace.services.chat_service import ChatService
 from apps.workspace.services.llm_service import LLMService
+from apps.workspace.services.summary_service import SummaryService
+
 
 
 load_dotenv()
@@ -15,6 +17,7 @@ class AiService:
         prompt = f"""You are NeuroFlow AI, an intelligent document analysis and question-answering assistant.
 
             Your primary objective is to provide accurate, grounded, and useful answers based on the supplied context.
+            Summarize the following conversation briefly.Preserve important topics and context.
 
             INSTRUCTIONS:
 
@@ -79,14 +82,17 @@ class AiService:
     @staticmethod
     def generate_answer(question,user,document):
         session = ChatService.get_or_create_session(user,document)
+        summary=SummaryService.create_summary(session)
         ChatService.save_messages(session,"user",question)
         chat_history=ChatService.get_chat_history(session)
         retrived_context=RetrivalService.retrive_context(question,document)
-        context=ContextService.context_builder(question=question,retrived_context=retrived_context,chat_history=chat_history)
-
+        context=ContextService.context_builder(question=question,retrived_context=retrived_context,chat_history=chat_history,summary=summary.summary)
         prompt=AiService.build_prompt(question,context)
         answer=LLMService.generate(prompt)
         ChatService.save_messages(session,"assistant",answer)
+        recent_messages = ChatService.get_chat_history(session)
+        summary_text = LLMService.generate_summary(chat_history)
+        SummaryService.update_summary(session,summary_text)
         return answer
         
         

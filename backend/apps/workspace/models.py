@@ -57,3 +57,10 @@ class ChatHistory(models.Model):
     role=models.CharField(max_length=20,choices=ROLE_CHOICES)
     content=models.TextField()
     created_at=models.DateTimeField(auto_now_add=True)
+
+class ChatSummary(models.Model):
+    session=models.ForeignKey(ChatSession,on_delete=models.CASCADE)
+    summary=models.TextField()
+    updated_at=models.DateTimeField(auto_now_add=True)
+
+

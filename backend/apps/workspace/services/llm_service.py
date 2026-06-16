@@ -4,9 +4,6 @@ from openai import OpenAI
 from groq import Groq
 import time
 import logging
-from dotenv import load_dotenv
-from apps.workspace.services.chat_service import ChatService
-
 
 logger=logging.getLogger(__name__)
 
@@ -20,13 +17,13 @@ class LLMService:
     @staticmethod
     def get_openAi_client():
         api_key=os.getenv("OPENAI_API_KEY")
-        client=OpenAI.Client(api_key=api_key)
+        client=OpenAI(api_key=api_key)
         return client
 
     @staticmethod
     def get_groq_client():
         api_key=os.getenv("GROQ_API_KEY")
-        client=Groq.Client(api_key=api_key)
+        client=Groq(api_key=api_key)
         return client
     
     @staticmethod
@@ -64,6 +61,7 @@ class LLMService:
         answer= response.choices[0].message.content
         if not answer:
             raise Exception("Empty response from Groq")
+        return answer
        
     
     @staticmethod
@@ -80,29 +78,49 @@ class LLMService:
 
                 time.sleep(2)
 
-            raise Exception(f"{provider_function.__name__} failed after {retries} attempts")
+        raise Exception(f"{provider_function.__name__} failed after {retries} attempts")
         
 
     @staticmethod
-    def generate(prompt, provider="gemini"):
+    def generate(prompt):
 
         try:
-            return LLMService.generate_gemini(prompt)
+            return LLMService.retry(LLMService.generate_gemini,prompt)
 
         except Exception as e:
             print("Gemini failed:", e)
 
         try:
-            return LLMService.generate_openai(prompt)
+            return LLMService.retry(LLMService.generate_openAI,prompt)
 
         except Exception as e:
             print("OpenAI failed:", e)
 
         try:
-            return LLMService.generate_groq(prompt)
+            return LLMService.retry(LLMService.generate_groq,prompt)
 
         except Exception as e:
             print("Groq failed:", e)
 
         return "AI service temporarily unavailable."
         
+    @staticmethod
+    def generate_summary(chat_history):
+
+        prompt = f"""
+            Summarize the following conversation briefly.
+
+            Preserve:
+            - Important topics discussed
+            - Key conclusions
+            - User preferences and context
+
+            Keep the summary concise.
+
+            Conversation:
+            {chat_history}
+            """
+
+        summary = LLMService.generate(prompt)
+
+        return summary

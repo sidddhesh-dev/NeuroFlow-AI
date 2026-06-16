@@ -8,7 +8,8 @@ class ContextService:
         question,
         retrived_context,
         chat_history=None,
-        workspace_context=None
+        workspace_context=None,
+        summary=None
     ):
 
         context = f"""
