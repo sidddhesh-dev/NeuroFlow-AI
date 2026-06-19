@@ -32,6 +32,9 @@ class VectorStoreService:
     ]
 
         collection = VectorStoreService.get_collection()
+        print("Adding chunks to ChromaDB")
+        print(len(chunks))
+        print(len(embeddings))
 
         collection.add(
         documents=chunks,
@@ -39,4 +42,8 @@ class VectorStoreService:
         metadatas=metadatas,
         ids=ids
     )
+        
+    @staticmethod
+    def search_chunks(document,question,top3_vectors):
+        ...
         

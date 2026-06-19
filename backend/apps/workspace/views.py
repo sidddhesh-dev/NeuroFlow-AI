@@ -4,12 +4,14 @@ from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
 from .models import Note,Document,DocumentChunk
 from rest_framework import status
-from apps.workspace.serializers import NoteSerializer,NoteListSerializer,DocumentSerializer,DocumentRetriveSerializer,QuerySerializer,AnswerSerializer
+from apps.workspace.serializers import NoteSerializer,NoteListSerializer,DocumentSerializer,DocumentRetriveSerializer,QuerySerializer
 from apps.workspace.permissions import IsOwner
 from django.db.models import Q
 from apps.workspace.services.document_processor import DocumentProcessor 
 from apps.workspace.services.chunk_service import ChunkService
 from apps.workspace.services.ai_service import AiService
+from apps.workspace.services.embedding_service import EmbeddingService
+from apps.workspace.services.chromadb_service import VectorStoreService
 
 
 
@@ -88,6 +90,11 @@ class DocumentCreateView(APIView):
                         DocumentChunk.objects.create(document=document,
                         chunk_text=chunk,chunk_id=index)
                         document.status = 'ready'
+                        embeddings = EmbeddingService.generate_embeddings(chunks)
+                        print(len(chunks))
+                        print(len(embeddings))
+                        VectorStoreService.add_chunks(document,chunks,embeddings)
+
                 else:
                     document.status = 'not_supported'
             

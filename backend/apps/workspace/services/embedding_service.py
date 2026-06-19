@@ -30,3 +30,12 @@ class EmbeddingService:
         embedding = model.encode(text)
 
         return embedding.tolist()
+    
+    @staticmethod
+    def generate_embeddings(texts):
+
+        model = EmbeddingService.get_model()
+
+        embeddings = model.encode(texts)
+
+        return embeddings.tolist()
