@@ -44,6 +44,13 @@ class VectorStoreService:
     )
         
     @staticmethod
-    def search_chunks(document,question,top3_vectors):
-        ...
-        
+    def search_chunks(document, question_embedding, top_k=3):
+
+        collection = VectorStoreService.get_collection()
+
+        results = collection.query(
+            query_embeddings=[question_embedding],
+            n_results=top_k,
+            where={"document_id": document.id})
+        top_chunks = results["documents"][0]
+        return top_chunks

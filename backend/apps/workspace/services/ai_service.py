@@ -91,7 +91,7 @@ class AiService:
         answer=LLMService.generate(prompt)
         ChatService.save_messages(session,"assistant",answer)
         recent_messages = ChatService.get_chat_history(session)
-        summary_text = LLMService.generate_summary(chat_history)
+        summary_text = LLMService.generate_summary(old_summary=summary.summary,recent_messages=recent_messages)
         SummaryService.update_summary(session,summary_text)
         return answer
         

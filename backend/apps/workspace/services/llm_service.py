@@ -104,23 +104,4 @@ class LLMService:
 
         return "AI service temporarily unavailable."
         
-    @staticmethod
-    def generate_summary(chat_history):
-
-        prompt = f"""
-            Summarize the following conversation briefly.
-
-            Preserve:
-            - Important topics discussed
-            - Key conclusions
-            - User preferences and context
-
-            Keep the summary concise.
-
-            Conversation:
-            {chat_history}
-            """
-
-        summary = LLMService.generate(prompt)
-
-        return summary
+    

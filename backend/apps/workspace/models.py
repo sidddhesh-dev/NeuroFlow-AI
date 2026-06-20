@@ -24,6 +24,7 @@ class Document(models.Model):
     uploaded_at=models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20,choices=STATUS_CHOICES,default='uploaded')
     extracted_data=models.TextField(null=True,blank=True)
+    content_hash = models.CharField(max_length=64,unique=False,null=True,blank=True)
     
     def __str__(self):
         return self.file.name

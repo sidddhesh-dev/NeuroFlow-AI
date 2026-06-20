@@ -12,6 +12,7 @@ from apps.workspace.services.chunk_service import ChunkService
 from apps.workspace.services.ai_service import AiService
 from apps.workspace.services.embedding_service import EmbeddingService
 from apps.workspace.services.chromadb_service import VectorStoreService
+import hashlib
 
 
 
@@ -82,18 +83,22 @@ class DocumentCreateView(APIView):
         
             try:
                 text = DocumentProcessor.extract_text(document)
-                
                 if text:
+                    content_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
+                    existing_document = Document.objects.filter(user=request.user,content_hash=content_hash).exclude(id=document.id).exists()
+                    if existing_document:
+                        document.delete()
+                        return Response(
+                            {"message": "Document already uploaded."},
+                        status=status.HTTP_400_BAD_REQUEST)
+                    document.content_hash = content_hash
                     document.extracted_data = text
                     chunks=ChunkService.create_chunks(text)
                     for index, chunk in enumerate(chunks):
-                        DocumentChunk.objects.create(document=document,
-                        chunk_text=chunk,chunk_id=index)
-                        document.status = 'ready'
-                        embeddings = EmbeddingService.generate_embeddings(chunks)
-                        print(len(chunks))
-                        print(len(embeddings))
-                        VectorStoreService.add_chunks(document,chunks,embeddings)
+                        DocumentChunk.objects.create(document=document,chunk_text=chunk,chunk_id=index)
+                    embeddings = EmbeddingService.generate_embeddings(chunks)
+                    VectorStoreService.add_chunks(document,chunks,embeddings)
+                    document.status = 'ready'
 
                 else:
                     document.status = 'not_supported'
@@ -104,7 +109,7 @@ class DocumentCreateView(APIView):
 
             document.save()
             
-            return Response({"message":"file created successfully"},status=status.HTTP_201_CREATED)
+            return Response({"message":"file uploaded successfully"},status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 class DocumentDetailView(APIView):
