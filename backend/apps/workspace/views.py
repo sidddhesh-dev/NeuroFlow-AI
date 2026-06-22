@@ -133,6 +133,7 @@ class DocumentDetailView(APIView):
     def delete(self,request,id):
         document=get_object_or_404(Document,id=id)
         self.check_object_permissions(request,document)
+        VectorStoreService.delete_vector(document)
         document.delete()
         return Response({"message":"Document removed successfully"},status=status.HTTP_200_OK)
     

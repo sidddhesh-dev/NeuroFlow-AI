@@ -54,3 +54,12 @@ class VectorStoreService:
             where={"document_id": document.id})
         top_chunks = results["documents"][0]
         return top_chunks
+
+    @staticmethod 
+    def delete_vector(document):
+        collection=VectorStoreService.get_collection()
+        collection.delete(
+            where={
+                "document_id":document.id
+            }
+        )
