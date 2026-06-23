@@ -32,10 +32,6 @@ class VectorStoreService:
     ]
 
         collection = VectorStoreService.get_collection()
-        print("Adding chunks to ChromaDB")
-        print(len(chunks))
-        print(len(embeddings))
-
         collection.add(
         documents=chunks,
         embeddings=embeddings,
