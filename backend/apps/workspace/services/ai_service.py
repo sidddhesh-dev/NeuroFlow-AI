@@ -1,6 +1,7 @@
 import os
 from google import genai
 from dotenv import load_dotenv
+import redis
 from apps.workspace.services.retrival_service import RetrivalService
 from apps.workspace.services.context_service import ContextService
 from apps.workspace.services.chat_service import ChatService
