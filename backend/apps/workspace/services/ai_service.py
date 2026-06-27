@@ -7,6 +7,7 @@ from apps.workspace.services.context_service import ContextService
 from apps.workspace.services.chat_service import ChatService
 from apps.workspace.services.llm_service import LLMService
 from apps.workspace.services.summary_service import SummaryService
+from apps.workspace.services.chromadb_service import VectorStoreService 
 
 
 
