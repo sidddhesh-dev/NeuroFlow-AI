@@ -1,9 +1,6 @@
-import os
-from dotenv import load_dotenv
-from huggingface_hub import login
+
 from sentence_transformers import SentenceTransformer
-load_dotenv()
-login(os.getenv("HF_TOKEN"))
+
 
 class EmbeddingService:
 

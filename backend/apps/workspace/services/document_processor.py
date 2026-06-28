@@ -1,8 +1,3 @@
-from pypdf import PdfReader
-from docx import Document as DocxDocument
-from openpyxl import load_workbook
-from pptx import Presentation
-import csv
 
 class DocumentProcessor:
 
@@ -15,6 +10,8 @@ class DocumentProcessor:
                 data=file.read()
             return data
         elif extension == 'pdf':
+            from pypdf import PdfReader
+
             reader = PdfReader(document.file.path)
             text = ""
             for page in reader.pages:
@@ -22,12 +19,15 @@ class DocumentProcessor:
             return text
 
         elif extension == 'docx':
+            from docx import Document as DocxDocument
+
             doc = DocxDocument(document.file.path)
             text = ""
             for paragraph in doc.paragraphs:
                 text += paragraph.text + "\n"
             return text
         elif extension == 'xlsx':
+            from openpyxl import load_workbook
             workbook = load_workbook(document.file.path,data_only=True)
             text = ""
             for sheet in workbook.worksheets:
@@ -36,6 +36,7 @@ class DocumentProcessor:
                     text += row_text + "\n"
             return text
         elif extension == 'pptx':
+            from pptx import Presentation
             presentation = Presentation(document.file.path)
             text = ""
             for slide in presentation.slides:
@@ -44,6 +45,7 @@ class DocumentProcessor:
                         text += shape.text + "\n"
             return text
         elif extension == 'csv':
+            import csv
             text = ""
 
             with open(document.file.path, 'r', encoding='utf-8') as file:
