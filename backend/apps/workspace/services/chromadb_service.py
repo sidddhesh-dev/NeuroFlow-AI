@@ -1,4 +1,5 @@
 import chromadb
+import hashlib
 
 class VectorStoreService:
     @staticmethod
@@ -59,3 +60,50 @@ class VectorStoreService:
                 "document_id":document.id
             }
         )
+    
+    @staticmethod
+    def get_semantic_cache_collection():
+        client = VectorStoreService.get_client()
+        collection = client.get_or_create_collection(name="semantic_cache")
+        return collection
+    
+    @staticmethod
+    def add_semantic_cache(document, question,question_embedding,answer):
+
+        collection = (VectorStoreService.get_semantic_cache_collection()
+        )
+
+        cache_id = hashlib.sha256(f"{document.id}:{question}".encode()).hexdigest()
+
+        collection.add(
+            ids=[cache_id],
+            documents=[question],
+            embeddings=[question_embedding],
+            metadatas=[
+                {
+                    "document_id": document.id,
+                    "answer": answer
+                }
+            ]
+        )
+    
+    @staticmethod
+    def search_semantic_cache(document,question_embedding):
+        collection = (VectorStoreService.get_semantic_cache_collection())
+        results = collection.query(query_embeddings=[question_embedding],n_results=1,where={"document_id": document.id})
+        return results
+    
+    @staticmethod
+    def get_semantic_cache_hit(document,question_embedding,threshold=0.25):
+        results = (VectorStoreService.search_semantic_cache(document,question_embedding))
+        if not results["ids"][0]:
+            return None
+        distance = results["distances"][0][0]
+        if distance <= threshold:
+            return results["metadatas"][0][0]["answer"]
+
+        return None
+        
+    
+
+
