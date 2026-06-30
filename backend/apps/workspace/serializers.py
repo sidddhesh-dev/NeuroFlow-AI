@@ -57,9 +57,6 @@ class DocumentSerializer(serializers.ModelSerializer):
     
         else:
             return f"{round(size / (1024 * 1024), 2)} MB"
-    
-    
-
 
 
 class DocumentRetriveSerializer(serializers.ModelSerializer):

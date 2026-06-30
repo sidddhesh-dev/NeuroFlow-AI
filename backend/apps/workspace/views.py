@@ -16,7 +16,6 @@ import hashlib
 
 
 
-
 class NoteCreateApiView(APIView):
     permission_classes=[IsAuthenticated]
 
@@ -139,6 +138,7 @@ class DocumentDetailView(APIView):
     
 class DocumentAskQuestionView(APIView):
     permission_classes=[IsAuthenticated]
+    
     def post(self,request,id):
         document=get_object_or_404(Document,id=id)
         self.check_object_permissions(request,document)

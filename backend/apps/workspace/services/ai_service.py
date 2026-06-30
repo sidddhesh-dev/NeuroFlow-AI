@@ -9,6 +9,7 @@ from apps.workspace.services.llm_service import LLMService
 from apps.workspace.services.summary_service import SummaryService
 from apps.workspace.services.cache_keys import generate_cache_key
 from apps.workspace.services.redis_service import RedisService
+from apps.workspace.services.chromadb_service import VectorStoreService
 
 
 
