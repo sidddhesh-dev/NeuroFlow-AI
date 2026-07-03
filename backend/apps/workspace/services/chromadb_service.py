@@ -1,6 +1,8 @@
 import chromadb
 import hashlib
 from apps.workspace.services.embedding_service import EmbeddingService
+from apps.workspace.services.redis_service import RedisService 
+
 
 class VectorStoreService:
     @staticmethod
