@@ -1,4 +1,5 @@
 from celery import shared_task
+from apps.workspace.services.chromadb_service import VectorStoreService
 
 @shared_task
 def add(x,y):
