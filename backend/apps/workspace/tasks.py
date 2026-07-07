@@ -1,10 +1,10 @@
 from celery import shared_task
-from apps.workspace.services.chromadb_service import VectorStoreService
+from apps.workspace.services.document_processor import DocumentProcessor
 
 @shared_task
-def add(x,y):
-    return x+y
+def process_document(document_id):
+    """
+    Background task for processing uploaded documents.
+    """
 
-@shared_task
-def multiply(a,b):
-    return a*b
+    return DocumentProcessor.process(document_id)

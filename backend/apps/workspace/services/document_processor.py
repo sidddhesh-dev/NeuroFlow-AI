@@ -1,3 +1,13 @@
+import hashlib
+
+from apps.workspace.models import Document, DocumentChunk
+from apps.workspace.services.chunk_service import ChunkService
+from apps.workspace.services.embedding_service import EmbeddingService
+from apps.workspace.services.chromadb_service import VectorStoreService
+from rest_framework.response import Response
+from rest_framework import status
+
+
 
 class DocumentProcessor:
 
@@ -5,7 +15,6 @@ class DocumentProcessor:
     def extract_text(document):
         extension=document.file.name.split('.')[-1].lower()
         if extension  in [ 'txt','html','md']:
-            print("FILE EXTENSION:", extension)
             with open(document.file.path,'r',encoding='utf-8') as file :
                 data=file.read()
             return data
@@ -56,6 +65,42 @@ class DocumentProcessor:
 
             return text
         return None
+    
+    @staticmethod
+    def process(document_id):
+            document = None
+            try:
+                document = Document.objects.get(id=document_id)
+                text = DocumentProcessor.extract_text(document)
+                if not text:
+                    document.status = "not_supported"
+                    document.save(update_fields=["status"])
+                    return
+                content_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
+                existing_document = Document.objects.filter(user=document.user,content_hash=content_hash).exclude(id=document.id).exists()
+                if existing_document:
+                    document.delete()
+                    return False
+                document.content_hash = content_hash
+                document.extracted_data = text
+                document.save()
+                chunks=ChunkService.create_chunks(text)
+                chunk_objects = [ DocumentChunk(
+                    document=document,chunk_text=chunk,chunk_id=index) 
+                    for index, chunk in enumerate(chunks)]
+                DocumentChunk.objects.bulk_create(chunk_objects)
+                embeddings = EmbeddingService.generate_embeddings(chunks)
+                VectorStoreService.add_chunks(document,chunks,embeddings)
+                document.status = 'ready'
+                document.save(update_fields=["status"])
+                return True
+                
+            
+            except Exception as e:
+                print(f"Document Processing Error: {e}")
+                document.status = 'failed'
+                document.save(update_fields=["status"])
+                return False
 
         
     
