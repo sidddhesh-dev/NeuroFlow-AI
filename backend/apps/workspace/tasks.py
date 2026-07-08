@@ -1,5 +1,6 @@
 from celery import shared_task
 from apps.workspace.services.document_processor import DocumentProcessor
+from apps.workspace.services.chromadb_service import VectorStoreService
 
 @shared_task
 def process_document(document_id):
