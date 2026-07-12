@@ -1,11 +1,11 @@
 import hashlib
+import logging
+logger = logging.getLogger(__name__)
 
 from apps.workspace.models import Document, DocumentChunk
 from apps.workspace.services.chunk_service import ChunkService
 from apps.workspace.services.embedding_service import EmbeddingService
 from apps.workspace.services.chromadb_service import VectorStoreService
-from rest_framework.response import Response
-from rest_framework import status
 
 
 
@@ -67,20 +67,27 @@ class DocumentProcessor:
         return None
     
     @staticmethod
+    def update_status(document, status):
+        document.status = status
+        document.save(update_fields=["status"])
+    
+    @staticmethod
     def process(document_id):
             document = None
+
             try:
                 document = Document.objects.get(id=document_id)
                 text = DocumentProcessor.extract_text(document)
                 if not text:
-                    document.status = "not_supported"
-                    document.save(update_fields=["status"])
+                    DocumentProcessor.update_status(document, "not_supported")
                     return
                 content_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
                 existing_document = Document.objects.filter(user=document.user,content_hash=content_hash).exclude(id=document.id).exists()
                 if existing_document:
                     document.delete()
+                    logger.warning(f"Docuement Already Exists: {document.id}")
                     return False
+                logger.info(f"Started processing document: {document_id}")    
                 document.content_hash = content_hash
                 document.extracted_data = text
                 document.save()
@@ -89,17 +96,31 @@ class DocumentProcessor:
                     document=document,chunk_text=chunk,chunk_id=index) 
                     for index, chunk in enumerate(chunks)]
                 DocumentChunk.objects.bulk_create(chunk_objects)
+                logger.info("Chunk generated Successfully")
                 embeddings = EmbeddingService.generate_embeddings(chunks)
+                logger.info("Embeddings generated successfully.")
                 VectorStoreService.add_chunks(document,chunks,embeddings)
-                document.status = 'ready'
-                document.save(update_fields=["status"])
+                logger.info("Vectors generated successfully")
+                DocumentProcessor.update_status(document, "ready")
+                logger.info("Document processing completed successfully.")
                 return True
-                
+
+            except Document.DoesNotExist:
+                logger.error(f"Document {document_id} not found.")
+                return False   
             
+            except FileNotFoundError:
+                logger.error(f"Document file not found: {document.file.path}")
+                DocumentProcessor.update_status(document, "failed")
+                return False
+            
+            except PermissionError:
+                logger.error(f"Permission denied while reading document {document.id}")
+                DocumentProcessor.update_status(document, "failed")
+                return False
             except Exception as e:
-                print(f"Document Processing Error: {e}")
-                document.status = 'failed'
-                document.save(update_fields=["status"])
+                logger.exception(f"Unexpected error while processing document {document.id}")
+                DocumentProcessor.update_status(document, "failed")
                 return False
 
         
