@@ -77,6 +77,7 @@ class DocumentProcessor:
 
             try:
                 document = Document.objects.get(id=document_id)
+                DocumentProcessor.cleanup_artifacts(document)
                 text = DocumentProcessor.extract_text(document)
                 if not text:
                     DocumentProcessor.update_status(document, "not_supported")
@@ -122,6 +123,12 @@ class DocumentProcessor:
                 logger.exception(f"Unexpected error while processing document {document.id}")
                 DocumentProcessor.update_status(document, "failed")
                 return False
+            
+    @staticmethod
+    def cleanup_artifacts(document):
+        DocumentChunk.objects.filter(document=document).delete()
+        VectorStoreService.delete_vector(document=document)
+        logger.info(f"previous artifacts removed successfully for {document.id}")
 
         
     

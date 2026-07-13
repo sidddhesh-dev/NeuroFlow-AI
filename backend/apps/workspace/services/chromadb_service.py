@@ -107,6 +107,8 @@ class VectorStoreService:
             return results["metadatas"][0][0]["answer"]
 
         return None
+    
+    
         
     
 
