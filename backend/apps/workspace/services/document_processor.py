@@ -6,6 +6,7 @@ from apps.workspace.models import Document, DocumentChunk
 from apps.workspace.services.chunk_service import ChunkService
 from apps.workspace.services.embedding_service import EmbeddingService
 from apps.workspace.services.chromadb_service import VectorStoreService
+from apps.workspace.exceptions import RetryableProcessingError,NonRetryableProcessingError
 
 
 
@@ -77,7 +78,6 @@ class DocumentProcessor:
 
             try:
                 document = Document.objects.get(id=document_id)
-                DocumentProcessor.cleanup_artifacts(document)
                 text = DocumentProcessor.extract_text(document)
                 if not text:
                     DocumentProcessor.update_status(document, "not_supported")
@@ -108,22 +108,21 @@ class DocumentProcessor:
 
             except Document.DoesNotExist:
                 logger.error(f"Document {document_id} not found.")
-                return False   
+                raise NonRetryableProcessingError("Document does not exist.") from e
             
-            except FileNotFoundError:
+            except FileNotFoundError as e:
                 logger.error(f"Document file not found: {document.file.path}")
-                DocumentProcessor.update_status(document, "failed")
-                return False
+                raise NonRetryableProcessingError("Document file not found.") from e
             
-            except PermissionError:
+            except PermissionError as e:
                 logger.error(f"Permission denied while reading document {document.id}")
-                DocumentProcessor.update_status(document, "failed")
-                return False
-            except Exception as e:
-                logger.exception(f"Unexpected error while processing document {document.id}")
-                DocumentProcessor.update_status(document, "failed")
-                return False
+                raise NonRetryableProcessingError("Permission denied.") from e
             
+            except Exception as e:
+                logger.exception(f"Unexpected error while processing document {document_id}")
+                raise RetryableProcessingError("Temporary failure during document processing.") from e
+            
+
     @staticmethod
     def cleanup_artifacts(document):
         DocumentChunk.objects.filter(document=document).delete()
