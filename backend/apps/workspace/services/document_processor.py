@@ -68,7 +68,8 @@ class DocumentProcessor:
         return None
     
     @staticmethod
-    def update_status(document, status):
+    def update_status(document_id, status):
+        document=Document.objects.get(id=document_id)
         document.status = status
         document.save(update_fields=["status"])
     
@@ -80,10 +81,10 @@ class DocumentProcessor:
                 document = Document.objects.get(id=document_id)
                 text = DocumentProcessor.extract_text(document)
                 if not text:
-                    DocumentProcessor.update_status(document, "not_supported")
+                    DocumentProcessor.update_status(document_id, "not_supported")
                     return
                 content_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
-                existing_document = Document.objects.filter(user=document.user,content_hash=content_hash).exclude(id=document.id).exists()
+                existing_document = Document.objects.filter(user=document.user,content_hash=content_hash).exclude(id=document_id).exists()
                 if existing_document:
                     document.delete()
                     logger.warning(f"Docuement Already Exists: {document.id}")
@@ -102,7 +103,7 @@ class DocumentProcessor:
                 logger.info("Embeddings generated successfully.")
                 VectorStoreService.add_chunks(document,chunks,embeddings)
                 logger.info("Vectors generated successfully")
-                DocumentProcessor.update_status(document, "ready")
+                DocumentProcessor.update_status(document_id, "ready")
                 logger.info("Document processing completed successfully.")
                 return True
 
@@ -115,7 +116,7 @@ class DocumentProcessor:
                 raise NonRetryableProcessingError("Document file not found.") from e
             
             except PermissionError as e:
-                logger.error(f"Permission denied while reading document {document.id}")
+                logger.error(f"Permission denied while reading document {document_id}")
                 raise NonRetryableProcessingError("Permission denied.") from e
             
             except Exception as e:
@@ -124,10 +125,11 @@ class DocumentProcessor:
             
 
     @staticmethod
-    def cleanup_artifacts(document):
+    def cleanup_artifacts(document_id):
+        document=Document.objects.get(id=document_id)
         DocumentChunk.objects.filter(document=document).delete()
         VectorStoreService.delete_vector(document=document)
-        logger.info(f"previous artifacts removed successfully for {document.id}")
+        logger.info(f"previous artifacts removed successfully for {document_id}")
 
         
     

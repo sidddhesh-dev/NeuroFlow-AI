@@ -30,27 +30,21 @@ def process_document(self, document_id):
         except Exception as cleanup_error:
             logger.warning(
                 f"Artifact cleanup failed for document "
-                f"{document_id}: {cleanup_error}"
-            )
+                f"{document_id}: {cleanup_error}")
 
         if self.request.retries >= MAX_RETRIES:
             logger.error(
-                f"Maximum retry attempts exceeded for document {document_id}"
-            )
+                f"Maximum retry attempts exceeded for document {document_id}")
             DocumentProcessor.update_status(document_id, "failed")
             return False
 
         raise self.retry(
             exc=e,
-            countdown=RETRY_DELAY * (2 ** self.request.retries),
-        )
-
+            countdown=RETRY_DELAY * (2 ** self.request.retries),)
     except NonRetryableProcessingError as e:
-
         logger.error(
             f"Permanent failure while processing document "
-            f"{document_id}: {e}"
-        )
+            f"{document_id}: {e}")
 
         DocumentProcessor.update_status(document_id, "failed")
         return False
