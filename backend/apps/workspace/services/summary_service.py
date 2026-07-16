@@ -1,25 +1,26 @@
-from apps.workspace.models import *
+from apps.workspace.models import ChatSummary
 from apps.workspace.services.llm_service import LLMService
 
 class SummaryService:
     @staticmethod
-    def create_summary(session):
+    def get_or_create_summary(session):
         summary,created=ChatSummary.objects.get_or_create(session=session)
         return summary
     
     @staticmethod
     def generate_summary(old_summary, recent_messages):
         prompt = f"""
-    Current summary:
-    {old_summary}
-    Recent conversation:
-    {recent_messages}
-    Update the summary.
-    Preserve:
-    - Important topics discussed
-    - Key conclusions
-    - User preferences and context
-    Keep the summary concise.
+        You are updating an existing conversation summary.
+        Current Summary:
+        {old_summary}
+        Recent Messages:
+        {recent_messages}
+        Requirements:
+        - Preserve important facts.
+        - Preserve user goals.
+        - Preserve unresolved questions.
+        - Remove repetition.
+        - Keep the summary under 300 words.
     """
         summary = LLMService.generate(prompt)
 
@@ -27,13 +28,9 @@ class SummaryService:
     
     @staticmethod
     def update_summary(session,summary_text):
-        summary=SummaryService.create_summary(session)
+        summary=SummaryService.get_or_create_summary(session)
         summary.summary=summary_text
         summary.save()
         return summary
-    
-    
-    
-    
-    
+
         

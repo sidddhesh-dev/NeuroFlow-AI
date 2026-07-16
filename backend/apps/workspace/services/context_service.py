@@ -1,5 +1,4 @@
 
-from apps.workspace.services.chat_service import ChatService
 from apps.workspace.models import *
 
 class ContextService:
@@ -8,8 +7,7 @@ class ContextService:
         question,
         retrived_context,
         chat_history=None,
-        workspace_context=None,
-        summary=None
+        workspace_context=None
     ):
 
         context = f"""

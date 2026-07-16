@@ -84,10 +84,10 @@ class DocumentProcessor:
                     DocumentProcessor.update_status(document_id, "not_supported")
                     return
                 content_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
-                existing_document = Document.objects.filter(user=document.user,content_hash=content_hash).exclude(id=document_id).exists()
+                existing_document = Document.objects.filter(user=document.user,content_hash=content_hash).exclude(id=document.id).exists()
                 if existing_document:
                     document.delete()
-                    logger.warning(f"Docuement Already Exists: {document.id}")
+                    logger.warning(f"Docuement Already Exists: {document_id}")
                     return False
                 logger.info(f"Started processing document: {document_id}")    
                 document.content_hash = content_hash
@@ -107,8 +107,8 @@ class DocumentProcessor:
                 logger.info("Document processing completed successfully.")
                 return True
 
-            except Document.DoesNotExist:
-                logger.error(f"Document {document_id} not found.")
+            except Document.DoesNotExist as e:
+                logger.error(f"Document {document.id} not found.")
                 raise NonRetryableProcessingError("Document does not exist.") from e
             
             except FileNotFoundError as e:
@@ -116,11 +116,11 @@ class DocumentProcessor:
                 raise NonRetryableProcessingError("Document file not found.") from e
             
             except PermissionError as e:
-                logger.error(f"Permission denied while reading document {document_id}")
+                logger.error(f"Permission denied while reading document {document.id}")
                 raise NonRetryableProcessingError("Permission denied.") from e
             
             except Exception as e:
-                logger.exception(f"Unexpected error while processing document {document_id}")
+                logger.exception(f"Unexpected error while processing document {document.id}")
                 raise RetryableProcessingError("Temporary failure during document processing.") from e
             
 

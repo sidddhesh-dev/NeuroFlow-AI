@@ -2,7 +2,6 @@
 from sentence_transformers import SentenceTransformer
 from apps.workspace.services.cache_keys import (generate_embedding_cache_key)
 from apps.workspace.services.redis_service import RedisService
-from apps.workspace.exceptions import NonRetryableProcessingError
 
 class EmbeddingService:
     model = None

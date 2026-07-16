@@ -2,14 +2,13 @@ from django.shortcuts import render,get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
-from .models import Note,Document,DocumentChunk
+from .models import Note,Document
 from rest_framework import status
 from apps.workspace.serializers import NoteSerializer,NoteListSerializer,DocumentSerializer,DocumentRetriveSerializer,QuerySerializer
 from apps.workspace.permissions import IsOwner
 from django.db.models import Q
 from apps.workspace.services.ai_service import AiService
 from apps.workspace.services.chromadb_service import VectorStoreService
-import hashlib
 from apps.workspace.tasks import process_document
 
 
@@ -82,7 +81,7 @@ class DocumentCreateView(APIView):
             process_document.delay(document.id)
 
             return Response(
-                {"message": "File uploaded successfully. Processing started."},
+                {"message": f"File {document.file.name} uploaded successfully. Processing started."},
                 status=status.HTTP_201_CREATED
             )
 
@@ -111,7 +110,7 @@ class DocumentDetailView(APIView):
         self.check_object_permissions(request,document)
         VectorStoreService.delete_vector(document)
         document.delete()
-        return Response({"message":"Document removed successfully"},status=status.HTTP_200_OK)
+        return Response({"message":f"Document '{document.file.name}' (ID: {document.id}) removed successfully."},status=status.HTTP_200_OK)
     
 class DocumentAskQuestionView(APIView):
     permission_classes=[IsAuthenticated]

@@ -1,77 +1,47 @@
-from rest_framework.decorators import api_view,schema
-from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import mixins
+from rest_framework import generics
+
+from .serializers import UserProfileSerializer
 from .models import UserProfile
-from apps.accounts.serializers import UserProfileSerializer
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
-@api_view(['GET','POST'])
-def User_list(request):
-
-    if request.method=="GET":
-        user=UserProfile.objects.all()
-        serialize=UserProfileSerializer(user,many=True)
-        data=serialize.data
-        return Response(data)
+class UserListCreateAPIView(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    generics.GenericAPIView
+):
     
-    if request.method=="POST":
-        user=UserProfileSerializer(data=request.data)
+    queryset=UserProfile.objects.all()
 
-        if user.is_valid():
-            user.save()
-            return Response(
-                user.data,
-                status=status.HTTP_201_CREATED
-            )
-            
-        return Response(
-            user.errors,
-            status=status.HTTP_401_UNAUTHORIZED,
-        
+    serializer_class=UserProfileSerializer
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
 
-        )
+    def get(self,request):
+        return self.list(request)
     
-@api_view(['GET','PUT','DELETE'])
-def user_details(request,PK):
-
-    try :
-        user=UserProfile.objects.get(id=PK)
-
-    except UserProfile.DoesNotExist:
-        return Response(
-            {"Error : User Not Found"},
-            status=status.HTTP_404_NOT_FOUND
-        )
+    def post(self,request):
+        return self.create(request)
     
-    if request.method=="GET":
-        serializer=UserProfileSerializer(user)
-        return Response(serializer.data)
+class UserDetailAPIView(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    generics.GenericAPIView):
 
-    elif request.method=="PUT":
-        serializer=UserProfileSerializer(
-            user,data=request.data
-        )
+    queryset=UserProfile.objects.all()
+    serializer_class=UserProfileSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
-                serializer.data
-            )
-        
-        return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-        )
+    def get(self,request,pk):
+        return self.retrieve(request,pk=pk)
     
-    elif request.method=="DELETE":
-        user.delete()
-        return Response(
-            {'message' : 'User Deleted Succssfully'},
-            status=status.HTTP_204_NO_CONTENT
-
-        )
+    def put(self,request,pk):
+        return self.update(request,pk=pk)
     
+    def delete(self,request,pk):
+        return self.destroy(request,pk=pk)
+
     
-
-
-
-
