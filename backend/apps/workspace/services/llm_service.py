@@ -27,10 +27,25 @@ class LLMService:
         return client
     
     @staticmethod
+    def get_gemini_model():
+        return os.getenv("GEMINI_MODEL")
+
+
+    @staticmethod
+    def get_openai_model():
+        return os.getenv("OPENAI_MODEL")
+
+
+    @staticmethod
+    def get_groq_model():
+        return os.getenv("GROQ_MODEL")
+    
+    @staticmethod
     def generate_gemini(prompt):
         client = LLMService.get_gemini_client()
+
         response=client.models.generate_content(
-            model="gemini-2.5-flash",
+            model=LLMService.get_gemini_model(),
             contents=prompt )
         answer=response.text
         if not answer:
@@ -42,7 +57,7 @@ class LLMService:
         client=LLMService.get_openAi_client()
 
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=LLMService.get_openai_model(),
             messages=[
             {"role": "user", "content": prompt}])
         answer=response.choices[0].message.content
@@ -55,7 +70,7 @@ class LLMService:
     def generate_groq(prompt):
         client=LLMService.get_groq_client()
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model=LLMService.get_groq_model(),
             messages=[
                 {"role": "user", "content": prompt}])
         answer= response.choices[0].message.content
@@ -66,20 +81,16 @@ class LLMService:
     
     @staticmethod
     def retry(provider_function, prompt, retries=3):
-
+        last_exception = None
         for attempt in range(retries):
-
             try:
                 return provider_function(prompt)
-
             except Exception as e:
-
+                last_exception = e
                 logger.exception(f"{provider_function.__name__} attempt {attempt + 1} failed")
-
                 time.sleep(2)
 
-        raise Exception(f"{provider_function.__name__} failed after {retries} attempts")
-        
+        raise Exception(f"{provider_function.__name__} failed after {retries} attempts.") from last_exception
 
     @staticmethod
     def generate(prompt):
@@ -88,20 +99,20 @@ class LLMService:
             return LLMService.retry(LLMService.generate_gemini,prompt)
 
         except Exception as e:
-            print("Gemini failed:", e)
+            logger.exception("Gemini provider failed")
 
         try:
             return LLMService.retry(LLMService.generate_openAI,prompt)
 
         except Exception as e:
-            print("OpenAI failed:", e)
+            logger.exception("openAI provider failed ")
 
         try:
             return LLMService.retry(LLMService.generate_groq,prompt)
 
         except Exception as e:
-            print("Groq failed:", e)
+            logger.exception("Groq provider failed.")
 
-        return "AI service temporarily unavailable."
+        raise Exception("All LLM providers failed.")
         
     

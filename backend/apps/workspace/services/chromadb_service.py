@@ -26,7 +26,7 @@ class VectorStoreService:
 
         metadatas = [
         {
-            "document_id": document.id,
+            "document_id": str(document.id),
             "chunk_index": i
         }
         for i in range(len(chunks))

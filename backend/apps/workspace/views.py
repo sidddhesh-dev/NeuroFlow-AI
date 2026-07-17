@@ -110,7 +110,7 @@ class DocumentDetailView(APIView):
         self.check_object_permissions(request,document)
         VectorStoreService.delete_vector(document)
         document.delete()
-        return Response({"message":f"Document '{document.file.name}' (ID: {document.id}) removed successfully."},status=status.HTTP_200_OK)
+        return Response({"message":f"Document '{document.file.name}' (ID: {id}) removed successfully."},status=status.HTTP_200_OK)
     
 class DocumentAskQuestionView(APIView):
     permission_classes=[IsAuthenticated]

@@ -7,7 +7,7 @@ def generate_cache_key(question,document_id) :
         question.strip().lower().encode()
     ).hexdigest()
 
-    return f"llm:{document_id} : {question_hash}"
+    return f"llm:{document_id}:{question_hash}"
 
 def generate_embedding_cache_key(text):
     embedding_hash=hashlib.sha256(text.strip().lower().encode()).hexdigest()

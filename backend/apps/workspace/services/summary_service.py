@@ -1,4 +1,4 @@
-from apps.workspace.models import ChatSummary
+from apps.workspace.models import ChatSummary,ChatHistory
 from apps.workspace.services.llm_service import LLMService
 
 class SummaryService:
@@ -6,7 +6,7 @@ class SummaryService:
     def get_or_create_summary(session):
         summary,created=ChatSummary.objects.get_or_create(session=session)
         return summary
-    
+
     @staticmethod
     def generate_summary(old_summary, recent_messages):
         prompt = f"""
@@ -32,5 +32,13 @@ class SummaryService:
         summary.summary=summary_text
         summary.save()
         return summary
+    
+    @staticmethod
+    def should_update_summary(session):
+        message_count = ChatHistory.objects.filter(
+            session=session
+        ).count()
+
+        return message_count % 10 == 0
 
         
