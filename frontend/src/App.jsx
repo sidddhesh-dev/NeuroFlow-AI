@@ -1,17 +1,28 @@
-import { useState } from "react";
+// import { useState } from "react";
+import "./App.css";
+import Sidebar  from "./components/Sidebar/Sidebar";
+import Topbar  from "./components/Topbar/Topbar";
+import RightSidebar from "./components/RightSidebar/RightSidebar";
+import ChatSection from "./components/ChatSection/ChatSection";
 
-function App() {
-  const [DocumentCount,SetDocumentCount]=useState(0)
-  function handleAddDocument() {
-    SetDocumentCount(DocumentCount+1)
-  } 
-  
-  return (
-    <div>
-      <h1>Neuroflow-AI</h1>
-      <p>Document uploaded : {DocumentCount}</p>
-      <button onClick={handleAddDocument}>Add Document </button>
+function App(){
+  return(
+    <div className="app-layout">   
+      <Sidebar />
+
+      <main className="main-area">
+        <Topbar />
+
+        <div className="workspace">
+          
+        <ChatSection />
+        <RightSidebar />
+
+        </div>
+      </main>
     </div>
-  )
+   
+  );
 }
-export default App
+export default App;
+
