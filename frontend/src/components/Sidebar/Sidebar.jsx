@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 
 function Sidebar() {
@@ -19,17 +20,17 @@ function Sidebar() {
         <ul className="nav-list">
 
           <li>
-            <button className="nav-item nav-item-active" type="button">
+            <NavLink to="/chat" className="nav-item">
               <span className="nav-icon">▣</span>
               <span>Chat</span>
-            </button>
+            </NavLink >
           </li>
 
           <li>
-            <button className="nav-item" type="button">
+            <NavLink to="/documents" className="nav-item">
               <span className="nav-icon">▤</span>
               <span>Documents</span>
-            </button>
+            </NavLink>
           </li>
 
           <li>

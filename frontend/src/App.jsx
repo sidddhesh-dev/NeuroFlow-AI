@@ -1,9 +1,8 @@
 // import { useState } from "react";
 import "./App.css";
+import { Outlet } from "react-router-dom";
 import Sidebar  from "./components/Sidebar/Sidebar";
 import Topbar  from "./components/Topbar/Topbar";
-import RightSidebar from "./components/RightSidebar/RightSidebar";
-import ChatSection from "./components/ChatSection/ChatSection";
 
 function App(){
   return(
@@ -14,10 +13,7 @@ function App(){
         <Topbar />
 
         <div className="workspace">
-          
-        <ChatSection />
-        <RightSidebar />
-
+        <Outlet />
         </div>
       </main>
     </div>
