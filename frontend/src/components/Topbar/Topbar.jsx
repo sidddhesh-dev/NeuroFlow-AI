@@ -1,4 +1,5 @@
 import "./Topbar.css"
+import { NavLink } from "react-router-dom"
 
 function Topbar(){
     return (
@@ -14,13 +15,11 @@ function Topbar(){
 
                 <button type="button" className="notification-button">♧</button>
 
-                <div className="topbar-profile">
-                  <div className="profile-avatar">S</div>
-
-                  <span>Siddhesh</span>
-
-                  <span className="profile-arrow">⌄</span>
-                </div>
+                <NavLink to="/account" className="topbar-profile">
+                    <div className="profile-avatar">S</div>
+                    <span>Siddhesh</span>
+                    <span className="profile-arrow">⌄</span>
+                </NavLink>
 
             </div>
 

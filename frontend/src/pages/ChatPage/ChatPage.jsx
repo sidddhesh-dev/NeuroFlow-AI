@@ -2,7 +2,7 @@ import "./ChatPage.css";
 import ChatSection from "../../components/ChatSection/ChatSection";
 import RightSidebar from "../../components/RightSidebar/RightSidebar";
 
-function ChatPage() {
+function Chat() {
   return (
     <div className="chat-page">
 
@@ -18,4 +18,4 @@ function ChatPage() {
   );
 }
 
-export default ChatPage;
+export default Chat;

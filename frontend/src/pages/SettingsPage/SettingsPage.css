@@ -1,0 +1,185 @@
+.settings-page {
+  width: 100%;
+  height: 100%;
+
+  padding: 27px 30px;
+
+  background: var(--bg-app);
+  color: var(--text-primary);
+
+  overflow-y: auto;
+}
+
+.settings-header {
+  margin-bottom: 20px;
+}
+
+.settings-header h1 {
+  margin: 0;
+
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.settings-header p {
+  margin: 5px 0 0;
+
+  color: #7b8595;
+
+  font-size: 9.5px;
+}
+
+.settings-layout {
+  display: grid;
+  grid-template-columns: 155px minmax(0, 650px);
+
+  gap: 14px;
+}
+
+.settings-navigation {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.settings-navigation button {
+  width: 100%;
+  height: 34px;
+
+  padding: 0 10px;
+
+  background: transparent;
+  color: #8993a2;
+
+  border: 1px solid transparent;
+  border-radius: 6px;
+
+  font-size: 9px;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.settings-navigation button:hover,
+.settings-navigation .settings-nav-active {
+  background: #121927;
+  color: #e2e5eb;
+
+  border-color: #252e3b;
+}
+
+.settings-content {
+  min-width: 0;
+}
+
+.settings-section {
+  background: #0d131d;
+
+  border: 1px solid #222b39;
+  border-radius: 9px;
+}
+
+.settings-section-heading {
+  padding: 15px;
+
+  border-bottom: 1px solid #202835;
+}
+
+.settings-section-heading h2 {
+  margin: 0;
+
+  font-size: 11px;
+  font-weight: 550;
+}
+
+.settings-section-heading p {
+  margin: 4px 0 0;
+
+  color: #737d8d;
+
+  font-size: 8px;
+}
+
+.setting-row {
+  min-height: 67px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 12px 15px;
+
+  border-bottom: 1px solid #1e2632;
+}
+
+.setting-row:last-child {
+  border-bottom: none;
+}
+
+.setting-row h3 {
+  margin: 0;
+
+  font-size: 9.5px;
+  font-weight: 500;
+}
+
+.setting-row p {
+  margin: 4px 0 0;
+
+  color: #6e7888;
+
+  font-size: 8px;
+}
+
+.setting-select {
+  height: 29px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+
+  padding: 0 9px;
+
+  background: #111823;
+  color: #a8b0bd;
+
+  border: 1px solid #293241;
+  border-radius: 6px;
+
+  font-size: 8px;
+}
+
+.setting-toggle {
+  width: 34px;
+  height: 18px;
+
+  padding: 2px;
+
+  background: #252e3b;
+
+  border: none;
+  border-radius: 20px;
+}
+
+.setting-toggle span {
+  width: 14px;
+  height: 14px;
+
+  display: block;
+
+  background: #7e8795;
+
+  border-radius: 50%;
+}
+
+.setting-toggle-active {
+  background: var(--accent);
+}
+
+.setting-toggle-active span {
+  margin-left: auto;
+
+  background: white;
+}

@@ -34,24 +34,31 @@ function Sidebar() {
           </li>
 
           <li>
-            <button className="nav-item" type="button">
+            <NavLink to="/upload" className="nav-item">
               <span className="nav-icon">⇧</span>
               <span>Upload Document</span>
-            </button>
+            </NavLink>
           </li>
 
           <li>
-            <button className="nav-item" type="button">
+            <NavLink to="/history" className="nav-item">
               <span className="nav-icon">◷</span>
               <span>History</span>
-            </button>
+            </NavLink>
           </li>
 
           <li>
-            <button className="nav-item" type="button">
+            <NavLink to="/notes" className="nav-item">
               <span className="nav-icon">◇</span>
               <span>Notes</span>
-            </button>
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/settings" className="nav-item">
+            <span className="nav-icon">•••</span>
+            <span>More</span>
+            </NavLink>
           </li>
 
         </ul>
@@ -61,8 +68,8 @@ function Sidebar() {
 
       <footer className="sidebar-footer">
 
-        <section className="model-card">
-
+        
+        <NavLink to="/models" className="model-card">
           <p className="model-label">
             AI Model
           </p>
@@ -76,12 +83,9 @@ function Sidebar() {
             <span className="online-dot"></span>
             <span>Online</span>
           </div>
-
-        </section>
-
-
-        <section className="user-profile">
-
+          </NavLink>
+        
+        <NavLink to="/developer" className="user-profile">
           <div className="user-avatar">
             S
           </div>
@@ -98,8 +102,9 @@ function Sidebar() {
           >
             ⚙
           </button>
+        </NavLink>
 
-        </section>
+       
 
       </footer>
 
