@@ -1,25 +1,28 @@
 import "./Topbar.css"
-import { NavLink } from "react-router-dom"
+
+import { Search,Sun,Bell,ChevronDown } from "lucide-react";
+
 
 function Topbar(){
     return (
         <header className="topbar">
             <div className="topbar-search">
-                <span  className="search-icon">🔍</span>
+                <Search  className="search-icon" />
                 <input type="text" placeholder="search anything ..." />
 
                 <span className="search-shortcut">Ctrl + K</span>
             </div>
             <div>
-                <button type="button" className="theme-button">☼</button>
+                <Sun type="button" className="theme-button" />
 
-                <button type="button" className="notification-button">♧</button>
+                <Bell type="button" className="notification-button" />
 
-                <NavLink to="/account" className="topbar-profile">
+                <div className="topbar-profile">
                     <div className="profile-avatar">S</div>
                     <span>Siddhesh</span>
-                    <span className="profile-arrow">⌄</span>
-                </NavLink>
+                    <ChevronDown className="profile-arrow" />
+                </div>
+                
 
             </div>
 

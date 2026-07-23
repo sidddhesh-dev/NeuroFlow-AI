@@ -1,4 +1,5 @@
 import "./ChatSection.css"
+import { ArrowUp } from "lucide-react";
 
 function ChatSection() {
   return (
@@ -8,7 +9,6 @@ function ChatSection() {
 
         <div className="chat-empty-state">
           <h2>What can I help you understand?</h2>
-
           <p>
             Ask questions about your selected documents or start a conversation.
           </p>
@@ -31,23 +31,13 @@ function ChatSection() {
 
             <div className="input-left-actions">
 
-              <button
-                type="button"
-                className="input-action-button"
-                title="Attach file"
-              >
-                +
+              <button type="button" className="input-action-button" title="Attach file">
+              +
               </button>
 
             </div>
-
-
-            <button
-              type="button"
-              className="send-button"
-              title="Send message"
-            >
-              ↑
+            <button type="button" className="send-button" title="Send message" >
+              <ArrowUp />
             </button>
 
           </div>

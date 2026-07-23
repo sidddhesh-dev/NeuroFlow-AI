@@ -1,4 +1,6 @@
 import "./RightSidebar.css"
+import { Check } from "lucide-react";
+
 
 function RightSidebar() {
   return (
@@ -8,34 +10,22 @@ function RightSidebar() {
 
         <div className="section-header">
           <h2>Documents in Context</h2>
-
-          <button type="button" className="add-document-button">
-            + Add
-          </button>
+  
+          <button  className="add-document">+ add</button>
+          
         </div>
 
         <div className="context-documents">
 
           <div className="context-document">
-            <div className="document-icon">PDF</div>
+            <div className="document-icon">DOC</div>
 
             <div className="document-info">
               <h3>AI Development.pdf</h3>
               <p>12 pages • 1.2 MB</p>
             </div>
 
-            <span className="document-selected">✓</span>
-          </div>
-
-          <div className="context-document">
-            <div className="document-icon">DOCX</div>
-
-            <div className="document-info">
-              <h3>Machine Learning.docx</h3>
-              <p>24 pages • 2.4 MB</p>
-            </div>
-
-            <span className="document-selected">✓</span>
+            <span className="document-status "> <Check  className="check-button"/></span>
           </div>
 
         </div>

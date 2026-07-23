@@ -31,10 +31,9 @@
 
 .search-icon {
   flex-shrink: 0;
-
+  height: 15px;
+  width: 15px;
   color: var(--text-secondary);
-
-  font-size: 16px;
 }
 
 .topbar-search input {
@@ -78,13 +77,13 @@
   align-items: center;
   flex-shrink: 0;
 
-  gap: 16px;
+  gap: 35px;
 }
 
 .theme-button,
 .notification-button {
-  width: 34px;
-  height: 34px;
+  width: 14px;
+  height: 14px;
 
   display: flex;
   align-items: center;
@@ -146,6 +145,6 @@
 
 .profile-arrow {
   color: var(--text-secondary);
-
-  font-size: 12px;
+  width: 14px;
+  height: 14px;
 }

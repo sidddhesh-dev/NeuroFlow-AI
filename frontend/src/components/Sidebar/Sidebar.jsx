@@ -1,14 +1,13 @@
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
-
+import {
+  MessageSquare,FileUp,Files,History,NotebookPen,BrainCircuit,Ellipsis,ChevronDown } from "lucide-react";
 function Sidebar() {
   return (
     <aside className="sidebar">
 
       <header className="sidebar-brand">
-        <div className="brand-logo">
-          🧠
-        </div>
+        <BrainCircuit className="brand-logo" />
 
         <h1 className="brand-name">
           Neuro<span>Flow AI</span>
@@ -21,42 +20,42 @@ function Sidebar() {
 
           <li>
             <NavLink to="/chat" className="nav-item">
-              <span className="nav-icon">▣</span>
+              <MessageSquare className="nav-icon" />
               <span>Chat</span>
             </NavLink >
           </li>
 
           <li>
             <NavLink to="/documents" className="nav-item">
-              <span className="nav-icon">▤</span>
+              <Files className="nav-icon" />
               <span>Documents</span>
             </NavLink>
           </li>
 
           <li>
             <NavLink to="/upload" className="nav-item">
-              <span className="nav-icon">⇧</span>
+              <FileUp className="nav-icon" />
               <span>Upload Document</span>
             </NavLink>
           </li>
 
           <li>
             <NavLink to="/history" className="nav-item">
-              <span className="nav-icon">◷</span>
+              <History className="nav-icon" />
               <span>History</span>
             </NavLink>
           </li>
 
           <li>
             <NavLink to="/notes" className="nav-item">
-              <span className="nav-icon">◇</span>
+              <NotebookPen className="nav-icon" />
               <span>Notes</span>
             </NavLink>
           </li>
 
           <li>
             <NavLink to="/settings" className="nav-item">
-            <span className="nav-icon">•••</span>
+            <Ellipsis className="nav-icon" />
             <span>More</span>
             </NavLink>
           </li>
@@ -76,7 +75,7 @@ function Sidebar() {
 
           <div className="model-header">
             <h2>Gemini</h2>
-            <span className="model-arrow">⌄</span>
+            <ChevronDown className="model-arrow" />
           </div>
 
           <div className="model-online">
@@ -94,14 +93,6 @@ function Sidebar() {
             <h2>Siddhesh</h2>
             <p>Developer</p>
           </div>
-
-          <button
-            className="settings-button"
-            type="button"
-            aria-label="Open settings"
-          >
-            ⚙
-          </button>
         </NavLink>
 
        

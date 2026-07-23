@@ -1,8 +1,36 @@
-from apps.accounts.models import UserProfile
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
-class UserProfileSerializer(serializers.ModelSerializer):
+
+class UserSerializer(serializers.ModelSerializer):
+
     class Meta:
-        model=UserProfile
-        fields='__all__'
+        model = User
+        fields = ["id", "username", "email", "date_joined",]
+
+        read_only_fields = ["id","date_joined",]
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+ 
+    password = serializers.CharField( write_only=True,min_length=8)
+
+    class Meta:
+        model = User
+
+        fields = ["id","username","email","password",]
+
+        read_only_fields = [
+            "id",
+        ]
+
+    def create(self, validated_data):
+
+        user = User.objects.create_user(
+            username=validated_data["username"],
+            email=validated_data["email"],
+            password=validated_data["password"],
+        )
+
+        return user
 
