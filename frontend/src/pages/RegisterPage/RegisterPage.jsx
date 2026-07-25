@@ -50,21 +50,14 @@ function Register() {
 
         setError(
           "Registration failed. Please try again."
-        );
+        );}
 
-      }
-
-    } finally {
-
-      setLoading(false);
-
-    }
+    } finally { setLoading(false);}
 
   };
 
 
   return (
-
     <main className="auth-page">
       <section className="auth-brand-panel">
 
@@ -124,8 +117,7 @@ function Register() {
                 Username
               </span>
 
-              <input type="text" placeholder="Choose a username"
-                value={username}
+              <input type="text" placeholder="Choose a username" value={username}
                 onChange={(event) =>setUsername(event.target.value) } required />
 
             </label>

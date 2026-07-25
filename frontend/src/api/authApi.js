@@ -9,14 +9,10 @@ export async function registerUser(userData) {
       "Content-Type": "application/json",
     },
 
-    body: JSON.stringify(userData),
-  });
-
+    body: JSON.stringify(userData),});
   const data = await response.json();
 
-  if (!response.ok) {
-    throw data;
-  }
+  if (!response.ok) { throw data; }
 
   return data;
 }
