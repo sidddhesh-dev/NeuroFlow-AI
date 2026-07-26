@@ -41,13 +41,7 @@ function Login() {
         setError("Login failed. Please try again.");
       }
 
-    } finally {
-
-      setLoading(false);
-
-    }
-
-  };
+    } finally { setLoading(false); }};
 
   return (
 
