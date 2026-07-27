@@ -31,7 +31,7 @@ function RegisterForm({ setIsLogin }) {
             setLoading(true);
             setError("");
             if (formData.password !== formData.confirmPassword) {
-                throw new error("Passwords do not match.");}
+                throw new Error("Passwords do not match.");}
             await registerUser({
                 username: formData.username,
                 email: formData.email,
@@ -51,18 +51,19 @@ function RegisterForm({ setIsLogin }) {
                 Create your account to get started.
             </p>
             <form className="auth-form"  onSubmit={handleSubmit}>
-                <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="Username" className="register-input"/>
-                <input type="email"value={formData.email} onChange={handleChange} placeholder="Email Address" className="auth-input"/>
-                <input type="password" value={formData.password} onChange={handleChange} placeholder="Password" className="auth-input"/>
-                <input type="password" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm Password" className="auth-input"/>
+                <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="Username" className="auth-input"/>
+                <input type="email"  name="email" value={formData.email} onChange={handleChange} placeholder="Email Address" className="auth-input"/>
+                <input type="password" name="password"  value={formData.password} onChange={handleChange} placeholder="Password" className="auth-input"/>
+                <input type="password"  name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm Password" className="auth-input"/>
+
+                {error && <p className="auth-error">{error}</p>}
+
                 <button type="submit" disabled={loading} className="auth-button"> {loading ? "Creating Account..." : "Create Account"} </button>
             </form>
 
-            <p className="auth-switch">
-
+            <p className="auth-switch" onClick={() => setIsLogin(true)}>
                 Already have an account?
-
-                <button type="button" className="auth-link" onClick={() => setIsLogin(true)}> Login </button>
+                {/* <button type="button" className="auth-link" > Login </button> */}
             </p>
         </>
     );

@@ -1,32 +1,61 @@
-import "./Topbar.css"
+import "./Topbar.css";
+import { Search, Sun, Bell } from "lucide-react";
+import { useState } from "react";
+import SearchModal from "../SearchModal/SearchModal";
 
-import { Search,Sun,Bell,ChevronDown } from "lucide-react";
-
-
-function Topbar(){
+function FloatingActions(){
+    const [showSearch,setShowSearch]=useState(false);
     return (
-        <header className="topbar">
-            <div className="topbar-search">
-                <Search  className="search-icon" />
-                <input type="text" placeholder="search anything ..." />
+    <>
+        <div className="floating-header">
 
-                <span className="search-shortcut">Ctrl + K</span>
-            </div>
-            <div>
-                <Sun type="button" className="theme-button" />
+            <div className="floating-actions">
 
-                <Bell type="button" className="notification-button" />
+                <div className="header-icons">
 
-                <div className="topbar-profile">
-                    <div className="profile-avatar">S</div>
-                    <span>Siddhesh</span>
-                    <ChevronDown className="profile-arrow" />
+                    <button
+                        className="icon-button"
+                        onClick={() => setShowSearch(true)}
+                    >
+                        <Search size={16} />
+                    </button>
+
+                    <button className="icon-button">
+                        <Sun size={16} />
+                    </button>
+
+                    <button className="icon-button">
+                        <Bell size={16} />
+                    </button>
+
                 </div>
-                
+
+                <div className="profile-container">
+
+                    <div className="topbar-profile">
+
+                        <div className="profile-avatar">
+                            S
+                        </div>
+
+                        <span className="profile-name">
+                            Siddhesh
+                        </span>
+
+                    </div>
+
+                </div>
 
             </div>
 
-        </header>
-    )
+        </div>
+
+        <SearchModal
+            isOpen={showSearch}
+            onClose={() => setShowSearch(false)}
+        />
+    </>
+);
 }
-export default Topbar
+
+export default FloatingActions;

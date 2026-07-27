@@ -1,6 +1,30 @@
 import "./DocumentsPage.css";
+import { useEffect, useState } from "react";
+import { getDocuments } from "../../api/documentApi";
 
 function Documents() {
+
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+
+    async function loadDocuments() {
+        try {
+            const data = await getDocuments();
+            console.log(data);
+            setDocuments(data);
+        } catch (error) {
+            setError(error.detail || "Failed to load documents.");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    loadDocuments(); 
+  }, []);
+
   return (
     <section className="documents-page">
 

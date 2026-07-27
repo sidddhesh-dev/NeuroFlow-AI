@@ -90,3 +90,15 @@ ol {
   padding: 0;
   list-style: none;
 }
+
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover,
+.auth-input:-webkit-autofill:focus,
+.auth-input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #252B3C inset !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    caret-color: #FFFFFF;
+
+    border: 1px solid #7C5CFF;
+
+    transition: background-color 9999s ease-in-out 0s;}
