@@ -1,61 +1,92 @@
 import "./Topbar.css";
-import { Search, Sun, Bell } from "lucide-react";
+import { useAuth } from "../../context/UseAuth";
+
 import { useState } from "react";
+import { Search, Bell } from "lucide-react";
 import SearchModal from "../SearchModal/SearchModal";
+import NotificationMenu from "../NotificationMenu/NotificationMenu";
+import ProfileMenu from "../ProfileMenu/ProfileMenu";
 
-function FloatingActions(){
-    const [showSearch,setShowSearch]=useState(false);
+function Topbar() {
+
+    const [searchOpen, setSearchOpen] = useState(false);
+    const [notificationOpen, setNotificationOpen] = useState(false);
+    const [profileOpen, setProfileOpen] = useState(false);
+    const { user } = useAuth();
+
     return (
-    <>
-        <div className="floating-header">
 
-            <div className="floating-actions">
+        <>
+            <header className="topbar">
 
-                <div className="header-icons">
+                <div className="topbar-actions">
 
                     <button
-                        className="icon-button"
-                        onClick={() => setShowSearch(true)}
+                        className="topbar-icon"
+                        onClick={() => setSearchOpen(true)}
+                        aria-label="Search"
                     >
-                        <Search size={16} />
+                        <Search size={18}/>
                     </button>
 
-                    <button className="icon-button">
-                        <Sun size={16} />
-                    </button>
+                    <div className="menu-wrapper">
 
-                    <button className="icon-button">
-                        <Bell size={16} />
-                    </button>
+                        <button
+                            className="topbar-icon"
+                            onClick={() => {
+                                setNotificationOpen(!notificationOpen);
+                                setProfileOpen(false);
+                            }}
+                            aria-label="Notifications"
+                        >
+                            <Bell size={18}/>
+                        </button>
 
-                </div>
+                        <NotificationMenu
+                            open={notificationOpen}
+                            onClose={() => setNotificationOpen(false)}
+                        />
 
-                <div className="profile-container">
+                    </div>
 
-                    <div className="topbar-profile">
+                    <div className="menu-wrapper">
 
-                        <div className="profile-avatar">
-                            S
-                        </div>
+                        <button
+                            className="profile-button"
+                            onClick={() => {
+                                setProfileOpen(!profileOpen);
+                                setNotificationOpen(false);
+                            }}
+                        >
+                            <div className="profile-avatar">
+                            {user?.username?.charAt(0).toUpperCase()}
+                            </div>
 
-                        <span className="profile-name">
-                            Siddhesh
-                        </span>
+                            <span className="profile-name">
+                                {user?.username}
+                            </span>
+                        </button>
+                        
+                        <ProfileMenu
+                            open={profileOpen}
+                            onClose={() => setProfileOpen(false)}
+                        />
 
                     </div>
 
                 </div>
 
-            </div>
+            </header>
 
-        </div>
+            <SearchModal
+                isOpen={searchOpen}
+                onClose={() => setSearchOpen(false)}
+            />
 
-        <SearchModal
-            isOpen={showSearch}
-            onClose={() => setShowSearch(false)}
-        />
-    </>
-);
+        </>
+
+    );
+
 }
 
-export default FloatingActions;
+export default Topbar;

@@ -1,0 +1,169 @@
+.profile-menu {
+
+    position: absolute;
+
+    top: 52px;
+    right: 0;
+
+    width: 290px;
+
+    background: var(--bg-panel);
+
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    box-shadow: 0 12px 35px rgba(0, 0, 0, .45);
+
+    animation: profileMenu .18s ease;
+
+    z-index: 1000;
+}
+
+@keyframes profileMenu {
+
+    from {
+
+        opacity: 0;
+        transform: translateY(-8px);
+
+    }
+
+    to {
+
+        opacity: 1;
+        transform: translateY(0);
+
+    }
+}
+
+.profile-menu-header {
+
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 18px;
+}
+
+.menu-avatar {
+
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: var(--accent-soft);
+    border: 1px solid var(--border);
+
+    color: #fff;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.menu-user {
+
+    flex: 1;
+
+    min-width: 0;
+}
+
+.menu-user h4 {
+
+    font-size: 15px;
+    font-weight: 600;
+
+    color: var(--text-primary);
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.menu-user span {
+
+    display: block;
+
+    margin-top: 4px;
+
+    color: var(--text-secondary);
+
+    font-size: 13px;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.profile-divider {
+
+    width: 100%;
+    height: 1px;
+
+    background: var(--border);
+}
+
+.profile-menu-item {
+
+    width: 100%;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 0 18px;
+
+    border: none;
+
+    background: transparent;
+
+    color: var(--text-primary);
+
+    cursor: pointer;
+
+    transition: background .2s ease;
+}
+
+.profile-menu-item:hover {
+
+    background: var(--bg-hover);
+}
+
+.profile-menu-item svg {
+
+    color: var(--text-secondary);
+
+    flex-shrink: 0;
+}
+
+.profile-menu-item span {
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.logout {
+
+    color: #ff7b7b;
+}
+
+.logout svg {
+
+    color: #ff7b7b;
+}
+
+.logout:hover {
+
+    background: rgba(255, 123, 123, .08);
+}

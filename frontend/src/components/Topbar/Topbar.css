@@ -1,4 +1,4 @@
-.floating-header {
+.topbar {
 
     position: absolute;
 
@@ -14,126 +14,138 @@
 
     padding: 0 18px;
 
-    background: #090f18;
+    background: var(--bg-app);
 
+    border-left: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
 
-    z-index: 1000;
+    z-index: 100;
 }
 
-.floating-actions{
+.topbar-actions {
 
-    position:absolute;
-
-    top:0;
-    right:0;
-
-    width:300px;
-    height:68px;
-
-    display:flex;
-
-    justify-content:flex-end;
-
-    align-items:center;
-
-    gap:35px;
-
-    padding:0 5px;
-
-    background:#090f18;
-
-    border-bottom:1px solid var(--border);
-
-    z-index:1000;
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
-.icon-button {
+.menu-wrapper {
 
-    width: 32px;
-    height: 32px;
+    position: relative;
+
+    display: flex;
+    align-items: center;
+}
+
+.topbar-icon {
+
+    width: 34px;
+    height: 34px;
 
     display: flex;
     justify-content: center;
     align-items: center;
-
-    background: transparent;
 
     border: none;
     border-radius: 8px;
 
-    color: #8c95a5;
+    background: transparent;
+
+    color: var(--text-secondary);
 
     cursor: pointer;
 
-    transition: .2s;
+    transition: all .2s ease;
 }
 
-.icon-button:hover {
+.topbar-icon:hover {
 
-    background: #151c28;
+    background: var(--bg-hover);
 
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
-.icon-button svg {
+.profile-button {
 
-    width: 16px;
-    height: 16px;
-}
-
-.profile-container {
-
-    position: relative;
-}
-
-.topbar-profile {
+    min-width: 150px;
+    max-width: 190px;
+    height: 40px;
 
     display: flex;
-
     align-items: center;
-    border-radius: 15px;
-    background:#151c28;
 
-    gap: 5px;
+    gap: 12px;
+
+    padding: 0 12px 0 0;
+
+    background: var(--bg-hover);
+
+    border: 1px solid transparent;
+    border-radius: 999px;
+
     cursor: pointer;
 
-    transition: .2s;
+    transition: .2s ease;
 }
-.topbar-profile:hover{
 
-    background:#151c28;
+.profile-button:hover {
+
+    border-color: var(--border);
 }
 
 .profile-avatar {
 
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
 
     display: flex;
     justify-content: center;
     align-items: center;
 
+    flex-shrink: 0;
+
     border-radius: 50%;
 
     background: #2d3550;
-
-    border: 1px solid #3b4458;
+    border: 1px solid #424d68;
 
     color: #ffffff;
 
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 600;
-    margin-right: 5px;
 }
 
 .profile-name {
 
-    color: #ffffff;
+    flex: 1;
 
-    font-size: 11px;
-    font-weight: 550;
-    margin-right: 15px;
-
+    overflow: hidden;
     white-space: nowrap;
+    text-overflow: ellipsis;
+
+    text-align: left;
+
+    color: var(--text-primary);
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.profile-button svg {
+
+    flex-shrink: 0;
+
+    color: var(--text-secondary);
+
+    transition: transform .2s ease;
+}
+
+.profile-button:hover svg {
+
+    color: var(--text-primary);
+}
+
+.rotate {
+
+    transform: rotate(180deg);
 }

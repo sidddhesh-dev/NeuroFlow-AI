@@ -3,7 +3,7 @@ import "./App.css";
 import { Outlet } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar/Sidebar";
-import FloatingActions from "./components/Topbar/Topbar";
+import Topbar from "./components/Topbar/Topbar";
 
 function App(){
 
@@ -15,7 +15,7 @@ function App(){
 
             <main className="main-area">
 
-                <FloatingActions/>
+                <Topbar />
 
                 <div className="workspace">
 
