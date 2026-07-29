@@ -1,16 +1,11 @@
 .search-overlay{
-
     position:fixed;
-
     inset:0;
-
     display:flex;
     justify-content:center;
     align-items:flex-start;
-
     padding-top:10px;
-
-    background: rgba(6,9,16,.35);
+    background: rgba(6,9,16,.12);
     backdrop-filter:none;
 
     z-index:9999;
@@ -132,6 +127,7 @@
     padding:16px;
 }
 
+
 .search-body h4{
 
     margin:0 0 12px;
@@ -203,5 +199,13 @@
 .search-body::-webkit-scrollbar-track{
 
     background:transparent;
+}
+
+.topbar-icon:focus,
+.topbar-icon:focus-visible,
+.topbar-icon:active {
+    outline: none;
+    background: transparent;
+    box-shadow: none;
 }
 

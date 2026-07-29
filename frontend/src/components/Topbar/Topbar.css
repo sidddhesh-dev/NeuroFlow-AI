@@ -6,7 +6,7 @@
     right: 0;
 
     width: 300px;
-    height: 68px;
+    height: 50px;
 
     display: flex;
     justify-content: flex-end;
@@ -38,9 +38,8 @@
 }
 
 .topbar-icon {
-
-    width: 34px;
-    height: 34px;
+    width: 27px;
+    height:27px;
 
     display: flex;
     justify-content: center;
@@ -50,19 +49,31 @@
     border-radius: 8px;
 
     background: transparent;
-
     color: var(--text-secondary);
 
     cursor: pointer;
+    outline: none;
+    margin-right: 5px;
 
-    transition: all .2s ease;
+    transition:
+        color .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
 }
 
 .topbar-icon:hover {
-
-    background: var(--bg-hover);
-
     color: var(--text-primary);
+    transform: scale(1.05);
+}
+
+.topbar-icon:active {
+    transform: scale(0.95);
+}
+
+.topbar-icon:focus,
+.topbar-icon:focus-visible {
+    outline: none;
+    box-shadow: none;
 }
 
 .profile-button {
@@ -78,7 +89,7 @@
 
     padding: 0 12px 0 0;
 
-    background: var(--bg-hover);
+    background: transparent;
 
     border: 1px solid transparent;
     border-radius: 999px;
@@ -95,8 +106,8 @@
 
 .profile-avatar {
 
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
 
     display: flex;
     justify-content: center;
@@ -111,8 +122,8 @@
 
     color: #ffffff;
 
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 500;
 }
 
 .profile-name {
@@ -127,8 +138,8 @@
 
     color: var(--text-primary);
 
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 400;
 }
 
 .profile-button svg {

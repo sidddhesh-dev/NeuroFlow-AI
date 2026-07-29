@@ -1,5 +1,5 @@
 import "./ProfileMenu.css";
-import { useAuth } from "../../context/UseAuth";
+import useAuth from "../../context/UseAuth";
 
 import { useEffect, useRef } from "react";
 import {

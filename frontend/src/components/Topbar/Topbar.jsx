@@ -1,5 +1,5 @@
 import "./Topbar.css";
-import { useAuth } from "../../context/UseAuth";
+import useAuth from "../../context/UseAuth";
 
 import { useState } from "react";
 import { Search, Bell } from "lucide-react";
@@ -23,8 +23,10 @@ function Topbar() {
 
                     <button
                         className="topbar-icon"
-                        onClick={() => setSearchOpen(true)}
-                        aria-label="Search"
+                        onClick={(e) => {
+                        e.currentTarget.blur();
+                        setSearchOpen(true);
+                    }}
                     >
                         <Search size={18}/>
                     </button>

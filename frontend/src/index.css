@@ -102,3 +102,14 @@ ol {
     border: 1px solid #7C5CFF;
 
     transition: background-color 9999s ease-in-out 0s;}
+
+*,
+*::before,
+*::after {
+    transition:
+        background-color 180ms ease,
+        border-color 180ms ease,
+        color 180ms ease,
+        box-shadow 180ms ease,
+        opacity 180ms ease;
+}

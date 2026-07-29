@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { loginUser } from "../../api/authApi";
+import useAuth from "../../context/UseAuth";
 import "./AuthPage.css";
 
 function LoginForm({ setIsLogin }) {
-
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const [formData, setFormData] = useState({
         username: "",
@@ -32,18 +32,21 @@ function LoginForm({ setIsLogin }) {
             setLoading(true);
             setError("");
 
-            const data = await loginUser({
+            await login({
                 username: formData.username,
                 password: formData.password,
             });
 
-            localStorage.setItem("access", data.access);
-            localStorage.setItem("refresh", data.refresh);
-
             navigate("/");
 
         } catch (error) {
-            setError(error.detail || "Invalid email or password.");
+            console.error(error);
+
+            setError(
+                error?.detail ||
+                error?.message ||
+                "Invalid username or password."
+            );
         } finally {
             setLoading(false);
         }
@@ -62,12 +65,13 @@ function LoginForm({ setIsLogin }) {
             <form className="auth-form" onSubmit={handleSubmit}>
 
                 <input
-                    type="username"
+                    type="text"
                     name="username"
                     value={formData.username}
                     onChange={handleChange}
                     placeholder="Enter Username"
                     className="auth-input"
+                    required
                 />
 
                 <input
@@ -77,6 +81,7 @@ function LoginForm({ setIsLogin }) {
                     onChange={handleChange}
                     placeholder="Password"
                     className="auth-input"
+                    required
                 />
 
                 {error && (
@@ -95,7 +100,10 @@ function LoginForm({ setIsLogin }) {
 
             </form>
 
-            <p className="auth-switch" onClick={() => setIsLogin(false)}>
+            <p
+                className="auth-switch"
+                onClick={() => setIsLogin(false)}
+            >
                 Don't have an account?
             </p>
         </>

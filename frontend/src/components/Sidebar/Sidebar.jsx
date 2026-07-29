@@ -1,63 +1,199 @@
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
+
 import {
-  MessageSquare,FileUp,Files,History,NotebookPen,BrainCircuit,Ellipsis,ChevronDown } from "lucide-react";
+  BrainCircuit,
+  SquarePen,
+  Search,
+  MessageSquare,
+  Files,
+  FileUp,
+  NotebookPen,
+  History,
+  Bot,
+  Settings,
+} from "lucide-react";
+
+import useAuth from "../../context/UseAuth";
+
 function Sidebar() {
+
+  const { user } = useAuth();
+
   return (
+
     <aside className="sidebar">
 
+      {/* ===========================
+            Brand
+      ============================ */}
+
       <header className="sidebar-brand">
+
         <BrainCircuit className="brand-logo" />
 
         <h1 className="brand-name">
           Neuro<span>Flow AI</span>
         </h1>
+
       </header>
 
-      <nav className="sidebar-navigation" aria-label="Main navigation">
+
+
+      {/* ===========================
+            Quick Actions
+      ============================ */}
+
+      <section className="sidebar-actions">
+
+        <button className="new-chat-button">
+
+          <SquarePen size={15} />
+
+          <span>New Chat</span>
+
+        </button>
+
+        <button className="search-button">
+
+          <Search size={15} />
+
+          <span>Search</span>
+
+        </button>
+
+      </section>
+
+
+
+      <div className="sidebar-divider" />
+
+
+
+      {/* ===========================
+            Navigation
+      ============================ */}
+
+      <nav className="sidebar-navigation">
 
         <ul className="nav-list">
 
           <li>
-            <NavLink to="/chat" className="nav-item">
+
+            <NavLink
+              to="/chat"
+              className={({ isActive }) =>
+                isActive ? "nav-item nav-item-active" : "nav-item"
+              }
+            >
               <MessageSquare className="nav-icon" />
+
               <span>Chat</span>
-            </NavLink >
+
+            </NavLink>
+
           </li>
 
+
           <li>
-            <NavLink to="/documents" className="nav-item">
+
+            <NavLink
+              to="/documents"
+              className={({ isActive }) =>
+                isActive ? "nav-item nav-item-active" : "nav-item"
+              }
+            >
               <Files className="nav-icon" />
+
               <span>Documents</span>
+
             </NavLink>
+
           </li>
 
+
           <li>
-            <NavLink to="/upload" className="nav-item">
+
+            <NavLink
+              to="/upload"
+              className={({ isActive }) =>
+                isActive ? "nav-item nav-item-active" : "nav-item"
+              }
+            >
               <FileUp className="nav-icon" />
+
               <span>Upload Document</span>
+
             </NavLink>
+
           </li>
 
-          <li>
-            <NavLink to="/history" className="nav-item">
-              <History className="nav-icon" />
-              <span>History</span>
-            </NavLink>
-          </li>
 
           <li>
-            <NavLink to="/notes" className="nav-item">
+
+            <NavLink
+              to="/notes"
+              className={({ isActive }) =>
+                isActive ? "nav-item nav-item-active" : "nav-item"
+              }
+            >
               <NotebookPen className="nav-icon" />
+
               <span>Notes</span>
+
             </NavLink>
+
           </li>
 
+
           <li>
-            <NavLink to="/settings" className="nav-item">
-            <Ellipsis className="nav-icon" />
-            <span>More</span>
+
+            <NavLink
+              to="/history"
+              className={({ isActive }) =>
+                isActive ? "nav-item nav-item-active" : "nav-item"
+              }
+            >
+              <History className="nav-icon" />
+
+              <span>History</span>
+
             </NavLink>
+
+          </li>
+
+
+          <li>
+
+            <NavLink
+              to="/models"
+              className={({ isActive }) =>
+                isActive ? "nav-item nav-item-active" : "nav-item"
+              }
+            >
+              <Bot className="nav-icon" />
+
+              <span>AI Models</span>
+
+            </NavLink>
+
+          </li>
+
+
+          <li>
+
+            <NavLink
+              to="/settings"
+              className={({ isActive }) =>
+                isActive ? "nav-item nav-item-active" : "nav-item"
+              }
+            >
+              <Settings className="nav-icon" />
+
+              <span>Settings</span>
+
+            </NavLink>
+
           </li>
 
         </ul>
@@ -65,42 +201,49 @@ function Sidebar() {
       </nav>
 
 
+
+      <div className="sidebar-divider" />
+
+
+
+      {/* ===========================
+            User
+      ============================ */}
+
       <footer className="sidebar-footer">
 
-        
-        <NavLink to="/models" className="model-card">
-          <p className="model-label">
-            AI Model
-          </p>
+        <button className="user-profile">
 
-          <div className="model-header">
-            <h2>Gemini</h2>
-            <ChevronDown className="model-arrow" />
-          </div>
-
-          <div className="model-online">
-            <span className="online-dot"></span>
-            <span>Online</span>
-          </div>
-          </NavLink>
-        
-        <NavLink to="/developer" className="user-profile">
           <div className="user-avatar">
-            S
+
+            {user?.username?.charAt(0).toUpperCase()}
+
           </div>
 
           <div className="user-details">
-            <h2>Siddhesh</h2>
-            <p>Developer</p>
-          </div>
-        </NavLink>
 
-       
+            <h2>
+
+              {user?.username}
+
+            </h2>
+
+            <p>
+
+              {user?.email}
+
+            </p>
+
+          </div>
+
+        </button>
 
       </footer>
 
     </aside>
+
   );
+
 }
 
 export default Sidebar;

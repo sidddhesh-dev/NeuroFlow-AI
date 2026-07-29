@@ -1,23 +1,21 @@
 import "./ChatPage.css";
-import ChatSection from "../../components/ChatSection/ChatSection";
-import RightSidebar from "../../components/RightSidebar/RightSidebar";
 
+function ChatPage() {
+    return (
+        <main className="chat-page">
 
+            <div className="chat-container">
 
-function Chat() {
-  return (
-    <div className="chat-page">
+                {/* Chat Header */}
 
-      <div className="chat-area">
+                {/* Chat Messages */}
 
-        <ChatSection />
+                {/* Chat Input */}
 
-      </div>
-      
-        <RightSidebar />
+            </div>
 
-    </div>
-  );
+        </main>
+    );
 }
 
-export default Chat;
+export default ChatPage;
