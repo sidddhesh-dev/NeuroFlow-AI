@@ -1,5 +1,5 @@
 import "./EmptyState.css";
-import { Sparkles } from "lucide-react";
+import { BrainCircuit } from "lucide-react";
 import { useState } from "react";
 
 
@@ -57,7 +57,7 @@ function EmptyState() {
         <div className="empty-state">
 
             <div className="empty-icon">
-                <Sparkles size={34}/>
+                <BrainCircuit className="brand-logo" />
             </div>
 
             <h1 className="empty-title">

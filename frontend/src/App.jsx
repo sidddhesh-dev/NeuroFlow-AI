@@ -3,7 +3,6 @@ import "./App.css";
 import { Outlet } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar/Sidebar";
-import Topbar from "./components/Topbar/Topbar";
 
 function App(){
 
@@ -13,18 +12,11 @@ function App(){
 
             <Sidebar/>
 
-            <main className="main-area">
+            <div className="main-area">
 
-                <Topbar />
+                <Outlet/>
 
-                <div className="workspace">
-
-                    <Outlet/>
-
-                </div>
-
-            </main>
-
+            </div>
         </div>
 
     );

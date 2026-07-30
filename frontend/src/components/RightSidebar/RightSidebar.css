@@ -1,9 +1,10 @@
 .right-sidebar {
-  width: 300px;
-  min-width: 300px;
+  width: 280px;
+  
+  min-width: 280px;
 
-  height: calc(100vh - 68px);
-  margin-top: 68px;
+  height: 200vh;
+  /* margin-top: 68px; */
 
   display: flex;
   flex-direction: column;
@@ -47,47 +48,99 @@
   font-weight: 600;
 }
 
-.add-document {
-  height: 28px;
-  width: 60px;
+.change-document-button{
 
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  height:28px;
+  min-width:68px;
 
-  padding: 0 10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 
-  background: #101620;
-  color: #aeb6c2;
+  padding:0 10px;
 
-  border: 1px solid #293241;
-  border-radius: 7px;
+  background:#101620;
 
-  font-size: 10px;
-  font-weight: 500;
+  border:1px solid #293241;
+  border-radius:7px;
 
-  text-decoration: none;
-  white-space: nowrap;
+  color:#b8c0cb;
 
-  cursor: pointer;
+  font-size:10px;
+  font-weight:500;
 
-  transition:
-    background-color 0.18s ease,
-    border-color 0.18s ease,
-    color 0.18s ease,
-    transform 0.12s ease;
+  cursor:pointer;
+
+  transition:.18s;
 }
 
-.add-document:hover {
-  background: #171e2a;
-  border-color: #3d4657;
-  color: #ffffff;
+.change-document-button:hover{
+
+  background:#171e2a;
+
+  border-color:#3d4657;
+
+  color:#ffffff;
 }
 
-.add-document:active {
-  transform: scale(0.96);
+.empty-context{
+
+    min-height:52px;
+
+    display:flex;
+    align-items:center;
+
+    gap:10px;
+
+    padding:8px 10px;
+
+    background:#101620;
+
+    border:1px solid #1f2835;
+    border-radius:8px;
+}
+.empty-context-icon{
+
+    width:32px;
+    height:36px;
+
+    flex-shrink:0;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#263149;
+
+    border-radius:6px;
+
+    color:#dce3ef;
+
+    font-size:8px;
+    font-weight:700;
 }
 
+
+.empty-context-content{
+
+    flex:1;
+
+    min-width:0;
+}
+.empty-context-content h3{
+
+    margin:0;
+
+    font-size:10.5px;
+    font-weight:550;
+
+    color:#f2f5fa;
+}
+.empty-context-content p{
+    margin:3px 0 0;
+    font-size:8.5px;
+    color: #7567ff;
+}
 
 .context-documents {
   display: flex;

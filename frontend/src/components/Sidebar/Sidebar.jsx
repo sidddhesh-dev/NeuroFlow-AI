@@ -24,9 +24,6 @@ function Sidebar() {
 
     <aside className="sidebar">
 
-      {/* ===========================
-            Brand
-      ============================ */}
 
       <header className="sidebar-brand">
 
@@ -39,11 +36,6 @@ function Sidebar() {
       </header>
 
 
-
-      {/* ===========================
-            Quick Actions
-      ============================ */}
-
       <section className="sidebar-actions">
 
         <button className="new-chat-button">
@@ -55,31 +47,17 @@ function Sidebar() {
         </button>
 
         <button className="search-button">
-
           <Search size={15} />
-
           <span>Search</span>
-
         </button>
-
       </section>
-
-
 
       <div className="sidebar-divider" />
 
-
-
-      {/* ===========================
-            Navigation
-      ============================ */}
-
       <nav className="sidebar-navigation">
-
         <ul className="nav-list">
 
           <li>
-
             <NavLink
               to="/chat"
               className={({ isActive }) =>
@@ -87,16 +65,11 @@ function Sidebar() {
               }
             >
               <MessageSquare className="nav-icon" />
-
               <span>Chat</span>
-
             </NavLink>
-
           </li>
 
-
           <li>
-
             <NavLink
               to="/documents"
               className={({ isActive }) =>
@@ -104,16 +77,11 @@ function Sidebar() {
               }
             >
               <Files className="nav-icon" />
-
               <span>Documents</span>
-
             </NavLink>
-
           </li>
 
-
           <li>
-
             <NavLink
               to="/upload"
               className={({ isActive }) =>
@@ -121,14 +89,9 @@ function Sidebar() {
               }
             >
               <FileUp className="nav-icon" />
-
               <span>Upload Document</span>
-
             </NavLink>
-
           </li>
-
-
           <li>
 
             <NavLink
@@ -138,16 +101,11 @@ function Sidebar() {
               }
             >
               <NotebookPen className="nav-icon" />
-
               <span>Notes</span>
-
             </NavLink>
-
           </li>
 
-
           <li>
-
             <NavLink
               to="/history"
               className={({ isActive }) =>
@@ -155,16 +113,11 @@ function Sidebar() {
               }
             >
               <History className="nav-icon" />
-
               <span>History</span>
-
             </NavLink>
-
           </li>
 
-
           <li>
-
             <NavLink
               to="/models"
               className={({ isActive }) =>
@@ -172,16 +125,11 @@ function Sidebar() {
               }
             >
               <Bot className="nav-icon" />
-
               <span>AI Models</span>
-
             </NavLink>
-
           </li>
 
-
           <li>
-
             <NavLink
               to="/settings"
               className={({ isActive }) =>
@@ -189,59 +137,29 @@ function Sidebar() {
               }
             >
               <Settings className="nav-icon" />
-
               <span>Settings</span>
-
             </NavLink>
-
           </li>
-
         </ul>
-
       </nav>
 
-
-
-      <div className="sidebar-divider" />
-
-
-
-      {/* ===========================
-            User
-      ============================ */}
-
       <footer className="sidebar-footer">
-
         <button className="user-profile">
-
           <div className="user-avatar">
-
             {user?.username?.charAt(0).toUpperCase()}
-
           </div>
 
           <div className="user-details">
-
             <h2>
-
               {user?.username}
-
             </h2>
-
             <p>
-
               {user?.email}
-
             </p>
-
           </div>
-
         </button>
-
       </footer>
-
     </aside>
-
   );
 
 }

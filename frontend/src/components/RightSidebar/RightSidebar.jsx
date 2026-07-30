@@ -1,87 +1,133 @@
-import "./RightSidebar.css"
-import { Check } from "lucide-react";
-
+import "./RightSidebar.css";
+import { useNavigate } from "react-router-dom";
+import { FileSearch } from "lucide-react";
 
 function RightSidebar() {
-  return (
-    <aside className="right-sidebar">
 
-      <section className="context-section">
+    const navigate = useNavigate();
 
-        <div className="section-header">
-          <h2>Documents in Context</h2>
-  
-          <button  className="add-document">+ add</button>
-          
-        </div>
+    return (
 
-        <div className="context-documents">
+        <aside className="right-sidebar">
 
-          <div className="context-document">
-            <div className="document-icon">DOC</div>
+            <section className="context-section">
 
-            <div className="document-info">
-              <h3>AI Development.pdf</h3>
-              <p>12 pages • 1.2 MB</p>
-            </div>
+                <div className="section-header">
 
-            <span className="document-status "> <Check  className="check-button"/></span>
-          </div>
+                    <h2>Current Context</h2>
 
-        </div>
+                    <button
+                        className="change-document-button"
+                        onClick={() => navigate("/documents")}
+                    >
+                        Browse
+                    </button>
 
-      </section>
+                </div>
 
+                <div className="empty-context">
 
-      <section className="chat-history-section">
+                    <div className="empty-context-icon">
+                    <FileSearch size={18} />
+                    </div>
 
-        <div className="section-header">
-          <h2>Chat History</h2>
+                    <div className="empty-context-content">
 
-          <button type="button" className="view-all-button">
-            View all
-          </button>
-        </div>
+                        <h3>No document selected</h3>
 
-        <div className="chat-list">
+                        <p className="empty-context-line">
+                            Browse your documents to start chatting.
+                        </p>
 
-          <button type="button" className="chat-item chat-item-active">
-            <div className="chat-item-content">
-              <h3>Understanding AI Development</h3>
-            </div>
+                    </div>
 
-            <span className="chat-time">10:30 AM</span>
-          </button>
+                </div>
 
+            </section>
 
-          <button type="button" className="chat-item">
-            <div className="chat-item-content">
-              <h3>Learning Machine Learning</h3>
-            </div>
+            <section className="chat-history-section">
 
-            <span className="chat-time">Yesterday</span>
-          </button>
+                <div className="section-header">
 
+                    <h2>Chat History</h2>
 
-          <button type="button" className="chat-item">
-            <div className="chat-item-content">
-              <h3>Python Notes</h3>
-            </div>
+                    <button
+                        type="button"
+                        className="view-all-button"
+                    >
+                        View all
+                    </button>
 
-            <span className="chat-time">2 days ago</span>
-          </button>
+                </div>
 
-        </div>
+                <div className="chat-list">
 
+                    <button
+                        type="button"
+                        className="chat-item chat-item-active"
+                    >
 
-        <button type="button" className="clear-history-button">
-          Clear History
-        </button>
+                        <div className="chat-item-content">
 
-      </section>
+                            <h3>Understanding AI Development</h3>
 
-    </aside>
-  )
+                        </div>
+
+                        <span className="chat-time">
+                            10:30 AM
+                        </span>
+
+                    </button>
+
+                    <button
+                        type="button"
+                        className="chat-item"
+                    >
+
+                        <div className="chat-item-content">
+
+                            <h3>Learning Machine Learning</h3>
+
+                        </div>
+
+                        <span className="chat-time">
+                            Yesterday
+                        </span>
+
+                    </button>
+
+                    <button
+                        type="button"
+                        className="chat-item"
+                    >
+
+                        <div className="chat-item-content">
+
+                            <h3>Python Notes</h3>
+
+                        </div>
+
+                        <span className="chat-time">
+                            2 days ago
+                        </span>
+
+                    </button>
+
+                </div>
+
+                <button
+                    type="button"
+                    className="clear-history-button"
+                >
+                    Clear History
+                </button>
+
+            </section>
+
+        </aside>
+
+    );
+
 }
 
-export default RightSidebar
+export default RightSidebar;
