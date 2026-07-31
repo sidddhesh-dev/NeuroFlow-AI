@@ -1,89 +1,169 @@
 import "./NotePage.css";
+import { useState } from "react";
+import { useNotesQuery } from "../../hooks/useNotesQuery";
+import { useCreateNoteMutation } from "../../hooks/useCreateNoteMutation";
+import { getNote } from "../../api/noteApi";
 
 function Notes() {
-  return (
-    <section className="notes-page">
 
-      <div className="note-editor">
+    const [title, setTitle] = useState("");
+    const [content, setContent] = useState("");
 
-        <div className="note-editor-header">
-          <input
-            className="note-title-input"
-            type="text"
-            placeholder="Untitled note"
-          />
+    const { data: notes = [], isLoading, error } = useNotesQuery();
 
-          <button className="save-note-button">
-            Save Note
-          </button>
-        </div>
+    const createNoteMutation = useCreateNoteMutation();
 
-        <textarea
-          className="note-content-input"
-          placeholder="Start writing your note..."
-        />
+    const handleNoteClick = async (id) => {
+        try {
+            const note = await getNote(id);
 
-        <div className="note-editor-footer">
-          <span>Last edited just now</span>
-          <span>0 words</span>
-        </div>
+            console.log("Loaded Note:", note);
 
-      </div>
+            setTitle(note.title);
+            setContent(note.content);
 
-      <aside className="notes-history">
+        } catch (error) {
+            console.error("Failed to load note:", error);
+        }
+    };
 
-        <div className="notes-history-header">
-          <div>
-            <h2>Notes History</h2>
-            <p>Your saved notes</p>
-          </div>
+    const handleSave = () => {
 
-          <button>+</button>
-        </div>
+        if (!title.trim() && !content.trim()) {
+            return;
+        }
 
-        <div className="notes-history-search">
-          <span>⌕</span>
-          <input type="text" placeholder="Search notes..." />
-        </div>
+        createNoteMutation.mutate(
+            {
+                title,
+                content,
+            },
+            {
+                onSuccess: () => {
+                    setTitle("");
+                    setContent("");
+                },
+            }
+        );
+    };
 
-        <div className="notes-history-list">
+    return (
+        <section className="notes-page">
 
-          <button className="note-history-item note-history-active">
-            <span className="note-history-title">
-              Backend Architecture
-            </span>
+            <div className="note-editor">
 
-            <span className="note-created-at">
-              Created Jul 22, 2026
-            </span>
-          </button>
+                <div className="note-editor-header">
 
-          <button className="note-history-item">
-            <span className="note-history-title">
-              RAG Pipeline Notes
-            </span>
+                    <input
+                        className="note-title-input"
+                        type="text"
+                        placeholder="Untitled note"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
 
-            <span className="note-created-at">
-              Created Jul 20, 2026
-            </span>
-          </button>
+                    <button
+                        className="save-note-button"
+                        onClick={handleSave}
+                        disabled={createNoteMutation.isPending}
+                    >
+                        {createNoteMutation.isPending ? "Saving..." : "Save Note"}
+                    </button>
 
-          <button className="note-history-item">
-            <span className="note-history-title">
-              React Learning
-            </span>
+                </div>
 
-            <span className="note-created-at">
-              Created Jul 18, 2026
-            </span>
-          </button>
+                <textarea
+                    className="note-content-input"
+                    placeholder="Start writing your note..."
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                />
 
-        </div>
+                <div className="note-editor-footer">
 
-      </aside>
+                    <span>
+                        {createNoteMutation.isSuccess
+                            ? "Saved successfully"
+                            : "Ready"}
+                    </span>
 
-    </section>
-  );
+                    <span>
+                        {content.trim()
+                            ? content.trim().split(/\s+/).length
+                            : 0} words
+                    </span>
+
+                </div>
+
+            </div>
+
+            <aside className="notes-history">
+
+                <div className="notes-history-header">
+
+                    <div>
+                        <h2>Notes History</h2>
+                        <p>Your saved notes</p>
+                    </div>
+
+                    <button
+                        onClick={() => {
+                            setTitle("");
+                            setContent("");
+                        }}
+                    >
+                        +
+                    </button>
+
+                </div>
+
+                <div className="notes-history-list">
+
+                    {isLoading && (
+                        <p className="notes-message">
+                            Loading notes...
+                        </p>
+                    )}
+
+                    {error && (
+                        <p className="notes-message">
+                            Failed to load notes.
+                        </p>
+                    )}
+
+                    {!isLoading && !error && notes.length === 0 && (
+                        <p className="notes-message">
+                            No notes found.
+                        </p>
+                    )}
+
+                    {!isLoading && !error &&
+                        notes.map((note) => (
+
+                            <button
+                                key={note.id}
+                                className="note-history-item"
+                                onClick={() => handleNoteClick(note.id)}
+                            >
+
+                                <span className="note-history-title">
+                                    {note.title || "Untitled Note"}
+                                </span>
+
+                                <span className="note-created-at">
+                                    {new Date(note.created_at).toLocaleDateString()}
+                                </span>
+
+                            </button>
+
+                        ))}
+
+                </div>
+
+            </aside>
+
+        </section>
+    );
 }
 
 export default Notes;

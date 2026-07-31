@@ -3,19 +3,27 @@ from apps.workspace.models import Note,Document
 
 
 class NoteListSerializer(serializers.ModelSerializer):
+
+    preview = serializers.SerializerMethodField()
+
     class Meta:
-    
-        model=Note
-        fields=['id','title','preview']
+        model = Note
+        fields = [
+            "id",
+            "title",
+            "preview",
+            "created_at",
+        ]
 
-
-
+    def get_preview(self, obj):
+        return obj.content[:80]
 
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model=Note
-        fields=['id','title','content']
+        fields=['id','title','content','created_at']
 
+    
 
 class DocumentSerializer(serializers.ModelSerializer):
     filename = serializers.SerializerMethodField()

@@ -17,7 +17,7 @@ class NoteCreateApiView(APIView):
     permission_classes=[IsAuthenticated]
 
     def get(self,request):
-        notes=Note.objects.filter(user=request.user).order_by('-uploaded_at')
+        notes=Note.objects.filter(user=request.user).order_by('-created_at')
         search=request.GET.get('search')
         if search:
             notes=notes.filter(

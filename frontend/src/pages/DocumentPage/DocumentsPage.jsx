@@ -1,167 +1,227 @@
 import "./DocumentsPage.css";
-import { useEffect, useState } from "react";
-import { getDocuments } from "../../api/documentApi";
+import { useNavigate } from "react-router-dom";
+import { useDocumentsQuery } from "../../hooks/useDocumentQuery";
 
 function Documents() {
 
-  const [documents, setDocuments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+    const navigate = useNavigate();
 
-  useEffect(() => {
+    const {
+        data: documents = [],
+        isLoading,
+        error,
+    } = useDocumentsQuery();
 
-    async function loadDocuments() {
-        try {
-            const data = await getDocuments();
-            console.log(data);
-            setDocuments(data);
-        } catch (error) {
-            setError(error.detail || "Failed to load documents.");
-        } finally {
-            setLoading(false);
-        }
+    if (isLoading) {
+        return (
+            <section className="documents-page">
+                <div className="documents-loading">
+                    <h2>Loading documents...</h2>
+                </div>
+            </section>
+        );
     }
 
-    loadDocuments(); 
-  }, []);
+    if (error) {
+        return (
+            <section className="documents-page">
+                <div className="documents-error">
+                    <h2>{error.message || "Failed to load documents."}</h2>
+                </div>
+            </section>
+        );
+    }
 
-  return (
-    <section className="documents-page">
+    const readyDocuments = documents.filter(
+        (document) => document.status === "ready"
+    ).length;
 
-      <div className="documents-header">
-        <div>
-          <h1>Documents</h1>
-          <p>Manage the documents available to your NeuroFlow workspace.</p>
-        </div>
+    const processingDocuments = documents.filter(
+        (document) => document.status === "processing"
+    ).length;
 
-        <button className="documents-upload-button">
-          + Upload Document
-        </button>
-      </div>
+    const failedDocuments = documents.filter(
+        (document) => document.status === "failed"
+    ).length;
 
-      <div className="document-stats">
+    return (
 
-        <div className="document-stat-card">
-          <span>Total Documents</span>
-          <strong>12</strong>
-        </div>
+        <section className="documents-page">
 
-        <div className="document-stat-card">
-          <span>Ready</span>
-          <strong>9</strong>
-        </div>
+            <div className="documents-header">
 
-        <div className="document-stat-card">
-          <span>Processing</span>
-          <strong>2</strong>
-        </div>
+                <div className="documents-header-content">
+                    <h1>Documents</h1>
 
-        <div className="document-stat-card">
-          <span>Failed</span>
-          <strong>1</strong>
-        </div>
+                    <p>
+                        Manage all documents available in your NeuroFlow workspace.
+                    </p>
+                </div>
 
-      </div>
+                <button
+                    className="documents-upload-button"
+                    onClick={() => navigate("/upload")}
+                >
+                    + Upload Document
+                </button>
 
-      <div className="documents-toolbar">
+            </div>
 
-        <div className="documents-search">
-          <span>⌕</span>
+            <div className="document-stats">
 
-          <input
-            type="text"
-            placeholder="Search documents..."
-          />
-        </div>
+                <div className="document-stat-card">
+                    <span>Total Documents</span>
+                    <strong>{documents.length}</strong>
+                </div>
 
-        <button className="documents-filter">
-          All Status
-          <span>⌄</span>
-        </button>
+                <div className="document-stat-card">
+                    <span>Ready</span>
+                    <strong>{readyDocuments}</strong>
+                </div>
 
-      </div>
+                <div className="document-stat-card">
+                    <span>Processing</span>
+                    <strong>{processingDocuments}</strong>
+                </div>
 
-      <div className="documents-list">
+                <div className="document-stat-card">
+                    <span>Failed</span>
+                    <strong>{failedDocuments}</strong>
+                </div>
 
-        <div className="document-row">
+            </div>
 
-          <div className="document-file-icon">
-            PDF
-          </div>
+            <div className="documents-toolbar">
 
-          <div className="document-info">
-            <h3>AI Research Paper.pdf</h3>
-            <p>PDF · 2.4 MB · Jul 22, 2026</p>
-          </div>
+                <div className="documents-search">
 
-          <span className="document-status status-ready">
-            Ready
-          </span>
+                    <span className="documents-search-icon">
+                        ⌕
+                    </span>
 
-          <button className="document-open-button">
-            Open
-          </button>
+                    <input
+                        type="text"
+                        placeholder="Search documents..."
+                    />
 
-          <button className="document-menu-button">
-            ⋮
-          </button>
+                </div>
 
-        </div>
+                <button className="documents-filter">
+                    All Status
+                    <span>⌄</span>
+                </button>
 
-        <div className="document-row">
+            </div>
 
-          <div className="document-file-icon">
-            DOC
-          </div>
+            <div className="documents-list">
 
-          <div className="document-info">
-            <h3>Django Architecture.docx</h3>
-            <p>DOCX · 840 KB · Jul 20, 2026</p>
-          </div>
+                {
+                    documents.length === 0 ?
 
-          <span className="document-status status-ready">
-            Ready
-          </span>
+                        (
+                            <div className="documents-empty">
 
-          <button className="document-open-button">
-            Open
-          </button>
+                                <h3>No documents uploaded</h3>
 
-          <button className="document-menu-button">
-            ⋮
-          </button>
+                                <p>
+                                    Upload your first document to begin using NeuroFlow AI.
+                                </p>
 
-        </div>
+                            </div>
+                        )
 
-        <div className="document-row">
+                        :
 
-          <div className="document-file-icon">
-            TXT
-          </div>
+                        (
 
-          <div className="document-info">
-            <h3>Backend Notes.txt</h3>
-            <p>TXT · 126 KB · Jul 19, 2026</p>
-          </div>
+                            documents.map((document) => (
 
-          <span className="document-status status-processing">
-            Processing
-          </span>
+                                <div
+                                    key={document.id}
+                                    className="document-row"
+                                >
 
-          <button className="document-open-button">
-            Open
-          </button>
+                                    <div className="document-left">
 
-          <button className="document-menu-button">
-            ⋮
-          </button>
+                                        <div className="document-file-icon">
 
-        </div>
+                                            {
+                                                document.file
+                                                    ?.split(".")
+                                                    .pop()
+                                                    ?.toUpperCase()
+                                            }
 
-      </div>
+                                        </div>
 
-    </section>
-  );
+                                        <div className="document-info">
+
+                                            <h3
+                                                title={
+                                                    document.file
+                                                        ?.split("/")
+                                                        .pop()
+                                                }
+                                            >
+                                                {
+                                                    document.file
+                                                        ?.split("/")
+                                                        .pop()
+                                                }
+                                            </h3>
+
+                                            <p>
+
+                                                {
+                                                    new Date(
+                                                        document.uploaded_at
+                                                    ).toLocaleDateString()
+                                                }
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div className="document-right">
+
+                                        <span
+                                            className={`document-status status-${document.status}`}
+                                        >
+
+                                            {document.status.replace("_", " ")}
+
+                                        </span>
+
+                                        <button
+                                            className="document-open-button"
+                                        >
+                                            Use in Chat
+                                        </button>
+
+                                        <button
+                                            className="document-menu-button"
+                                        >
+                                            ⋮
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            ))
+
+                        )
+
+                }
+
+            </div>
+
+        </section>
+
+    );
+
 }
 
 export default Documents;
