@@ -8,33 +8,51 @@ function ChatMessage({ message }) {
 
     return (
 
-        <article className="chat-message">
+        <article
+            className={`chat-message ${
+                isUser ? "user-message" : "assistant-message"
+            }`}
+        >
 
-            <div className="message-header">
+            {!isUser && (
 
                 <div className="message-avatar">
 
-                    {isUser ? (
-                        <User size={14} />
-                    ) : (
-                        <BrainCircuit size={14} />
-                    )}
+                    <BrainCircuit size={18} />
 
                 </div>
 
-                <span className="message-author">
+            )}
 
-                    {isUser ? "You" : "NeuroFlow AI"}
+            <div className="message-content">
 
-                </span>
+                <div className="message-header">
+
+                    <span className="message-author">
+
+                        {isUser ? "" : "NeuroFlow AI"}
+
+                    </span>
+
+                </div>
+
+                <div className="message-body">
+
+                    {message.content}
+
+                </div>
 
             </div>
 
-            <div className="message-body">
+            {isUser && (
 
-                {message.content}
+                <div className="message-avatar">
 
-            </div>
+                    <User size={18} />
+
+                </div>
+
+            )}
 
         </article>
 

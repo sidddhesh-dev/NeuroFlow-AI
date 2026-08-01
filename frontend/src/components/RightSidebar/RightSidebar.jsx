@@ -2,9 +2,30 @@ import "./RightSidebar.css";
 import { useNavigate } from "react-router-dom";
 import { FileSearch } from "lucide-react";
 
-function RightSidebar() {
+function RightSidebar({ document }) {
 
     const navigate = useNavigate();
+
+    const extension = document?.documentName
+        ?.split(".")
+        .pop()
+        ?.toUpperCase();
+
+    const documentTypes = {
+        PDF: "Portable Document",
+        DOCX: "Microsoft Word Document",
+        HTML: "HTML Document",
+        TXT: "Text Document",
+        MD: "Markdown Document",
+        XLSX: "Excel Spreadsheet",
+        CSV: "CSV File",
+        PPTX: "PowerPoint Presentation",
+    };
+
+    const documentType =
+        extension
+            ? (documentTypes[extension] || "Document")
+            : "";
 
     return (
 
@@ -25,23 +46,51 @@ function RightSidebar() {
 
                 </div>
 
-                <div className="empty-context">
+                {document ? (
 
-                    <div className="empty-context-icon">
-                    <FileSearch size={18} />
+                    <div className="selected-context">
+
+                        <div className="selected-context-icon">
+                                    
+                            {extension}
+                                    
+                        </div>
+                                    
+                        <div className="selected-context-content">
+                                    
+                            <h3
+                                title={document.documentName}
+                            >
+                                {document.documentName}
+                            </h3>
+                                    
+                            <p>{documentType}</p>
+                                    
+                        </div>
+                                    
                     </div>
 
-                    <div className="empty-context-content">
+                ) : (
 
-                        <h3>No document selected</h3>
+                    <div className="empty-context">
 
-                        <p className="empty-context-line">
-                            Browse your documents to start chatting.
-                        </p>
+                        <div className="empty-context-icon">
+                            <FileSearch size={18} />
+                        </div>
+
+                        <div className="empty-context-content">
+
+                            <h3>No document selected</h3>
+
+                            <p className="empty-context-line">
+                                Browse your documents to start chatting.
+                            </p>
+
+                        </div>
 
                     </div>
 
-                </div>
+                )}
 
             </section>
 
@@ -69,46 +118,12 @@ function RightSidebar() {
 
                         <div className="chat-item-content">
 
-                            <h3>Understanding AI Development</h3>
+                            <h3>No chats yet</h3>
 
                         </div>
 
                         <span className="chat-time">
-                            10:30 AM
-                        </span>
-
-                    </button>
-
-                    <button
-                        type="button"
-                        className="chat-item"
-                    >
-
-                        <div className="chat-item-content">
-
-                            <h3>Learning Machine Learning</h3>
-
-                        </div>
-
-                        <span className="chat-time">
-                            Yesterday
-                        </span>
-
-                    </button>
-
-                    <button
-                        type="button"
-                        className="chat-item"
-                    >
-
-                        <div className="chat-item-content">
-
-                            <h3>Python Notes</h3>
-
-                        </div>
-
-                        <span className="chat-time">
-                            2 days ago
+                            —
                         </span>
 
                     </button>

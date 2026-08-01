@@ -2,107 +2,67 @@ import "./Upload.css";
 import { useRef, useState } from "react";
 import { uploadDocument } from "../../api/documentApi";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 function UploadDocument() {
 
     const navigate = useNavigate();
 
     const fileInputRef = useRef(null);
-
+    const queryClient = useQueryClient();
     const [uploading, setUploading] = useState(false);
-
     const [error, setError] = useState("");
-
     const handleBrowseClick = () => {
-
         fileInputRef.current.click();
-
     };
-
     const handleFileChange = (event) => {
-
         const file = event.target.files[0];
-
         if (file) {
-
             handleUpload(file);
-
-        }
-
-    };
+        }};
 
     const handleDrop = (event) => {
-
         event.preventDefault();
-
         const file = event.dataTransfer.files[0];
-
         if (file) {
-
             handleUpload(file);
-
         }
-
     };
-
     const handleDragOver = (event) => {
-
         event.preventDefault();
-
     };
-
     const handleUpload = async (file) => {
-
         try {
-
             setUploading(true);
-
             setError("");
-
-            await uploadDocument(file);
-
-            navigate("/documents");
-
+           await uploadDocument(file);
+            queryClient.invalidateQueries({
+            queryKey: ["documents"],
+            });
+navigate("/documents");
         }
-
         catch (error) {
-
             console.error(error);
-
             setError("Failed to upload document.");
-
         }
-
         finally {
-
             setUploading(false);
-
         }
-
     };
-
     return (
-
         <section className="upload-page">
-
             <div className="upload-header">
-
                 <h1>Upload Document</h1>
-
                 <p>
                     Add documents to your knowledge base and use them as context for AI conversations.
                 </p>
-
             </div>
-
             <div className="upload-content">
-
                 <div
                     className="upload-dropzone"
                     onDrop={handleDrop}
                     onDragOver={handleDragOver}
                 >
-
                     <input
                         ref={fileInputRef}
                         type="file"
@@ -110,7 +70,6 @@ function UploadDocument() {
                         accept=".pdf,.docx,.txt,.md,.html,.xlsx"
                         onChange={handleFileChange}
                     />
-
                     <div className="upload-icon">
                         ↑
                     </div>

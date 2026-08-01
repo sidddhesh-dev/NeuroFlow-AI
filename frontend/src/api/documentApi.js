@@ -49,3 +49,48 @@ export async function uploadDocument(file) {
 
     return data;
 }
+
+export async function deleteDocument(id) {
+    const accessToken = localStorage.getItem("access");
+    const response = await fetch(
+        `${BASE_URL}/workspace/documents/${id}/`,
+        {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        }
+    );
+    const data = await response.json();
+    if (!response.ok) {
+        throw data;
+    }
+    return data;
+}
+
+export async function askQuestion(documentId, question) {
+
+    const accessToken = localStorage.getItem("access");
+
+    const response = await fetch(
+        `${BASE_URL}/workspace/documents/${documentId}/ask/`,
+        {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                question,
+            }),
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw data;
+    }
+
+    return data;
+}

@@ -83,141 +83,71 @@
   color:#ffffff;
 }
 
-.empty-context{
-
-    min-height:52px;
+.selected-context{
 
     display:flex;
     align-items:center;
+    gap:16px;
 
-    gap:10px;
+    padding:16px;
 
-    padding:8px 10px;
+    background:#121926;
 
-    background:#101620;
-
-    border:1px solid #1f2835;
-    border-radius:8px;
+    border:1px solid #263243;
+    border-radius:14px;
 }
-.empty-context-icon{
 
-    width:32px;
-    height:36px;
+.selected-context-icon{
+
+    width:35px;
+    height:35px;
 
     flex-shrink:0;
 
     display:flex;
-    align-items:center;
     justify-content:center;
+    align-items:center;
 
-    background:#263149;
+    background:#2b3550;
 
-    border-radius:6px;
+    color:#8d7cff;
 
-    color:#dce3ef;
+    border-radius:12px;
 
-    font-size:8px;
-    font-weight:700;
+    font-size:8.5px;
+    font-weight:600;
+
+    letter-spacing:.5px;
 }
 
-
-.empty-context-content{
+.selected-context-content{
 
     flex:1;
-
     min-width:0;
 }
-.empty-context-content h3{
+
+.selected-context-content h3{
+
+    margin:0 0 6px;
+
+    color:#ffffff;
+
+    font-size:11px;
+    font-weight:600;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.selected-context-content p{
 
     margin:0;
 
-    font-size:10.5px;
-    font-weight:550;
+    color:#8f9bad;
 
-    color:#f2f5fa;
-}
-.empty-context-content p{
-    margin:3px 0 0;
-    font-size:8.5px;
-    color: #7567ff;
-}
-
-.context-documents {
-  display: flex;
-  flex-direction: column;
-
-  gap: 6px;
-}
-
-.context-document {
-  min-height: 52px;
-
-  display: flex;
-  align-items: center;
-
-  gap: 9px;
-
-  padding: 8px 9px;
-
-  background: #101620;
-
-  border: 1px solid #1f2835;
-  border-radius: 8px;
-}
-
-.document-icon {
-  width: 32px;
-  height: 36px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  flex-shrink: 0;
-
-  background: #263149;
-  color: #dce3ef;
-
-  border-radius: 6px;
-
-  font-size: 8px;
-  font-weight: 700;
-}
-
-.document-status {
-  width: 18px !important;
-  height: 18px !important;
-  min-width: 18px !important;
-  max-width: 18px !important;
-  min-height: 18px !important;
-  max-height: 18px !important;
-
-  flex: 0 0 18px !important;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0 !important;
-  margin: 0;
-
-  background: #22a957;
-  border: none;
-  border-radius: 50% !important;
-}
-
-.check-button{
-  color: white;
-  font-size: 12px;
-}
-
-.document-status svg {
-  width: 10px;
-  height: 10px;
-  flex-shrink: 0;
-
-  color: #ffffff;
-  stroke-width: 2.5;
+    font-size:9px;
+    line-height:1.5;
 }
 
 .chat-history-section {

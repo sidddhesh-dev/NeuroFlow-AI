@@ -3,18 +3,20 @@ import "./ChatInput.css";
 import { useState } from "react";
 import { Plus, ArrowUp } from "lucide-react";
 
-function ChatInput() {
+function ChatInput({ onSend }) {
 
     const [message, setMessage] = useState("");
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = (event) => {
 
-        if (!message.trim()) return;
+        event.preventDefault();
 
-        console.log(message);
-
+        if (!message.trim()) {
+            return;
+        }
+        onSend(message);
         setMessage("");
+
     };
 
     return (
@@ -36,7 +38,7 @@ function ChatInput() {
                 placeholder="Message NeuroFlow AI..."
                 rows={1}
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={(event) => setMessage(event.target.value)}
             />
 
             <button
@@ -44,7 +46,7 @@ function ChatInput() {
                 className="send-button"
                 disabled={!message.trim()}
             >
-                <ArrowUp size={18}/>
+                <ArrowUp size={18} />
             </button>
 
         </form>

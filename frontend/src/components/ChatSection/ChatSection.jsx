@@ -1,57 +1,170 @@
-import "./ChatSection.css"
-import { ArrowUp } from "lucide-react";
+import "./ChatSection.css";
+
+import {
+    useState,
+    useEffect,
+    useRef,
+} from "react";
+
+import { useLocation } from "react-router-dom";
+
+import EmptyState from "../Chat/EmptyState/EmptyState";
+import ChatMessages from "../Chat/ChatMessages/ChatMessages";
+import ChatInput from "../Chat/ChatInput/ChatInput";
+import TypingIndicator from "../Chat/TypingIndicator/TypingIndicator";
+
+import { askQuestion } from "../../api/documentApi";
 
 function ChatSection() {
-  return (
-    <section className="chat-section">
 
-      <div className="messages-area">
+    const location = useLocation();
 
-        <div className="chat-empty-state">
-          <h2>What can I help you understand?</h2>
-          <p>
-            Ask questions about your selected documents or start a conversation.
-          </p>
-        </div>
+    const selectedDocument = location.state ?? null;
 
-      </div>
+    const [messages, setMessages] = useState([]);
 
+    const [isTyping, setIsTyping] = useState(false);
 
-      <div className="chat-input-area">
+    const messagesEndRef = useRef(null);
 
-        <div className="chat-input-box">
+    useEffect(() => {
 
-          <textarea
-            className="chat-input"
-            placeholder="Ask anything about your documents..."
-            rows="1"
-          />
+        messagesEndRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "end",
+        });
 
-          <div className="chat-input-actions">
+    }, [messages, isTyping]);
 
-            <div className="input-left-actions">
+    console.log("Selected Document:", selectedDocument);
+    const handleSend = async (question) => {
 
-              <button type="button" className="input-action-button" title="Attach file">
-              +
-              </button>
+        if (!question.trim()) {
+            return;
+        }
+
+        if (!selectedDocument) {
+
+            setMessages((prev) => [
+                ...prev,
+                {
+                    id: Date.now(),
+                    role: "assistant",
+                    content:
+                        "Please select a document before starting a conversation.",
+                },
+            ]);
+
+            return;
+
+        }
+
+        const userMessage = {
+            id: Date.now(),
+            role: "user",
+            content: question,
+        };
+
+        setMessages((prev) => [
+            ...prev,
+            userMessage,
+        ]);
+
+        setIsTyping(true);
+
+        try {
+
+            const response = await askQuestion(
+                selectedDocument.documentId,
+                question
+            );
+
+            const assistantMessage = {
+
+                id: Date.now() + 1,
+
+                role: "assistant",
+
+                content: response.answer,
+
+            };
+
+            setMessages((prev) => [
+                ...prev,
+                assistantMessage,
+            ]);
+
+        } catch (error) {
+
+            console.error(error);
+
+            setMessages((prev) => [
+                ...prev,
+                {
+                    id: Date.now() + 1,
+                    role: "assistant",
+                    content:
+                        "Something went wrong while generating the response.",
+                },
+            ]);
+
+        } finally {
+
+            setIsTyping(false);
+
+        }
+
+    };
+
+    return (
+
+        <section className="chat-section">
+
+            <div className="messages-area">
+
+                {
+                    messages.length === 0 ? (
+
+                        <EmptyState />
+
+                    ) : (
+
+                        <ChatMessages
+                            messages={messages}
+                        />
+
+                    )
+                }
+
+                {
+                    isTyping && (
+
+                        <TypingIndicator />
+
+                    )
+                }
+
+                <div ref={messagesEndRef}></div>
 
             </div>
-            <button type="button" className="send-button" title="Send message" >
-              <ArrowUp />
-            </button>
 
-          </div>
+            <div className="chat-input-area">
 
-        </div>
+                <ChatInput
+                    onSend={handleSend}
+                    disabled={isTyping}
+                />
 
-        <p className="chat-disclaimer">
-          NeuroFlow AI can make mistakes. Verify important information.
-        </p>
+                <p className="chat-disclaimer">
+                    NeuroFlow AI can make mistakes. Verify important information.
+                </p>
 
-      </div>
+            </div>
 
-    </section>
-  )
+        </section>
+
+    );
+
 }
 
-export default ChatSection
+export default ChatSection;

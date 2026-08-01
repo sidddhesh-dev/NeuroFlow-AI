@@ -20,14 +20,14 @@ class AiService:
         cache_key = generate_cache_key(question,document.id)
         cached_answer = RedisService.get(cache_key)
         if cached_answer:
-            logger.info("Cache hit for LLM response")
+            
             ChatService.save_messages(
                 session,
                 "assistant",
                 cached_answer
             )
             return cached_answer
-        logger.info("Chche miss for LLM response")
+        
         chat_history = ChatService.get_chat_history(session)
         retrieved_context = RetrievalService.retrieve_context(question,document)
         context = ContextService.context_builder(
@@ -59,6 +59,7 @@ class AiService:
                 session,
                 summary_text
             )
+        
         return answer
         
         

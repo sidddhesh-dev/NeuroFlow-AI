@@ -109,6 +109,7 @@ class DocumentDetailView(APIView):
         document=get_object_or_404(Document,id=id)
         self.check_object_permissions(request,document)
         VectorStoreService.delete_vector(document)
+        document.file.delete(save=False)
         document.delete()
         return Response({"message":f"Document '{document.file.name}' (ID: {id}) removed successfully."},status=status.HTTP_200_OK)
     
@@ -125,14 +126,6 @@ class DocumentAskQuestionView(APIView):
         return Response({"answer":answer},status=status.HTTP_200_OK)
 
 
-    
-
-
-    
-
-
-
-    
 
         
     

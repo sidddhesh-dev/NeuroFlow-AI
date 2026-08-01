@@ -1,16 +1,45 @@
 import "./DocumentsPage.css";
 import { useNavigate } from "react-router-dom";
 import { useDocumentsQuery } from "../../hooks/useDocumentQuery";
+import { useState } from "react";
+import { useDeleteDocumentMutation } from "../../hooks/useDeleteDocumentMutation";
 
 function Documents() {
-
     const navigate = useNavigate();
+
+    const [openMenuId, setOpenMenuId] = useState(null);
+
+    const deleteDocumentMutation = useDeleteDocumentMutation();
 
     const {
         data: documents = [],
         isLoading,
         error,
     } = useDocumentsQuery();
+
+    const handleView = (document) => {
+        setOpenMenuId(null);
+        console.log("View:", document);
+    };
+
+    const handleDownload = (document) => {
+        setOpenMenuId(null);
+        console.log("Download:", document);
+    };
+
+    const handleDelete = (id) => {
+
+    const confirmed = window.confirm(
+        "Delete this document?"
+    );
+
+    if (!confirmed) return;
+
+    deleteDocumentMutation.mutate(id);
+
+    setOpenMenuId(null);
+
+};
 
     if (isLoading) {
         return (
@@ -45,7 +74,6 @@ function Documents() {
     ).length;
 
     return (
-
         <section className="documents-page">
 
             <div className="documents-header">
@@ -115,113 +143,142 @@ function Documents() {
 
             <div className="documents-list">
 
-                {
-                    documents.length === 0 ?
+                {documents.length === 0 ? (
 
-                        (
-                            <div className="documents-empty">
+                    <div className="documents-empty">
 
-                                <h3>No documents uploaded</h3>
+                        <h3>No documents uploaded</h3>
 
-                                <p>
-                                    Upload your first document to begin using NeuroFlow AI.
-                                </p>
+                        <p>
+                            Upload your first document to begin using NeuroFlow AI.
+                        </p>
 
-                            </div>
-                        )
+                    </div>
 
-                        :
+                ) : (
 
-                        (
+                    documents.map((document) => (
 
-                            documents.map((document) => (
+                        <div
+                            key={document.id}
+                            className="document-row"
+                        >
 
-                                <div
-                                    key={document.id}
-                                    className="document-row"
-                                >
+                            <div className="document-left">
 
-                                    <div className="document-left">
+                                <div className="document-file-icon">
 
-                                        <div className="document-file-icon">
-
-                                            {
-                                                document.file
-                                                    ?.split(".")
-                                                    .pop()
-                                                    ?.toUpperCase()
-                                            }
-
-                                        </div>
-
-                                        <div className="document-info">
-
-                                            <h3
-                                                title={
-                                                    document.file
-                                                        ?.split("/")
-                                                        .pop()
-                                                }
-                                            >
-                                                {
-                                                    document.file
-                                                        ?.split("/")
-                                                        .pop()
-                                                }
-                                            </h3>
-
-                                            <p>
-
-                                                {
-                                                    new Date(
-                                                        document.uploaded_at
-                                                    ).toLocaleDateString()
-                                                }
-
-                                            </p>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div className="document-right">
-
-                                        <span
-                                            className={`document-status status-${document.status}`}
-                                        >
-
-                                            {document.status.replace("_", " ")}
-
-                                        </span>
-
-                                        <button
-                                            className="document-open-button"
-                                        >
-                                            Use in Chat
-                                        </button>
-
-                                        <button
-                                            className="document-menu-button"
-                                        >
-                                            ⋮
-                                        </button>
-
-                                    </div>
+                                    {document.file
+                                        ?.split(".")
+                                        .pop()
+                                        ?.toUpperCase()}
 
                                 </div>
 
-                            ))
+                                <div className="document-info">
 
-                        )
+                                    <h3
+                                        title={
+                                            document.file
+                                                ?.split("/")
+                                                .pop()
+                                        }
+                                    >
+                                        {document.file
+                                            ?.split("/")
+                                            .pop()}
+                                    </h3>
 
-                }
+                                    <p>
+                                        {new Date(
+                                            document.uploaded_at
+                                        ).toLocaleDateString()}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <div className="document-right">
+
+                                <span
+                                    className={`document-status status-${document.status}`}
+                                >
+                                    {document.status.replace("_", " ")}
+                                </span>
+
+                                <button className="document-open-button" onClick={() =>
+                                  navigate("/chat", {
+                                      state: {
+                                          documentId: document.id,
+                                          documentName: document.file
+                                              ?.split("/")
+                                              .pop(),
+                                      },
+                                  })
+                                    }
+                                >
+                                    Use in Chat
+                                </button>
+
+                                <div className="document-menu">
+
+                                    <button
+                                        className="document-menu-button"
+                                        onClick={() =>
+                                            setOpenMenuId(
+                                                openMenuId === document.id
+                                                    ? null
+                                                    : document.id
+                                            )
+                                        }
+                                    >
+                                        ⋮
+                                    </button>
+
+                                    {openMenuId === document.id && (
+
+                                        <div className="document-dropdown">
+
+                                            <button
+                                                className="document-dropdown-item"
+                                                onClick={() => handleView(document)}
+                                            >
+                                                👁 View Document
+                                            </button>
+
+                                            <button
+                                                className="document-dropdown-item"
+                                                onClick={() => handleDownload(document)}
+                                            >
+                                                ⬇ Download
+                                            </button>
+
+                                            <button
+                                                className="document-dropdown-item danger"
+                                                onClick={() => handleDelete(document.id)}
+                                            >
+                                                🗑 Delete
+                                            </button>
+
+                                        </div>
+
+                                    )}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    ))
+
+                )}
 
             </div>
 
         </section>
-
     );
-
 }
 
 export default Documents;
