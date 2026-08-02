@@ -2,7 +2,7 @@
 
     display:flex;
 
-    gap:14px;
+    gap:10px;
 
     margin-bottom:22px;
 
@@ -15,6 +15,7 @@
 .user-message{
 
     justify-content:flex-end;
+    
 
 }
 

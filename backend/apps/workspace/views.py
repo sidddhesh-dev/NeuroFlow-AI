@@ -125,7 +125,22 @@ class DocumentAskQuestionView(APIView):
         answer=AiService.generate_answer(question,request.user,document)
         return Response({"answer":answer},status=status.HTTP_200_OK)
 
+class ChatSessionCreateView(APIView):
 
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+
+        session = ChatService.create_session(
+            user=request.user
+        )
+
+        serializer = ChatSessionSerializer(session)
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED
+        )
 
         
     
