@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import os
 
 class Note(models.Model):
 
@@ -30,6 +31,11 @@ class Document(models.Model):
     status = models.CharField(max_length=20,choices=STATUS_CHOICES,default='uploaded')
     extracted_data=models.TextField(null=True,blank=True)
     content_hash = models.CharField(max_length=64,unique=False,null=True,blank=True)
+
+    def delete(self, *args, **kwargs):
+        if self.file and os.path.isfile(self.file.path):
+            os.remove(self.file.path)
+        super().delete(*args, **kwargs)
     
     def __str__(self):
         return self.file.name
@@ -46,16 +52,14 @@ class DocumentChunk(models.Model):
         return f" {self.document.id} - chunk {self.chunk_id}"
     
 class ChatSession(models.Model):
-    user=models.ForeignKey(User,on_delete=models.CASCADE)
-    document=models.ForeignKey(Document,on_delete=models.CASCADE)
-    create_at=models.DateTimeField(auto_now_add=True)
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["user", "document"],
-                name="unique_user_document_session"
-            )
-        ]
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    document = models.ForeignKey(Document,on_delete=models.CASCADE,null=True,blank=True)
+    title = models.CharField(max_length=120,blank=True, default="")
+    created_at = models.DateTimeField( auto_now_add=True)
+    updated_at = models.DateTimeField( auto_now=True)
+
+    def __str__(self):
+        return self.title if self.title else f"Chat {self.id}"
 
 class ChatHistory(models.Model):
     ROLE_CHOICES=[("user","User"),("assistant","Assistant")]

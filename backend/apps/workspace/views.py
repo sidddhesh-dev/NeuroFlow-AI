@@ -1,15 +1,17 @@
 from django.shortcuts import render,get_object_or_404
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated,IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Note,Document
 from rest_framework import status
-from apps.workspace.serializers import NoteSerializer,NoteListSerializer,DocumentSerializer,DocumentRetriveSerializer,QuerySerializer
+from apps.workspace.serializers import NoteSerializer,NoteListSerializer,DocumentSerializer,DocumentRetriveSerializer,QuerySerializer,ChatSessionSerializer
 from apps.workspace.permissions import IsOwner
 from django.db.models import Q
 from apps.workspace.services.ai_service import AiService
 from apps.workspace.services.chromadb_service import VectorStoreService
 from apps.workspace.tasks import process_document
+from apps.workspace.services.chat_service import ChatService
+from apps.workspace.models import ChatSession
 
 
 
@@ -114,35 +116,44 @@ class DocumentDetailView(APIView):
         return Response({"message":f"Document '{document.file.name}' (ID: {id}) removed successfully."},status=status.HTTP_200_OK)
     
 class DocumentAskQuestionView(APIView):
-    permission_classes=[IsAuthenticated]
-    
-    def post(self,request,id):
-        document=get_object_or_404(Document,id=id)
+    permission_classes = [IsAuthenticated]
+    def post(self, request, id):
+        document = get_object_or_404(Document,id=id)
         self.check_object_permissions(request,document)
-        serializer=QuerySerializer(data=request.data)
+        serializer = QuerySerializer( data=request.data)
         serializer.is_valid(raise_exception=True)
-        question=serializer.validated_data["question"]
-        answer=AiService.generate_answer(question,request.user,document)
-        return Response({"answer":answer},status=status.HTTP_200_OK)
+        question = serializer.validated_data["question"]
+        session_id = serializer.validated_data["session_id"]
+        answer = AiService.generate_answer( question=question, user=request.user,document=document, session_id=session_id)
+        return Response({ "answer": answer},status=status.HTTP_200_OK)
 
 class ChatSessionCreateView(APIView):
-
     permission_classes = [IsAuthenticated]
-
     def post(self, request):
-
-        session = ChatService.create_session(
-            user=request.user
-        )
-
+        session = ChatService.create_session( user=request.user, document=None,)
         serializer = ChatSessionSerializer(session)
+        return Response( serializer.data, status=status.HTTP_201_CREATED)
 
-        return Response(
-            serializer.data,
-            status=status.HTTP_201_CREATED
-        )
 
-        
-    
+class ChatSessionListView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        sessions = ChatSession.objects.filter( user=request.user).order_by("-create_at")
+        serializer = ChatSessionSerializer(sessions, many=True)
+        return Response( serializer.data, status=status.HTTP_200_OK)
+
+
+class ChatSessionDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request, id):
+        session = get_object_or_404(ChatSession, id=id, user=request.user)
+        serializer = ChatSessionSerializer(session)
+        return Response( serializer.data,status=status.HTTP_200_OK)
+
+    def delete(self, request, id):
+        session = get_object_or_404(ChatSession,id=id,user=request.user)
+        session.delete()
+        return Response({ "message": "Chat deleted successfully."},status=status.HTTP_204_NO_CONTENT)
+
 
 

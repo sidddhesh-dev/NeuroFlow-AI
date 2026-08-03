@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 
 import {
@@ -15,45 +15,60 @@ import {
 } from "lucide-react";
 
 import useAuth from "../../context/UseAuth";
+import { createChatSession } from "../../api/chatApi";
 
 function Sidebar() {
 
   const { user } = useAuth();
 
+  const navigate = useNavigate();
+
+  const handleNewChat = async () => {
+
+    try {
+
+      const session = await createChatSession();
+
+      navigate("/chat", {
+        state: {
+          sessionId: session.id,
+        },
+      });
+
+    } catch (error) {
+
+      console.error("Failed to create chat session:", error);
+
+    }
+
+  };
+
   return (
 
     <aside className="sidebar">
-
-
       <header className="sidebar-brand">
-
         <BrainCircuit className="brand-logo" />
-
         <h1 className="brand-name">
           Neuro<span>Flow AI</span>
         </h1>
-
       </header>
 
-
       <section className="sidebar-actions">
-
-        <button className="new-chat-button">
-
+        <button
+          className="new-chat-button"
+          onClick={handleNewChat}
+        >
           <SquarePen size={15} />
-
           <span>New Chat</span>
-
         </button>
-
+        
         <button className="search-button">
           <Search size={15} />
           <span>Search</span>
         </button>
+
       </section>
-
       <div className="sidebar-divider" />
-
       <nav className="sidebar-navigation">
         <ul className="nav-list">
 
@@ -92,8 +107,8 @@ function Sidebar() {
               <span>Upload Document</span>
             </NavLink>
           </li>
-          <li>
 
+          <li>
             <NavLink
               to="/notes"
               className={({ isActive }) =>
@@ -150,18 +165,13 @@ function Sidebar() {
           </div>
 
           <div className="user-details">
-            <h2>
-              {user?.username}
-            </h2>
-            <p>
-              {user?.email}
-            </p>
+            <h2>{user?.username}</h2>
+            <p>{user?.email}</p>
           </div>
         </button>
       </footer>
     </aside>
   );
-
 }
 
 export default Sidebar;

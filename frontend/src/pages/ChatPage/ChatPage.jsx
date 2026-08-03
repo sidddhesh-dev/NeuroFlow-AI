@@ -1,21 +1,25 @@
 import "./ChatPage.css";
 
+import { useLocation } from "react-router-dom";
+
 import ChatSection from "../../components/ChatSection/ChatSection";
 import RightSidebar from "../../components/RightSidebar/RightSidebar";
-import { useLocation } from "react-router-dom";
 
 function ChatPage() {
 
     const location = useLocation();
 
-    const selectedDocument = location.state;
+    const sessionId = location.state?.sessionId ?? null;
+
+    const selectedDocument = location.state?.document ?? location.state ?? null;
 
     return (
 
         <main className="chat-page">
 
             <ChatSection
-                document={selectedDocument}
+                sessionId={sessionId}
+                selectedDocument={selectedDocument}
             />
 
             <RightSidebar

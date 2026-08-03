@@ -49,6 +49,12 @@ class AiService:
             "assistant",
             answer
         )
+        if not session.title:
+            session.title = SummaryService.generate_chat_title(
+                document.file.name.split("/")[-1],
+                question
+            )
+            session.save(update_fields=["title"])
         if SummaryService.should_update_summary(session):
             recent_messages = ChatService.get_chat_history(session)
             summary_text = SummaryService.generate_summary(

@@ -6,8 +6,6 @@ import {
     useRef,
 } from "react";
 
-import { useLocation } from "react-router-dom";
-
 import EmptyState from "../Chat/EmptyState/EmptyState";
 import ChatMessages from "../Chat/ChatMessages/ChatMessages";
 import ChatInput from "../Chat/ChatInput/ChatInput";
@@ -15,11 +13,10 @@ import TypingIndicator from "../Chat/TypingIndicator/TypingIndicator";
 
 import { askQuestion } from "../../api/documentApi";
 
-function ChatSection() {
-
-    const location = useLocation();
-
-    const selectedDocument = location.state ?? null;
+function ChatSection({
+    sessionId,
+    selectedDocument,
+}) {
 
     const [messages, setMessages] = useState([]);
 
@@ -36,7 +33,9 @@ function ChatSection() {
 
     }, [messages, isTyping]);
 
+    console.log("Session ID:", sessionId);
     console.log("Selected Document:", selectedDocument);
+
     const handleSend = async (question) => {
 
         if (!question.trim()) {
@@ -75,9 +74,9 @@ function ChatSection() {
         try {
 
             const response = await askQuestion(
-                selectedDocument.documentId,
-                question
-            );
+              selectedDocument.documentId,
+              question,
+              sessionId);
 
             const assistantMessage = {
 

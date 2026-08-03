@@ -68,7 +68,11 @@ export async function deleteDocument(id) {
     return data;
 }
 
-export async function askQuestion(documentId, question) {
+export async function askQuestion(
+    documentId,
+    question,
+    sessionId,
+) {
 
     const accessToken = localStorage.getItem("access");
 
@@ -82,6 +86,7 @@ export async function askQuestion(documentId, question) {
             },
             body: JSON.stringify({
                 question,
+                session_id: sessionId,
             }),
         }
     );

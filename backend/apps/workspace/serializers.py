@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.workspace.models import Note,Document
+from apps.workspace.models import Note,Document,ChatSession,ChatHistory
 
 
 class NoteListSerializer(serializers.ModelSerializer):
@@ -91,20 +91,58 @@ class DocumentRetriveSerializer(serializers.ModelSerializer):
             return f"{round(size / (1024 * 1024), 2)} MB"
         
 class QuerySerializer(serializers.Serializer):
-    question=serializers.CharField()
-    def validate_question(self,value):
-        value=value.strip()
+    question = serializers.CharField()
+    session_id = serializers.IntegerField()
+    def validate_question(self, value):
+        value = value.strip()
         if not value:
-            raise serializers.ValidationError(
-                "Question cannot be empty"
-            )
+            raise serializers.ValidationError( "Question cannot be empty")
         return value
     
 class AnswerSerializer(serializers.Serializer):
     question =serializers.CharField()
     answer=serializers.CharField()
     source_document=serializers.CharField()
-    
+
+
+
+class ChatHistorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ChatHistory
+        fields = ["id","role","content","created_at",
+]
+
+class ChatSessionSerializer(serializers.ModelSerializer):
+
+    document_name = serializers.SerializerMethodField()
+
+    messages = ChatHistorySerializer(
+        source="chathistory_set",
+        many=True,
+        read_only=True,
+    )
+
+    class Meta:
+        model = ChatSession
+        fields = [
+            "id",
+            "title",
+
+            "document",
+            "document_name",
+
+            "created_at",
+            "updated_at",
+            "messages",
+        ]
+
+    def get_document_name(self, obj):
+
+        if obj.document:
+            return obj.document.file.name.split("/")[-1]
+
+        return None
 
 
 
