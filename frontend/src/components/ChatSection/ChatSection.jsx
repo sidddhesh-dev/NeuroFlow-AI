@@ -16,9 +16,10 @@ import { askQuestion } from "../../api/documentApi";
 function ChatSection({
     sessionId,
     selectedDocument,
+    initialMessages = [],
 }) {
 
-    const [messages, setMessages] = useState([]);
+    const [messages, setMessages] = useState(() => initialMessages);
 
     const [isTyping, setIsTyping] = useState(false);
 
@@ -33,10 +34,7 @@ function ChatSection({
 
     }, [messages, isTyping]);
 
-    console.log("Session ID:", sessionId);
-    console.log("Selected Document:", selectedDocument);
-
-    const handleSend = async (question) => {
+    async function handleSend(question) {
 
         if (!question.trim()) {
             return;
@@ -49,8 +47,7 @@ function ChatSection({
                 {
                     id: Date.now(),
                     role: "assistant",
-                    content:
-                        "Please select a document before starting a conversation.",
+                    content: "Please select a document before starting a conversation.",
                 },
             ]);
 
@@ -74,23 +71,18 @@ function ChatSection({
         try {
 
             const response = await askQuestion(
-              selectedDocument.documentId,
-              question,
-              sessionId);
-
-            const assistantMessage = {
-
-                id: Date.now() + 1,
-
-                role: "assistant",
-
-                content: response.answer,
-
-            };
+                selectedDocument.documentId,
+                question,
+                sessionId,
+            );
 
             setMessages((prev) => [
                 ...prev,
-                assistantMessage,
+                {
+                    id: Date.now() + 1,
+                    role: "assistant",
+                    content: response.answer,
+                },
             ]);
 
         } catch (error) {
@@ -102,8 +94,7 @@ function ChatSection({
                 {
                     id: Date.now() + 1,
                     role: "assistant",
-                    content:
-                        "Something went wrong while generating the response.",
+                    content: "Something went wrong while generating the response.",
                 },
             ]);
 
@@ -113,7 +104,7 @@ function ChatSection({
 
         }
 
-    };
+    }
 
     return (
 
@@ -122,28 +113,16 @@ function ChatSection({
             <div className="messages-area">
 
                 {
-                    messages.length === 0 ? (
-
-                        <EmptyState />
-
-                    ) : (
-
-                        <ChatMessages
-                            messages={messages}
-                        />
-
-                    )
+                    messages.length === 0
+                        ? <EmptyState />
+                        : <ChatMessages messages={messages} />
                 }
 
                 {
-                    isTyping && (
-
-                        <TypingIndicator />
-
-                    )
+                    isTyping && <TypingIndicator />
                 }
 
-                <div ref={messagesEndRef}></div>
+                <div ref={messagesEndRef} />
 
             </div>
 

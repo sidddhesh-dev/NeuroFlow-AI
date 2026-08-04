@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
+import { createChatSession } from "../../api/chatApi";
 
 import {
   BrainCircuit,
@@ -15,7 +16,6 @@ import {
 } from "lucide-react";
 
 import useAuth from "../../context/UseAuth";
-import { createChatSession } from "../../api/chatApi";
 
 function Sidebar() {
 
@@ -23,25 +23,23 @@ function Sidebar() {
 
   const navigate = useNavigate();
 
-  const handleNewChat = async () => {
+async function handleNewChat() {
 
     try {
 
-      const session = await createChatSession();
+        const session = await createChatSession();
 
-      navigate("/chat", {
-        state: {
-          sessionId: session.id,
-        },
-      });
+        navigate(`/chat/${session.id}`);
 
     } catch (error) {
 
-      console.error("Failed to create chat session:", error);
+        console.error("Failed to create chat session:", error);
 
     }
 
-  };
+}
+
+  
 
   return (
 
@@ -55,13 +53,13 @@ function Sidebar() {
 
       <section className="sidebar-actions">
         <button
-          className="new-chat-button"
-          onClick={handleNewChat}
-        >
-          <SquarePen size={15} />
-          <span>New Chat</span>
-        </button>
-        
+        className="new-chat-button"
+        onClick={handleNewChat}
+    >
+        <SquarePen size={15} />
+        <span>New Chat</span>
+    </button>
+
         <button className="search-button">
           <Search size={15} />
           <span>Search</span>

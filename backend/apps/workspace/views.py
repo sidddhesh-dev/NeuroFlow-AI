@@ -138,7 +138,7 @@ class ChatSessionCreateView(APIView):
 class ChatSessionListView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
-        sessions = ChatSession.objects.filter( user=request.user).order_by("-create_at")
+        sessions = ChatSession.objects.filter( user=request.user).order_by("-created_at")
         serializer = ChatSessionSerializer(sessions, many=True)
         return Response( serializer.data, status=status.HTTP_200_OK)
 

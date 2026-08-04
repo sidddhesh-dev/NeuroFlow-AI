@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDocumentsQuery } from "../../hooks/useDocumentQuery";
 import { useState } from "react";
 import { useDeleteDocumentMutation } from "../../hooks/useDeleteDocumentMutation";
+import { createChatSession } from "../../api/chatApi";
 
 function Documents() {
     const navigate = useNavigate();
@@ -16,31 +17,22 @@ function Documents() {
         isLoading,
         error,
     } = useDocumentsQuery();
-
     const handleView = (document) => {
         setOpenMenuId(null);
         console.log("View:", document);
     };
-
     const handleDownload = (document) => {
         setOpenMenuId(null);
         console.log("Download:", document);
     };
-
     const handleDelete = (id) => {
-
     const confirmed = window.confirm(
         "Delete this document?"
     );
-
     if (!confirmed) return;
-
     deleteDocumentMutation.mutate(id);
-
     setOpenMenuId(null);
-
 };
-
     if (isLoading) {
         return (
             <section className="documents-page">
@@ -50,7 +42,6 @@ function Documents() {
             </section>
         );
     }
-
     if (error) {
         return (
             <section className="documents-page">
@@ -60,15 +51,28 @@ function Documents() {
             </section>
         );
     }
-
+    
+    async function handleUseInChat(document) {
+    try {
+        const session = await createChatSession();
+        navigate(`/chat/${session.id}`, {
+            state: {
+                documentId: document.id,
+                documentName: document.file
+                    ?.split("/")
+                    .pop(),
+            },
+        });
+    } catch (error) {
+        console.error("Failed to create chat session", error);
+    }
+}
     const readyDocuments = documents.filter(
         (document) => document.status === "ready"
     ).length;
-
     const processingDocuments = documents.filter(
         (document) => document.status === "processing"
     ).length;
-
     const failedDocuments = documents.filter(
         (document) => document.status === "failed"
     ).length;
@@ -207,19 +211,12 @@ function Documents() {
                                     {document.status.replace("_", " ")}
                                 </span>
 
-                                <button className="document-open-button" onClick={() =>
-                                  navigate("/chat", {
-                                      state: {
-                                          documentId: document.id,
-                                          documentName: document.file
-                                              ?.split("/")
-                                              .pop(),
-                                      },
-                                  })
-                                    }
-                                >
-                                    Use in Chat
-                                </button>
+                               <button
+                                  className="document-open-button"
+                                  onClick={() => handleUseInChat(document)}
+                              >
+                                  Use in Chat
+                              </button>
 
                                 <div className="document-menu">
 
