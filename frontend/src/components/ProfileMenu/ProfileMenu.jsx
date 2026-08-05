@@ -59,8 +59,10 @@ function ProfileMenu({ open, onClose }) {
             <div className="profile-menu-header">
 
                 <div className="menu-avatar">
-                    S
-                </div>
+
+                {user?.username?.charAt(0).toUpperCase()}
+                
+            </div>
 
                 <div className="menu-user">
 
@@ -99,7 +101,7 @@ function ProfileMenu({ open, onClose }) {
 
             <div className="profile-divider" />
 
-            <button className="profile-menu-item logout" onClick={logout}>
+            <button className="profile-menu-item logout" onClick={() => {onClose();logout();}}>
                 <LogOut size={18} />
                 <span>Logout</span>
             </button>

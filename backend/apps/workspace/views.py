@@ -4,7 +4,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Note,Document
 from rest_framework import status
-from apps.workspace.serializers import NoteSerializer,NoteListSerializer,DocumentSerializer,DocumentRetriveSerializer,QuerySerializer,ChatSessionSerializer
+from apps.workspace.serializers import (NoteSerializer,NoteListSerializer,DocumentSerializer,
+                                        DocumentRetriveSerializer,QuerySerializer,ChatSessionSerializer,
+                                        SearchChatSerializer,SearchDocumentSerializer,SearchNoteSerializer)
 from apps.workspace.permissions import IsOwner
 from django.db.models import Q
 from apps.workspace.services.ai_service import AiService
@@ -12,6 +14,7 @@ from apps.workspace.services.chromadb_service import VectorStoreService
 from apps.workspace.tasks import process_document
 from apps.workspace.services.chat_service import ChatService
 from apps.workspace.models import ChatSession
+from apps.workspace.services.search_service import SearchService
 
 
 
@@ -138,7 +141,7 @@ class ChatSessionCreateView(APIView):
 class ChatSessionListView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
-        sessions = ChatSession.objects.filter( user=request.user).order_by("-created_at")
+        sessions = ChatSession.objects.filter( user=request.user).order_by("-is_pinned","-created_at")
         serializer = ChatSessionSerializer(sessions, many=True)
         return Response( serializer.data, status=status.HTTP_200_OK)
 
@@ -155,5 +158,49 @@ class ChatSessionDetailView(APIView):
         session.delete()
         return Response({ "message": "Chat deleted successfully."},status=status.HTTP_204_NO_CONTENT)
 
+class ChatSessionRenameView(APIView):
+    permission_classes = [IsAuthenticated]
+    def patch(self, request, id):
+        session = get_object_or_404(ChatSession, id=id, user=request.user)
+        title = request.data.get("title")
+        if not title:
+            return Response( {"title": "This field is required."}, status=status.HTTP_400_BAD_REQUEST)
+        session.title = title
+        session.save(update_fields=["title", "updated_at"])
+        serializer = ChatSessionSerializer(session)
+        return Response(serializer.data,status=status.HTTP_200_OK)
 
+
+class ChatSessionPinView(APIView):
+    permission_classes = [IsAuthenticated]
+    def patch(self, request, id):
+        session = get_object_or_404(ChatSession, id=id, user=request.user)
+        session.is_pinned = True
+        session.save( update_fields=[ "is_pinned","updated_at"])
+        serializer = ChatSessionSerializer(session)
+        return Response( serializer.data, status=status.HTTP_200_OK)
+
+
+class ChatSessionUnpinView(APIView):
+    permission_classes = [IsAuthenticated]
+    def patch(self, request, id):
+        session = get_object_or_404(ChatSession, id=id, user=request.user, )
+        session.is_pinned = False
+        session.save( update_fields=["is_pinned","updated_at"])
+        serializer = ChatSessionSerializer(session)
+        return Response( serializer.data, status=status.HTTP_200_OK)
+
+class SearchView(APIView):
+
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        query = request.query_params.get("q", "").strip()
+        if not query:
+            return Response( {"chats": [], "documents": [], "notes": []},status=status.HTTP_200_OK,)
+        results = SearchService.search( request.user, query)
+        return Response(
+            {"chats": SearchChatSerializer( results["chats"], many=True).data,
+            "documents": SearchDocumentSerializer( results["documents"], many=True).data,
+            "notes": SearchNoteSerializer(results["notes"],many=True).data,
+            },status=status.HTTP_200_OK )
 

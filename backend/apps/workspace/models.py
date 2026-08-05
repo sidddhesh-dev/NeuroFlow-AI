@@ -57,6 +57,7 @@ class ChatSession(models.Model):
     title = models.CharField(max_length=120,blank=True, default="")
     created_at = models.DateTimeField( auto_now_add=True)
     updated_at = models.DateTimeField( auto_now=True)
+    is_pinned = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title if self.title else f"Chat {self.id}"

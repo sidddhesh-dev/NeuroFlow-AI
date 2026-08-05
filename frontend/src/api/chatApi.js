@@ -1,95 +1,106 @@
 const BASE_URL = "http://127.0.0.1:8000";
 
+function getAccessToken() {
+
+    return localStorage.getItem("access");
+
+}
+
+async function request(url, options = {}) {
+
+    const response = await fetch(url, {
+        headers: {
+            Authorization: `Bearer ${getAccessToken()}`,
+            "Content-Type": "application/json",
+            ...options.headers,
+        },
+        ...options,
+    });
+
+    if (response.status === 204) {
+        return true;
+    }
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw data;
+    }
+
+    return data;
+
+}
+
 export async function createChatSession() {
 
-    const accessToken = localStorage.getItem("access");
-
-    const response = await fetch(
+    return request(
         `${BASE_URL}/workspace/chat-sessions/`,
         {
             method: "POST",
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
         }
     );
 
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw data;
-    }
-
-    return data;
 }
-
 
 export async function getChatSessions() {
 
-    const accessToken = localStorage.getItem("access");
-
-    const response = await fetch(
-        `${BASE_URL}/workspace/chat-sessions/list/`,
-        {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        }
+    return request(
+        `${BASE_URL}/workspace/chat-sessions/list/`
     );
 
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw data;
-    }
-
-    return data;
 }
-
 
 export async function getChatSession(sessionId) {
 
-    const accessToken = localStorage.getItem("access");
-
-    const response = await fetch(
-        `${BASE_URL}/workspace/chat-sessions/${sessionId}/`,
-        {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        }
+    return request(
+        `${BASE_URL}/workspace/chat-sessions/${sessionId}/`
     );
 
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw data;
-    }
-
-    return data;
 }
-
 
 export async function deleteChatSession(sessionId) {
 
-    const accessToken = localStorage.getItem("access");
-
-    const response = await fetch(
+    return request(
         `${BASE_URL}/workspace/chat-sessions/${sessionId}/`,
         {
             method: "DELETE",
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
         }
     );
 
-    if (!response.ok) {
+}
 
-        const data = await response.json();
+export async function renameChatSession(sessionId, title) {
 
-        throw data;
-    }
+    return request(
+        `${BASE_URL}/workspace/chat-sessions/${sessionId}/rename/`,
+        {
+            method: "PATCH",
+            body: JSON.stringify({
+                title,
+            }),
+        }
+    );
 
-    return true;
+}
+
+export async function pinChatSession(sessionId) {
+
+    return request(
+        `${BASE_URL}/workspace/chat-sessions/${sessionId}/pin/`,
+        {
+            method: "PATCH",
+        }
+    );
+
+}
+
+export async function unpinChatSession(sessionId) {
+
+    return request(
+        `${BASE_URL}/workspace/chat-sessions/${sessionId}/unpin/`,
+        {
+            method: "PATCH",
+        }
+    );
+
 }

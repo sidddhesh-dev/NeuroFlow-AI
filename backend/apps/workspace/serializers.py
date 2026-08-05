@@ -110,44 +110,49 @@ class ChatHistorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ChatHistory
-        fields = ["id","role","content","created_at",
-]
+        fields = ["id","role","content","created_at"]
 
 class ChatSessionSerializer(serializers.ModelSerializer):
 
     document_name = serializers.SerializerMethodField()
-
-    messages = ChatHistorySerializer(
-        source="chathistory_set",
-        many=True,
-        read_only=True,
-    )
+    messages = ChatHistorySerializer( source="chathistory_set", many=True, read_only=True)
 
     class Meta:
         model = ChatSession
         fields = [
-            "id",
-            "title",
+            "id","title","document","document_name","created_at","updated_at","messages","is_pinned"]
 
-            "document",
-            "document_name",
+    def get_document_name(self, obj):
+        if obj.document:
+            return obj.document.file.name.split("/")[-1]
+        return None
 
-            "created_at",
-            "updated_at",
-            "messages",
-        ]
+class SearchChatSerializer(serializers.ModelSerializer):
+
+    document_name = serializers.SerializerMethodField()
+    class Meta:
+        model = ChatSession
+        fields = [ "id", "title", "is_pinned", "updated_at", "document_name",]
 
     def get_document_name(self, obj):
 
         if obj.document:
             return obj.document.file.name.split("/")[-1]
-
         return None
 
 
+class SearchDocumentSerializer(serializers.ModelSerializer):
+
+    file_name = serializers.SerializerMethodField()
+    class Meta:
+        model = Document
+        fields = [ "id", "file_name", "status", "uploaded_at"]
+
+    def get_file_name(self, obj):
+        return obj.file.name.split("/")[-1]
 
 
-        
-
-
-
+class SearchNoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Note
+        fields = [ "id", "title", "updated_at"]

@@ -117,6 +117,46 @@
 
   color: white;
 }
+.shortcut-key{
+
+    min-width:46px;
+    height:24px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:0 8px;
+
+    background:#151d29;
+
+    border:1px solid #2b3544;
+    border-radius:6px;
+
+    color:#9aa5b5;
+
+    font-size:10px;
+    font-weight:600;
+
+    letter-spacing:.4px;
+
+    user-select:none;
+    margin-left: 38px;
+
+    transition:
+        background-color .18s ease,
+        border-color .18s ease,
+        color .18s ease;
+}
+
+.search-button:hover .shortcut-key{
+
+    background:#1b2432;
+
+    border-color:#4e43d8;
+
+    color:#ffffff;
+}
 
 .sidebar-divider {
   width: 100%;
@@ -328,4 +368,17 @@
 .sidebar,
 .sidebar * {
   user-select: none;
+  
+
+    position:relative;
+
+    overflow:visible;
+}
+
+
+.user-profile-active{
+
+    background:#171f2d;
+
+    border-color:#4d44d8;
 }

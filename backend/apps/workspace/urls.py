@@ -1,5 +1,7 @@
 from django.urls import path
-from apps.workspace.views import NoteCreateApiView,NoteDetailApiView,DocumentCreateView,DocumentDetailView,DocumentAskQuestionView,ChatSessionCreateView,ChatSessionDetailView,ChatSessionListView
+from apps.workspace.views import (NoteCreateApiView,NoteDetailApiView,DocumentCreateView,DocumentDetailView,
+    DocumentAskQuestionView,ChatSessionCreateView,ChatSessionDetailView,
+    ChatSessionListView , ChatSessionRenameView,ChatSessionPinView,ChatSessionUnpinView,SearchView)
 
 urlpatterns=[
     path('notes/',NoteCreateApiView.as_view(),name='notes'),
@@ -9,5 +11,9 @@ urlpatterns=[
     path('documents/<int:id>/ask/',DocumentAskQuestionView.as_view(),name="doc_answer"),
     path("chat-sessions/", ChatSessionCreateView.as_view(), name="chat_session_create"),
     path("chat-sessions/list/",ChatSessionListView.as_view(),name="chat_list"),
-    path("chat-sessions/<int:id>/",ChatSessionDetailView.as_view(),name="chat_detail")
+    path("chat-sessions/<int:id>/",ChatSessionDetailView.as_view(),name="chat_detail"),
+    path("chat-sessions/<int:id>/rename/",ChatSessionRenameView.as_view(),name="chat_rename"),
+    path("chat-sessions/<int:id>/pin/", ChatSessionPinView.as_view(),name="chat_pin"),
+    path("chat-sessions/<int:id>/unpin/",ChatSessionUnpinView.as_view(),name="chat_unpin"),
+    path("search/",SearchView.as_view(),name="search",)
 ]

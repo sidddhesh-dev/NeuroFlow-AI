@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider ,Navigate} from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import { AuthProvider } from "./context/AuthProvider";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -20,14 +20,19 @@ import AuthPage from './pages/auth/AuthPage.jsx';
 
 
 const router =createBrowserRouter([
-  {path: "/",element: <ProtectedRoute>
+  { path: "/",
+    element: (
+        <ProtectedRoute>
             <App />
-        </ProtectedRoute>,
+        </ProtectedRoute>
+    ),
 
     children: [
-      {path: "chat",element: <Chat />},
+      {index: true, element: <Navigate to="/chat" replace />},
 
-      {path: "chat/:sessionId",element: <Chat />},
+      { path: "chat", element: <Chat />},
+
+      { path: "chat/:sessionId", element: <Chat />},
 
       {path:"documents",element:<Documents />},
 
