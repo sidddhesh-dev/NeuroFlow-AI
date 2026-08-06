@@ -16,7 +16,6 @@ import {
     FileUp,
     NotebookPen,
     History,
-    Bot,
     Settings,
 } from "lucide-react";
 
@@ -228,24 +227,7 @@ function Sidebar() {
 
                         </li>
 
-                        <li>
-
-                            <NavLink
-                                to="/models"
-                                className={({ isActive }) =>
-                                    isActive
-                                        ? "nav-item nav-item-active"
-                                        : "nav-item"
-                                }
-                            >
-
-                                <Bot className="nav-icon" />
-
-                                <span>AI Models</span>
-
-                            </NavLink>
-
-                        </li>
+                        
 
                         <li>
 

@@ -14,7 +14,6 @@ import History from './pages/HistoryPage/HistoryPage.jsx';
 import Documents from './pages/DocumentPage/DocumentsPage.jsx';
 import Notes from './pages/NotePage/NotePage.jsx';
 import UploadDocument from './pages/UploadDocPage/Upload.jsx';
-import AIModels from './pages/AIModelPage/ModelPage.jsx';
 import Settings from './pages/SettingsPage/SettingsPage.jsx';
 import AuthPage from './pages/auth/AuthPage.jsx';
 
@@ -41,8 +40,6 @@ const router =createBrowserRouter([
       {path : "notes",element: <Notes />},
 
       {path:"upload",element:<UploadDocument />},
-
-      {path:"models",element:<AIModels />},
 
       {path:"settings",element:<Settings />}
     ],

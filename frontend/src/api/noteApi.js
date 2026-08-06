@@ -77,3 +77,23 @@ export async function updateNote(id, note) {
     }
     return data
 }
+
+export async function deleteNote(id) {
+    const token = getAccessToken();
+    const response = await fetch(
+        `${BASE_URL}/workspace/notes/${id}/`,
+        {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+    if (!response.ok) {
+        const data = await response.json();
+        throw new Error(
+            data.detail || "Unable to delete note."
+        );
+    }
+    return true;
+}

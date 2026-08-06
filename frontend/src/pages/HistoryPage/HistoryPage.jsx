@@ -1,105 +1,289 @@
 import "./HistoryPage.css";
 
+import { useNavigate } from "react-router-dom";
+
+import { useHistoryQuery } from "../../hooks/useHistoryQuery";
+import { Trash2 } from "lucide-react";
+import { useDeleteHistoryMutation } from "../../hooks/useDeleteHistoryMutation";
+
+import {
+    MessageCircle,
+    FileText,
+    NotebookPen,
+    ArrowRight,
+} from "lucide-react";
+
 function History() {
-  return (
-    <section className="history-page">
 
-      <div className="history-header">
+    const navigate = useNavigate();
+    const deleteHistoryMutation = useDeleteHistoryMutation();
 
-        <div>
-          <h1>History</h1>
-          <p>View and continue your previous AI conversations.</p>
-        </div>
+    const {
 
-        <button className="clear-all-history">
-          Clear History
-        </button>
+        data: history = [],
 
-      </div>
+        isLoading,
 
-      <div className="history-toolbar">
+        error,
 
-        <div className="history-search">
-          <span>⌕</span>
+    } = useHistoryQuery();
 
-          <input
-            type="text"
-            placeholder="Search conversations..."
-          />
-        </div>
+    function handleContinue(item) {
 
-        <button className="history-filter">
-          All Conversations
-          <span>⌄</span>
-        </button>
+        if (item.type === "chat") {
 
-      </div>
+            navigate(`/chat/${item.target_id}`);
 
-      <div className="history-date-group">
+            return;
 
-        <h2>Today</h2>
+        }
 
-        <div className="history-card">
-          <div className="history-card-main">
-            <h3>Django REST API Architecture</h3>
+        if (item.type === "document") {
 
-            <p>
-              Discussed API structure, serializers and service-layer architecture.
-            </p>
+            navigate("/documents", {
 
-            <span>12 messages · 4:32 PM</span>
-          </div>
+                state: {
 
-          <div className="history-card-actions">
-            <button>Continue</button>
-            <button>⋮</button>
-          </div>
-        </div>
+                    documentId: item.target_id,
 
-        <div className="history-card">
-          <div className="history-card-main">
-            <h3>Understanding React Router</h3>
+                },
 
-            <p>
-              Nested routing, Outlet, NavLink and application layouts.
-            </p>
+            });
 
-            <span>18 messages · 1:18 PM</span>
-          </div>
+            return;
 
-          <div className="history-card-actions">
-            <button>Continue</button>
-            <button>⋮</button>
-          </div>
-        </div>
+        }
 
-      </div>
+        if (item.type === "note") {
 
-      <div className="history-date-group">
+            navigate("/notes", {
 
-        <h2>Yesterday</h2>
+                state: {
 
-        <div className="history-card">
-          <div className="history-card-main">
-            <h3>Document RAG Pipeline</h3>
+                    noteId: item.target_id,
 
-            <p>
-              Retrieval, context building and vector search discussion.
-            </p>
+                },
 
-            <span>24 messages · Jul 21</span>
-          </div>
+            });
 
-          <div className="history-card-actions">
-            <button>Continue</button>
-            <button>⋮</button>
-          </div>
-        </div>
+        }
 
-      </div>
+    }
 
-    </section>
-  );
+    function getIcon(type) {
+
+        switch (type) {
+
+            case "chat":
+
+                return <MessageCircle size={17} />;
+
+            case "document":
+
+                return <FileText size={17} />;
+
+            case "note":
+
+                return <NotebookPen size={17} />;
+
+            default:
+
+                return null;
+
+        }
+
+    }
+
+    function getLabel(type) {
+
+        switch (type) {
+
+            case "chat":
+
+                return "Chat";
+
+            case "document":
+
+                return "Document";
+
+            case "note":
+
+                return "Note";
+
+            default:
+
+                return "";
+
+        }
+
+    }
+
+    function formatDate(date) {
+
+        return new Date(date).toLocaleString([], {
+
+            dateStyle: "medium",
+
+            timeStyle: "short",
+
+        });
+
+    }
+
+    function handleDelete(item) {
+
+    if (!window.confirm(`Delete this ${item.type}?`)) {
+
+        return;
+
+    }
+
+    deleteHistoryMutation.mutate({
+
+        type: item.type,
+
+        targetId: item.target_id,
+
+    });
+
+}
+
+    return (
+
+        <section className="history-page">
+
+            <div className="history-header">
+
+                <div>
+
+                    <h1>History</h1>
+
+                    <p>
+
+                        Continue your previous work.
+
+                    </p>
+
+                </div>
+
+                <button className="clear-all-history">
+
+                    Clear History
+
+                </button>
+
+            </div>
+
+            <div className="history-toolbar">
+
+              
+
+            </div>
+
+            <div className="history-list">
+
+                {isLoading && (
+
+                    <p className="history-message">
+
+                        Loading history...
+
+                    </p>
+
+                )}
+
+                {error && (
+
+                    <p className="history-message">
+
+                        Failed to load history.
+
+                    </p>
+
+                )}
+
+                {!isLoading &&
+                    !error &&
+                    history.length === 0 && (
+
+                        <p className="history-message">
+
+                            No history found.
+
+                        </p>
+
+                    )}
+
+                {!isLoading &&
+                    !error &&
+                    history.map((item) => (
+
+                        <div
+                            key={`${item.type}-${item.id}`}
+                            className="history-card"
+                        >
+
+                            <div className="history-card-icon">
+
+                                {getIcon(item.type)}
+
+                            </div>
+
+                            <div className="history-card-main">
+
+                                <span className="history-type">
+
+                                    {getLabel(item.type)}
+
+                                </span>
+
+                                <h3>
+
+                                    {item.title}
+
+                                </h3>
+
+                                <span className="history-date">
+
+                                    {formatDate(item.updated_at)}
+
+                                </span>
+
+                            </div>
+
+                            <button
+                                className="history-continue-button"
+                                onClick={() =>
+                                    handleContinue(item)
+                                }
+                            >
+
+                                Continue
+
+                                <ArrowRight size={14} />
+
+                            </button>
+                            <button
+                                className="history-delete-button"
+                                onClick={() =>
+                                    handleDelete(item)
+                                }
+                            >
+                            
+                                <Trash2 size={15} />
+                              
+                            </button>
+
+                        </div>
+
+                    ))}
+
+            </div>
+
+        </section>
+
+    );
+
 }
 
 export default History;

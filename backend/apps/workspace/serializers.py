@@ -156,3 +156,12 @@ class SearchNoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
         fields = [ "id", "title", "updated_at"]
+
+
+class HistorySerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    target_id = serializers.IntegerField()
+    type = serializers.CharField()
+    title = serializers.CharField()
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()

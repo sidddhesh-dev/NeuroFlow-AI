@@ -6,7 +6,8 @@ from .models import Note,Document
 from rest_framework import status
 from apps.workspace.serializers import (NoteSerializer,NoteListSerializer,DocumentSerializer,
                                         DocumentRetriveSerializer,QuerySerializer,ChatSessionSerializer,
-                                        SearchChatSerializer,SearchDocumentSerializer,SearchNoteSerializer)
+                                        SearchChatSerializer,SearchDocumentSerializer,SearchNoteSerializer,
+                                        HistorySerializer)
 from apps.workspace.permissions import IsOwner
 from django.db.models import Q
 from apps.workspace.services.ai_service import AiService
@@ -15,6 +16,7 @@ from apps.workspace.tasks import process_document
 from apps.workspace.services.chat_service import ChatService
 from apps.workspace.models import ChatSession
 from apps.workspace.services.search_service import SearchService
+from apps.workspace.services.history_service import HistoryService
 
 
 
@@ -204,3 +206,22 @@ class SearchView(APIView):
             "notes": SearchNoteSerializer(results["notes"],many=True).data,
             },status=status.HTTP_200_OK )
 
+class HistoryView(APIView):
+
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        history = HistoryService.get_history(request.user)
+        serializer = HistorySerializer(history,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
+    def delete(self, request):
+        item_type = request.data.get("type")
+        target_id = request.data.get("target_id")
+        if not item_type or not target_id:
+            return Response(
+                { "detail": "type and target_id are required."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            HistoryService.delete_history_item(request.user,item_type,target_id)
+        except ValueError as error:
+            return Response({ "detail": str(error),}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "History item deleted successfully.",},status=status.HTTP_200_OK)
