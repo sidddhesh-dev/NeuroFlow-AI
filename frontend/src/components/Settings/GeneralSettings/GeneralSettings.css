@@ -1,0 +1,165 @@
+.general-settings{
+
+    display:flex;
+    flex-direction:column;
+
+    gap:30px;
+}
+
+.settings-section-header{
+
+    padding-bottom:20px;
+
+    border-bottom:1px solid var(--border);
+}
+
+.settings-section-header h2{
+
+    font-size:28px;
+    font-weight:700;
+
+    color:var(--text-primary);
+}
+
+.settings-section-header p{
+
+    margin-top:8px;
+
+    color:var(--text-secondary);
+
+    font-size:14px;
+
+    line-height:1.6;
+}
+
+.settings-group{
+
+    display:flex;
+    flex-direction:column;
+}
+
+.setting-card{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    gap:40px;
+
+    padding:24px 0;
+
+    border-bottom:1px solid var(--border-soft);
+}
+
+.setting-card:last-child{
+
+    border-bottom:none;
+}
+
+.setting-info{
+
+    flex:1;
+}
+
+.setting-info h3{
+
+    font-size:16px;
+    font-weight:600;
+
+    color:var(--text-primary);
+}
+
+.setting-info p{
+
+    margin-top:6px;
+
+    max-width:560px;
+
+    color:var(--text-secondary);
+
+    font-size:13px;
+
+    line-height:1.7;
+}
+
+.setting-select{
+
+    width:180px;
+    height:42px;
+
+    padding:0 14px;
+
+    background:var(--bg-card);
+
+    color:var(--text-primary);
+
+    border:1px solid var(--border);
+    border-radius:10px;
+
+    font-size:14px;
+
+    outline:none;
+
+    cursor:pointer;
+}
+
+.setting-select:hover{
+
+    border-color:var(--accent);
+}
+
+.setting-select:focus{
+
+    border-color:var(--accent);
+
+    box-shadow:0 0 0 3px rgba(85,70,232,.15);
+}
+
+.setting-toggle{
+
+    width:52px;
+    height:28px;
+
+    display:flex;
+    align-items:center;
+
+    padding:3px;
+
+    background:#313a49;
+
+    border:none;
+    border-radius:999px;
+
+    cursor:pointer;
+
+    transition:.18s ease;
+}
+
+.setting-toggle span{
+
+    width:22px;
+    height:22px;
+
+    background:#ffffff;
+
+    border-radius:50%;
+
+    transition:.18s ease;
+}
+
+.setting-toggle:hover{
+
+    background:#3b4558;
+}
+
+.setting-toggle-active{
+
+    justify-content:flex-end;
+
+    background:var(--accent);
+}
+
+.setting-toggle-active:hover{
+
+    background:var(--accent-hover);
+}

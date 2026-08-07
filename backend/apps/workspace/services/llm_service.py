@@ -4,6 +4,8 @@ from openai import OpenAI
 from groq import Groq
 import time
 import logging
+from django.conf import settings
+
 
 logger=logging.getLogger(__name__)
 
@@ -115,4 +117,15 @@ class LLMService:
 
         raise Exception("All LLM providers failed.")
         
-    
+
+    @staticmethod
+    def get_status():
+        provider = getattr(
+            settings,
+            "DEFAULT_LLM_PROVIDER",
+            "Gemini",
+        )
+        return {
+            "provider": provider,
+            "status": "online",
+        }

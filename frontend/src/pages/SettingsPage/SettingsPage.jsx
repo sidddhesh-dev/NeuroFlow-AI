@@ -1,94 +1,75 @@
 import "./SettingsPage.css";
+import { useState } from "react";
+
+import SettingsNavigation from "../../components/Settings/SettingsNavigation/SettingsNavigation";
+import GeneralSettings from "../../components/Settings/GeneralSettings/GeneralSettings";
+import AISettings from "../../components/Settings/AISettings/AISettings";
+import AboutSection from "../../components/Settings/AboutSection/AboutSection";
+import Developer from "../../components/Settings/Developer/Developer";
 
 function Settings() {
-  return (
-    <section className="settings-page">
 
-      <div className="settings-header">
-        <h1>Settings</h1>
+    const [activeSection, setActiveSection] = useState("general");
 
-        <p>
-          Configure your NeuroFlow workspace preferences.
-        </p>
-      </div>
+    function renderSection() {
 
-      <div className="settings-layout">
+        switch (activeSection) {
 
-        <nav className="settings-navigation">
+            case "general":
+                return <GeneralSettings />;
 
-          <button className="settings-nav-active">
-            General
-          </button>
+            case "ai":
+                return <AISettings />;
 
-          <button>
-            Appearance
-          </button>
+            case "about":
+                return <AboutSection />;
 
-          <button>
-            AI Preferences
-          </button>
+            case "developer":
+                return <Developer />;
 
-          <button>
-            Privacy
-          </button>
+            default:
+                return <GeneralSettings />;
 
-          <button>
-            Security
-          </button>
+        }
 
-        </nav>
+    }
 
-        <div className="settings-content">
+    return (
 
-          <div className="settings-section">
+        <section className="settings-page">
 
-            <div className="settings-section-heading">
-              <h2>General</h2>
-              <p>Configure basic application preferences.</p>
+            <div className="settings-header">
+
+                <h1>Settings</h1>
+
+                <p>
+                    Configure your NeuroFlow AI workspace and preferences.
+                </p>
+
             </div>
 
-            <div className="setting-row">
-              <div>
-                <h3>Language</h3>
-                <p>Select your preferred application language.</p>
-              </div>
+            <div className="settings-layout">
 
-              <button className="setting-select">
-                English
-                <span>⌄</span>
-              </button>
+                <SettingsNavigation
+
+                    activeSection={activeSection}
+
+                    setActiveSection={setActiveSection}
+
+                />
+
+                <div className="settings-content">
+
+                    {renderSection()}
+
+                </div>
+
             </div>
 
-            <div className="setting-row">
-              <div>
-                <h3>Compact Interface</h3>
-                <p>Use reduced spacing across the application.</p>
-              </div>
+        </section>
 
-              <button className="setting-toggle">
-                <span></span>
-              </button>
-            </div>
+    );
 
-            <div className="setting-row">
-              <div>
-                <h3>Conversation Memory</h3>
-                <p>Allow NeuroFlow to use previous conversation context.</p>
-              </div>
-
-              <button className="setting-toggle setting-toggle-active">
-                <span></span>
-              </button>
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-  );
 }
 
 export default Settings;

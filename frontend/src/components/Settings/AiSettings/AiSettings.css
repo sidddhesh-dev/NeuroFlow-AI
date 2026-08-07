@@ -1,0 +1,23 @@
+.ai-settings{
+
+    display:flex;
+    flex-direction:column;
+
+    gap:28px;
+}
+
+.setting-value{
+
+    padding:8px 16px;
+
+    background:var(--bg-card);
+
+    border:1px solid var(--border);
+
+    border-radius:8px;
+
+    color:var(--text-primary);
+
+    font-size:14px;
+    font-weight:600;
+}

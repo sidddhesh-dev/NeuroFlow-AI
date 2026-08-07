@@ -165,3 +165,4 @@ class HistorySerializer(serializers.Serializer):
     title = serializers.CharField()
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
+

@@ -6,6 +6,7 @@ import "./Sidebar.css";
 import { createChatSession } from "../../api/chatApi";
 import SearchModal from "../SearchModal/SearchModal";
 import ProfileMenu from "../ProfileMenu/ProfileMenu";
+import SidebarModelCard from "../ModelCard/ModelCard";
 
 import {
     BrainCircuit,
@@ -251,6 +252,8 @@ function Sidebar() {
                     </ul>
 
                 </nav>
+
+                <SidebarModelCard />
 
                 <footer className="sidebar-footer">
 

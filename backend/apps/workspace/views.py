@@ -17,6 +17,7 @@ from apps.workspace.services.chat_service import ChatService
 from apps.workspace.models import ChatSession
 from apps.workspace.services.search_service import SearchService
 from apps.workspace.services.history_service import HistoryService
+from apps.workspace.services.llm_service import LLMService
 
 
 
@@ -225,3 +226,11 @@ class HistoryView(APIView):
         except ValueError as error:
             return Response({ "detail": str(error),}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"message": "History item deleted successfully.",},status=status.HTTP_200_OK)
+
+class ModelStatusView(APIView):
+
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        return Response(
+            LLMService.get_status(),
+            status=status.HTTP_200_OK)
