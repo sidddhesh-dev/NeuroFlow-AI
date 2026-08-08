@@ -17,15 +17,19 @@ export function AuthProvider({ children }) {
     }
 }
 
-    async function login(credentials) {
+   async function login(credentials) {
 
-        const tokens = await loginUser(credentials);
+    const tokens = await loginUser(credentials);
 
-        saveTokens(tokens);
+    saveTokens(tokens);
 
-        await loadUser();
-    }
+    const currentUser = await getCurrentUser();
 
+    setUser(currentUser);
+
+    return currentUser;
+
+}
     async function logout() {
         clearTokens();
         setUser(null);

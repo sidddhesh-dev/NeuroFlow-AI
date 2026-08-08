@@ -1,6 +1,58 @@
 import "./GeneralSettings.css";
 
+import { useSettingsQuery } from "../../../hooks/useSettingsQuery";
+import { useUpdateSettingsMutation } from "../../../hooks/useUpdateSettingsMutation";
+
 function GeneralSettings() {
+
+    const {
+        data: settings,
+        isLoading,
+        error,
+    } = useSettingsQuery();
+
+    const updateSettingsMutation =
+        useUpdateSettingsMutation();
+
+    function updateSetting(field, value) {
+
+        updateSettingsMutation.mutate({
+
+            ...settings,
+
+            [field]: value,
+
+        });
+
+    }
+
+    if (isLoading) {
+
+        return (
+
+            <div className="general-settings">
+
+                <p>Loading settings...</p>
+
+            </div>
+
+        );
+
+    }
+
+    if (error) {
+
+        return (
+
+            <div className="general-settings">
+
+                <p>Failed to load settings.</p>
+
+            </div>
+
+        );
+
+    }
 
     return (
 
@@ -34,39 +86,42 @@ function GeneralSettings() {
 
                     </div>
 
-                    <select className="setting-select">
+                    <select
+                        className="setting-select"
+                        value={settings.landing_page}
+                        onChange={(event) =>
+                            updateSetting(
+                                "landing_page",
+                                event.target.value
+                            )
+                        }
+                    >
 
-                        <option>Chat</option>
+                        <option value="chat">
 
-                        <option>Documents</option>
+                            Chat
 
-                        <option>Notes</option>
+                        </option>
 
-                        <option>History</option>
+                        <option value="documents">
+
+                            Documents
+
+                        </option>
+
+                        <option value="notes">
+
+                            Notes
+
+                        </option>
+
+                        <option value="history">
+
+                            History
+
+                        </option>
 
                     </select>
-
-                </div>
-
-                <div className="setting-card">
-
-                    <div className="setting-info">
-
-                        <h3>Compact Interface</h3>
-
-                        <p>
-
-                            Reduce spacing throughout the application for a denser layout.
-
-                        </p>
-
-                    </div>
-
-                    <button className="setting-toggle">
-
-                        <span></span>
-
-                    </button>
 
                 </div>
 
@@ -78,13 +133,25 @@ function GeneralSettings() {
 
                         <p>
 
-                            Display a confirmation dialog before deleting chats, notes or documents.
+                            Display a confirmation dialog before deleting chats, notes, and documents.
 
                         </p>
 
                     </div>
 
-                    <button className="setting-toggle setting-toggle-active">
+                    <button
+                        className={`setting-toggle ${
+                            settings.confirm_before_delete
+                                ? "setting-toggle-active"
+                                : ""
+                        }`}
+                        onClick={() =>
+                            updateSetting(
+                                "confirm_before_delete",
+                                !settings.confirm_before_delete
+                            )
+                        }
+                    >
 
                         <span></span>
 
@@ -100,13 +167,25 @@ function GeneralSettings() {
 
                         <p>
 
-                            Enable smooth animations throughout the workspace.
+                            Enable smooth animations throughout the application.
 
                         </p>
 
                     </div>
 
-                    <button className="setting-toggle setting-toggle-active">
+                    <button
+                        className={`setting-toggle ${
+                            settings.animations
+                                ? "setting-toggle-active"
+                                : ""
+                        }`}
+                        onClick={() =>
+                            updateSetting(
+                                "animations",
+                                !settings.animations
+                            )
+                        }
+                    >
 
                         <span></span>
 

@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useHistoryQuery } from "../../hooks/useHistoryQuery";
 import { Trash2 } from "lucide-react";
 import { useDeleteHistoryMutation } from "../../hooks/useDeleteHistoryMutation";
+import { useDeleteConfirmation } from "../../hooks/useDeleteConfirmation";
+
 
 import {
     MessageCircle,
@@ -17,6 +19,8 @@ function History() {
 
     const navigate = useNavigate();
     const deleteHistoryMutation = useDeleteHistoryMutation();
+
+    const { confirmDelete } = useDeleteConfirmation();
 
     const {
 
@@ -130,9 +134,15 @@ function History() {
 
     }
 
-    function handleDelete(item) {
+    async function handleDelete(item) {
 
-    if (!window.confirm(`Delete this ${item.type}?`)) {
+    const confirmed = await confirmDelete(
+
+        `Delete this ${item.type}?`
+
+    );
+
+    if (!confirmed) {
 
         return;
 

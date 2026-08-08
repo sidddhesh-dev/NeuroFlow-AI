@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import useAuth from "../../context/UseAuth";
 import "./AuthPage.css";
+import { getSettings } from "../../api/settingsApi";
 
 function LoginForm({ setIsLogin }) {
     const navigate = useNavigate();
@@ -36,8 +37,17 @@ function LoginForm({ setIsLogin }) {
                 username: formData.username,
                 password: formData.password,
             });
-
-            navigate("/");
+            
+            const settings = await getSettings();
+            
+            const routes = {
+                chat: "/",
+                documents: "/documents",
+                notes: "/notes",
+                history: "/history",
+            };
+            
+            navigate(routes[settings.landing_page] || "/");
 
         } catch (error) {
             console.error(error);

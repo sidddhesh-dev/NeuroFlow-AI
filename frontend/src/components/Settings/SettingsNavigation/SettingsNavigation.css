@@ -1,101 +1,83 @@
-.settings-navigation {
+.settings-navigation{
 
-    display: flex;
-    flex-direction: column;
+    width:220px;
 
-    gap: 8px;
+    display:flex;
+    flex-direction:column;
 
-    padding: 18px;
+    gap:14px;
 
-    background: var(--bg-panel);
+    padding:16px;
 
-    border: 1px solid var(--border);
-    border-radius: 14px;
+    background:var(--bg-card);
 
-    position: sticky;
-    top: 0;
+    border:1px solid var(--border);
 
-    height: fit-content;
+    border-radius:12px;
 }
 
-.settings-navigation-title {
+.settings-navigation-title{
 
-    margin: 0 0 14px;
+    margin:0 0 6px;
 
-    color: var(--text-muted);
+    color:var(--text-secondary);
 
-    font-size: 11px;
-    font-weight: 600;
+    font-size:10px;
+    font-weight:600;
 
-    text-transform: uppercase;
+    text-transform:uppercase;
 
-    letter-spacing: 1px;
+    letter-spacing:.8px;
 }
 
-.settings-navigation-item {
+.settings-navigation-item{
 
-    width: 100%;
-    min-height: 42px;
+    width:100%;
+    height:36px;
 
-    display: flex;
-    align-items: center;
+    display:flex;
+    align-items:center;
 
-    padding: 0 14px;
+    padding:0 14px;
 
-    border: none;
-    border-radius: 10px;
+    background:transparent;
 
-    background: transparent;
+    border:none;
+    border-radius:8px;
 
-    color: var(--text-secondary);
+    color:var(--text-secondary);
 
-    font-size: 14px;
-    font-weight: 500;
+    font-size:12px;
+    font-weight:500;
 
-    text-align: left;
+    text-align:left;
 
-    cursor: pointer;
+    cursor:pointer;
 
     transition:
-        background-color .18s ease,
+        background .18s ease,
         color .18s ease;
 }
 
-.settings-navigation-item:hover {
+.settings-navigation-item:hover{
 
-    background: var(--bg-hover);
+    background:rgba(97,76,255,.15);
 
-    color: var(--text-primary);
+    color:var(--text-primary);
 }
 
-.settings-navigation-item-active {
+.settings-navigation-item-active{
 
-    background: var(--accent);
+    background:var(--accent);
 
-    color: #ffffff;
+    color:#ffffff;
 
-    font-weight: 600;
-
-    box-shadow:
-        0 0 0 1px rgba(255,255,255,.03) inset,
-        0 8px 20px rgba(85,70,232,.22);
+    font-weight:600;
 }
 
-.settings-navigation-item-active:hover {
+.settings-navigation-item-active:hover{
 
-    background: var(--accent-hover);
+    background:var(--accent-hover);
 
-    color: #ffffff;
-}
-
-.settings-navigation-item:focus {
-
-    outline: none;
-}
-
-.settings-navigation-item:focus-visible {
-
-    outline: 2px solid rgba(85,70,232,.35);
-
-    outline-offset: 2px;
+    color:#ffffff;
 }

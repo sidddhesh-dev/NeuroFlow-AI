@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import SettingsNavigation from "../../components/Settings/SettingsNavigation/SettingsNavigation";
 import GeneralSettings from "../../components/Settings/GeneralSettings/GeneralSettings";
-import AISettings from "../../components/Settings/AISettings/AISettings";
+import AISettings from "../../components/Settings/AiSettings/AiSettings";
 import AboutSection from "../../components/Settings/AboutSection/AboutSection";
 import Developer from "../../components/Settings/Developer/Developer";
 

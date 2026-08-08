@@ -123,3 +123,14 @@ ol{
         box-shadow .18s ease,
         opacity .18s ease;
 }
+
+.disable-animations *,
+.disable-animations *::before,
+.disable-animations *::after{
+
+    animation:none !important;
+
+    transition:none !important;
+
+    scroll-behavior:auto !important;
+}
