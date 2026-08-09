@@ -56,14 +56,58 @@ class AccountSecuritySerializer(serializers.Serializer):
     email = serializers.EmailField()
     date_joined = serializers.DateTimeField()
     last_login = serializers.DateTimeField(allow_null=True)
-    password_last_changed = serializers.DateTimeField(allow_null=True)
+
+    is_staff = serializers.BooleanField()
+    is_superuser = serializers.BooleanField()
+    is_active = serializers.BooleanField()
+
+    account_type = serializers.CharField()
+    email_verified = serializers.BooleanField()
+
+    timezone = serializers.CharField()
+    language = serializers.CharField()
+    country = serializers.CharField()
+
+
+    password_last_changed = serializers.DateTimeField(
+        allow_null=True
+    )
+
+    two_factor_enabled = serializers.BooleanField()
+    active_sessions_supported = serializers.BooleanField()
+    delete_account_supported = serializers.BooleanField()
+
+    
     provider = serializers.CharField()
     provider_model = serializers.CharField()
     provider_version = serializers.CharField()
     provider_status = serializers.CharField()
+
     embedding_model = serializers.CharField()
     embedding_dimensions = serializers.IntegerField()
     vector_store = serializers.CharField()
-    two_factor_enabled = serializers.BooleanField()
-    active_sessions_supported = serializers.BooleanField()
-    delete_account_supported = serializers.BooleanField()
+
+class ChangePasswordSerializer(serializers.Serializer):
+
+    current_password = serializers.CharField(write_only=True,required=True)
+    new_password = serializers.CharField( write_only=True, required=True, min_length=8)
+    confirm_password = serializers.CharField( write_only=True, required=True)
+
+    def validate(self, attrs):
+        if attrs["new_password"] != attrs["confirm_password"]:
+            raise serializers.ValidationError({ "confirm_password": "Passwords do not match."})
+        return attrs
+
+class DeleteAccountSerializer(serializers.Serializer):
+
+    confirmation = serializers.CharField()
+
+    def validate_confirmation(self, value):
+
+        if value != "DELETE":
+
+            raise serializers.ValidationError(
+                "Type DELETE to confirm account deletion."
+            )
+
+        return value

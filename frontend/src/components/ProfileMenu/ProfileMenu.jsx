@@ -1,7 +1,9 @@
 import "./ProfileMenu.css";
+
 import useAuth from "../../context/UseAuth";
 
 import { useEffect, useRef } from "react";
+
 import {
     User,
     Shield,
@@ -9,9 +11,18 @@ import {
     LogOut,
 } from "lucide-react";
 
-function ProfileMenu({ open, onClose }) {
+function ProfileMenu({
+
+    open,
+
+    onClose,
+
+    openSettings,
+
+}) {
 
     const menuRef = useRef(null);
+
     const { user, logout } = useAuth();
 
     useEffect(() => {
@@ -22,7 +33,9 @@ function ProfileMenu({ open, onClose }) {
                 menuRef.current &&
                 !menuRef.current.contains(event.target)
             ) {
+
                 onClose();
+
             }
 
         }
@@ -30,24 +43,56 @@ function ProfileMenu({ open, onClose }) {
         function handleEscape(event) {
 
             if (event.key === "Escape") {
+
                 onClose();
+
             }
 
         }
 
-        document.addEventListener("mousedown", handleClickOutside);
-        document.addEventListener("keydown", handleEscape);
+        document.addEventListener(
+
+            "mousedown",
+
+            handleClickOutside
+
+        );
+
+        document.addEventListener(
+
+            "keydown",
+
+            handleEscape
+
+        );
 
         return () => {
 
-            document.removeEventListener("mousedown", handleClickOutside);
-            document.removeEventListener("keydown", handleEscape);
+            document.removeEventListener(
+
+                "mousedown",
+
+                handleClickOutside
+
+            );
+
+            document.removeEventListener(
+
+                "keydown",
+
+                handleEscape
+
+            );
 
         };
 
     }, [onClose]);
 
-    if (!open) return null;
+    if (!open) {
+
+        return null;
+
+    }
 
     return (
 
@@ -60,14 +105,23 @@ function ProfileMenu({ open, onClose }) {
 
                 <div className="menu-avatar">
 
-                {user?.username?.charAt(0).toUpperCase()}
-                
-            </div>
+                    {user?.username?.charAt(0).toUpperCase()}
+
+                </div>
 
                 <div className="menu-user">
 
-                    <h4>{user?.username}</h4>
-                    <span>{user?.email}</span>
+                    <h4>
+
+                        {user?.username}
+
+                    </h4>
+
+                    <span>
+
+                        {user?.email}
+
+                    </span>
 
                 </div>
 
@@ -75,35 +129,102 @@ function ProfileMenu({ open, onClose }) {
 
             <div className="profile-divider" />
 
-            <button className="profile-menu-item">
+            <button
+
+                className="profile-menu-item"
+
+                onClick={() => {
+
+                    openSettings("profile");
+
+                    onClose();
+
+                }}
+
+            >
 
                 <User size={18} />
 
-                <span>My Profile</span>
+                <span>
+
+                    My Profile
+
+                </span>
 
             </button>
 
-            <button className="profile-menu-item">
+            <button
+
+                className="profile-menu-item"
+
+                onClick={() => {
+
+                    openSettings("security");
+
+                    onClose();
+
+                }}
+
+            >
 
                 <Shield size={18} />
 
-                <span>Account & Security</span>
+                <span>
+
+                    Account & Security
+
+                </span>
 
             </button>
 
-            <button className="profile-menu-item">
+            <button
+
+                className="profile-menu-item"
+
+                onClick={() => {
+
+                    openSettings("help");
+
+                    onClose();
+
+                }}
+
+            >
 
                 <CircleHelp size={18} />
 
-                <span>Help & Feedback</span>
+                <span>
+
+                    Help & Feedback
+
+                </span>
 
             </button>
 
             <div className="profile-divider" />
 
-            <button className="profile-menu-item logout" onClick={() => {onClose();logout();}}>
+            <button
+
+                className="profile-menu-item logout"
+
+                onClick={() => {
+
+                    onClose();
+
+                    logout();
+
+                }}
+
+            >
+
                 <LogOut size={18} />
-                <span>Logout</span>
+
+                <span>
+
+                    Logout
+
+                </span>
+
             </button>
 
         </div>

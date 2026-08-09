@@ -18,10 +18,6 @@ function SettingsNavigation({
             id: "about",
             label: "About NeuroFlow AI",
         },
-        {
-            id: "developer",
-            label: "Developer",
-        },
     ];
 
     return (
@@ -57,6 +53,26 @@ function SettingsNavigation({
                 </button>
 
             ))}
+
+            <div className="settings-navigation-divider" />
+
+            <button
+
+                className={`settings-navigation-developer ${
+                    activeSection === "developer"
+                        ? "settings-navigation-item-active"
+                        : ""
+                }`}
+
+                onClick={() =>
+                    setActiveSection("developer")
+                }
+
+            >
+
+                Developer Portfolio →
+
+            </button>
 
         </aside>
 

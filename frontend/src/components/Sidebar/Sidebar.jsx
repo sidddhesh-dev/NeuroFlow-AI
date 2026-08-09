@@ -7,6 +7,7 @@ import { createChatSession } from "../../api/chatApi";
 import SearchModal from "../SearchModal/SearchModal";
 import ProfileMenu from "../ProfileMenu/ProfileMenu";
 import SidebarModelCard from "../ModelCard/ModelCard";
+import SettingsModal from "../AccountMenu/SettingsModal";
 
 import {
     BrainCircuit,
@@ -27,7 +28,9 @@ function Sidebar() {
     const navigate = useNavigate();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
-    console.log(isProfileOpen);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [activeSection, setActiveSection] = useState("profile");
+   
 
     useEffect(() => {
 
@@ -83,6 +86,16 @@ function Sidebar() {
         }
 
     }
+
+    function openSettings(section) {
+
+    setActiveSection(section);
+
+    setIsSettingsOpen(true);
+
+    setIsProfileOpen(false);
+
+}
 
     return (
 
@@ -275,9 +288,28 @@ function Sidebar() {
                   </button>
 
                   <ProfileMenu
-                      open={isProfileOpen}
-                      onClose={() => setIsProfileOpen(false)}
-                  />
+                    open={isProfileOpen}
+                    onClose={() => setIsProfileOpen(false)}
+                    openSettings={openSettings}
+                />
+                {
+                    isSettingsOpen && (
+                    
+                        <SettingsModal
+                    
+                            activeSection={activeSection}
+                    
+                            setActiveSection={setActiveSection}
+                    
+                            onClose={() =>
+                                setIsSettingsOpen(false)
+                            }
+                        
+                        />
+                        
+                    )
+                
+                }
 
               </footer>
             </aside>
