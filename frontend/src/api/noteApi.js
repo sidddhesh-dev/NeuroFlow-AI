@@ -1,99 +1,56 @@
-const BASE_URL = "http://127.0.0.1:8000";
-
-import { getAccessToken } from "./authApi";
+import { BASE_URL, authenticatedFetch } from "./authApi";
 
 export async function getNotes(search = "") {
-    const token = getAccessToken();
     const url = new URL(`${BASE_URL}/workspace/notes/`);
-    if (search) {
-        url.searchParams.append("search", search);
-    }
-    const response = await fetch(url, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+    if (search) url.searchParams.set("search", search);
+
+    const response = await authenticatedFetch(url);
     const data = await response.json();
-    if (!response.ok) {
+    if (!response.ok) 
         throw new Error(data.detail || "Failed to load notes.");
-    }
     return data;
 }
 
 export async function createNote(note) {
-    const token = getAccessToken();
-    const response = await fetch(
-        `${BASE_URL}/workspace/notes/`,
-        {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(note),
-        }
-    );
+    const response = await authenticatedFetch(`${BASE_URL}/workspace/notes/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(note),
+    });
     const data = await response.json();
-    if (!response.ok) {
+    if (!response.ok) 
         throw new Error(data.detail || "Unable to create note.");
-    }
     return data;
 }
 
 export async function getNote(id) {
-    const token = getAccessToken();
-    const response = await fetch(
-        `http://127.0.0.1:8000/workspace/notes/${id}/`,
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        }
-    );
-    if (!response.ok) {
-        throw new Error("Failed to fetch note");
-    }
-    return response.json();
+    const response = await authenticatedFetch(`${BASE_URL}/workspace/notes/${id}/`);
+    const data = await response.json();
+    if (!response.ok) 
+        throw new Error(data.detail || "Failed to fetch note.");
+    return data;
 }
 
 export async function updateNote(id, note) {
-    const token = getAccessToken();
-    const response = await fetch(
-        `${BASE_URL}/workspace/notes/${id}/`,
-        {
-            method: "PUT",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(note),
-        }
-    );
+    const response = await authenticatedFetch(`${BASE_URL}/workspace/notes/${id}/`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(note),
+    });
     const data = await response.json();
-    if (!response.ok) {
-        throw new Error(
-            data.detail || "Unable to update note."
-        );
-    }
-    return data
+    if (!response.ok) 
+        throw new Error(data.detail || "Unable to update note.");
+    return data;
 }
 
 export async function deleteNote(id) {
-    const token = getAccessToken();
-    const response = await fetch(
-        `${BASE_URL}/workspace/notes/${id}/`,
-        {
-            method: "DELETE",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        }
-    );
-    if (!response.ok) {
-        const data = await response.json();
-        throw new Error(
-            data.detail || "Unable to delete note."
-        );
-    }
+    const response = await authenticatedFetch(`${BASE_URL}/workspace/notes/${id}/`, {
+        method: "DELETE",
+    });
+    if (response.status === 204) return true;
+
+    const data = await response.json();
+    if (!response.ok) 
+        throw new Error(data.detail || "Unable to delete note.");
     return true;
 }

@@ -1,29 +1,21 @@
 import "./App.css";
-
 import { Outlet } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar/Sidebar";
 import { useAnimationSettings } from "./hooks/useAnimationSettings";
 
-function App(){
+function App() {
     useAnimationSettings();
 
-
-    return(
-
+    return (
         <div className="app-layout">
-
-            <Sidebar/>
+            <Sidebar />
 
             <div className="main-area">
-
-                <Outlet/>
-
+                <Outlet />
             </div>
         </div>
-
     );
-
 }
 
 export default App;

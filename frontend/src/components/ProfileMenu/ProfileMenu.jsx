@@ -1,236 +1,100 @@
 import "./ProfileMenu.css";
-
-import useAuth from "../../context/UseAuth";
-
 import { useEffect, useRef } from "react";
-
 import {
-    User,
-    Shield,
     CircleHelp,
     LogOut,
+    Shield,
+    User,
 } from "lucide-react";
 
-function ProfileMenu({
+import useAuth from "../../context/useAuth";
 
-    open,
-
-    onClose,
-
-    openSettings,
-
-}) {
-
+function ProfileMenu({ open, onClose, openSettings }) {
     const menuRef = useRef(null);
-
     const { user, logout } = useAuth();
 
     useEffect(() => {
-
         function handleClickOutside(event) {
-
-            if (
-                menuRef.current &&
-                !menuRef.current.contains(event.target)
-            ) {
-
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
                 onClose();
-
             }
-
         }
 
         function handleEscape(event) {
-
-            if (event.key === "Escape") {
-
-                onClose();
-
-            }
-
+            if (event.key === "Escape") onClose();
         }
 
-        document.addEventListener(
-
-            "mousedown",
-
-            handleClickOutside
-
-        );
-
-        document.addEventListener(
-
-            "keydown",
-
-            handleEscape
-
-        );
+        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener("keydown", handleEscape);
 
         return () => {
-
-            document.removeEventListener(
-
-                "mousedown",
-
-                handleClickOutside
-
-            );
-
-            document.removeEventListener(
-
-                "keydown",
-
-                handleEscape
-
-            );
-
+            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("keydown", handleEscape);
         };
-
     }, [onClose]);
 
-    if (!open) {
+    if (!open) return null;
 
-        return null;
+    function handleSettings(section) {
+        openSettings(section);
+        onClose();
+    }
 
+    function handleLogout() {
+        onClose();
+        logout();
     }
 
     return (
-
-        <div
-            className="profile-menu"
-            ref={menuRef}
-        >
-
+        <div className="profile-menu" ref={menuRef}>
             <div className="profile-menu-header">
-
                 <div className="menu-avatar">
-
                     {user?.username?.charAt(0).toUpperCase()}
-
                 </div>
 
                 <div className="menu-user">
-
-                    <h4>
-
-                        {user?.username}
-
-                    </h4>
-
-                    <span>
-
-                        {user?.email}
-
-                    </span>
-
+                    <h4>{user?.username}</h4>
+                    <span>{user?.email}</span>
                 </div>
-
             </div>
 
             <div className="profile-divider" />
 
             <button
-
                 className="profile-menu-item"
-
-                onClick={() => {
-
-                    openSettings("profile");
-
-                    onClose();
-
-                }}
-
+                onClick={() => handleSettings("profile")}
             >
-
                 <User size={18} />
-
-                <span>
-
-                    My Profile
-
-                </span>
-
+                <span>My Profile</span>
             </button>
 
             <button
-
                 className="profile-menu-item"
-
-                onClick={() => {
-
-                    openSettings("security");
-
-                    onClose();
-
-                }}
-
+                onClick={() => handleSettings("security")}
             >
-
                 <Shield size={18} />
-
-                <span>
-
-                    Account & Security
-
-                </span>
-
+                <span>Account & Security</span>
             </button>
 
             <button
-
                 className="profile-menu-item"
-
-                onClick={() => {
-
-                    openSettings("help");
-
-                    onClose();
-
-                }}
-
+                onClick={() => handleSettings("help")}
             >
-
                 <CircleHelp size={18} />
-
-                <span>
-
-                    Help & Feedback
-
-                </span>
-
+                <span>Help & Feedback</span>
             </button>
 
             <div className="profile-divider" />
 
             <button
-
                 className="profile-menu-item logout"
-
-                onClick={() => {
-
-                    onClose();
-
-                    logout();
-
-                }}
-
+                onClick={handleLogout}
             >
-
                 <LogOut size={18} />
-
-                <span>
-
-                    Logout
-
-                </span>
-
+                <span>Logout</span>
             </button>
-
         </div>
-
     );
-
 }
 
 export default ProfileMenu;

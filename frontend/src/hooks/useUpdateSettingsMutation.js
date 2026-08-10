@@ -3,12 +3,11 @@ import { updateSettings } from "../api/settingsApi";
 
 export function useUpdateSettingsMutation() {
     const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: updateSettings,
         onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ["settings"],
-            });
+            queryClient.invalidateQueries({ queryKey: ["settings"] });
         },
     });
 }

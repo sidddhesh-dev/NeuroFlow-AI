@@ -1,38 +1,21 @@
 import "./ChatInput.css";
-
 import { useState } from "react";
-import { Plus, ArrowUp } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 
 function ChatInput({ onSend }) {
-
     const [message, setMessage] = useState("");
 
-    const handleSubmit = (event) => {
-
+    function handleSubmit(event) {
         event.preventDefault();
 
-        if (!message.trim()) {
-            return;
-        }
+        if (!message.trim()) return;
+
         onSend(message);
         setMessage("");
-
-    };
+    }
 
     return (
-
-        <form
-            className="chat-input-form"
-            onSubmit={handleSubmit}
-        >
-
-            <button
-                type="button"
-                className="attachment-button"
-            >
-                <Plus size={18} />
-            </button>
-
+        <form className="chat-input-form" onSubmit={handleSubmit}>
             <textarea
                 className="chat-input"
                 placeholder="Message NeuroFlow AI..."
@@ -48,11 +31,8 @@ function ChatInput({ onSend }) {
             >
                 <ArrowUp size={18} />
             </button>
-
         </form>
-
     );
-
 }
 
 export default ChatInput;

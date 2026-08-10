@@ -1,17 +1,14 @@
 .app-layout {
-
     display: flex;
-
     width: 100vw;
     height: 100vh;
-
     overflow: hidden;
-
     background: var(--bg-app);
 }
 
-.main-area{
-    flex:1;
-    display:flex;
-    overflow:hidden;
+.main-area {
+    flex: 1;
+    display: flex;
+    min-width: 0;
+    overflow: hidden;
 }

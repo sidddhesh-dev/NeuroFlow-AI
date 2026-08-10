@@ -1,72 +1,39 @@
 import "./SettingsModal.css";
-
-import { X, User, Shield, CircleHelp } from "lucide-react";
+import { CircleHelp, Shield, User, X } from "lucide-react";
 
 import Profile from "./Profile/Profile";
 import AccountSecurity from "./AccountSecurity/AccountSecurity";
 import HelpFeedback from "./HelpFeedback/HelpFeedback";
 
-function SettingsModal({
-
-    activeSection,
-
-    setActiveSection,
-
-    onClose,
-
-}) {
-
+function SettingsModal({ activeSection, setActiveSection, onClose }) {
     function renderContent() {
-
         switch (activeSection) {
-
-            case "profile":
-
-                return <Profile />;
-
             case "security":
-
                 return <AccountSecurity />;
-
             case "help":
-
                 return <HelpFeedback />;
-
+            case "profile":
             default:
-
                 return <Profile />;
-
         }
-
     }
 
     return (
-
-        <div
-            className="settings-modal-overlay"
-            onClick={onClose}
-        >
-
+        <div className="settings-modal-overlay" onClick={onClose}>
             <div
                 className="settings-modal"
                 onClick={(event) => event.stopPropagation()}
             >
-
                 <aside className="settings-sidebar">
-
                     <div className="settings-sidebar-header">
-
                         <button
                             className="settings-close-button"
                             onClick={onClose}
                         >
-
                             <X size={18} />
-
                         </button>
 
                         <h2>Settings</h2>
-
                     </div>
 
                     <button
@@ -75,15 +42,10 @@ function SettingsModal({
                                 ? "settings-nav-active"
                                 : ""
                         }`}
-                        onClick={() =>
-                            setActiveSection("profile")
-                        }
+                        onClick={() => setActiveSection("profile")}
                     >
-
                         <User size={17} />
-
                         My Profile
-
                     </button>
 
                     <button
@@ -92,15 +54,10 @@ function SettingsModal({
                                 ? "settings-nav-active"
                                 : ""
                         }`}
-                        onClick={() =>
-                            setActiveSection("security")
-                        }
+                        onClick={() => setActiveSection("security")}
                     >
-
                         <Shield size={17} />
-
                         Account & Security
-
                     </button>
 
                     <button
@@ -109,31 +66,19 @@ function SettingsModal({
                                 ? "settings-nav-active"
                                 : ""
                         }`}
-                        onClick={() =>
-                            setActiveSection("help")
-                        }
+                        onClick={() => setActiveSection("help")}
                     >
-
                         <CircleHelp size={17} />
-
                         Help & Feedback
-
                     </button>
-
                 </aside>
 
                 <section className="settings-modal-content">
-
                     {renderContent()}
-
                 </section>
-
             </div>
-
         </div>
-
     );
-
 }
 
 export default SettingsModal;

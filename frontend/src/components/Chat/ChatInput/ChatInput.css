@@ -1,6 +1,7 @@
 .chat-input-form {
 
-    width: 100%;
+    width: 90%;
+    margin-left: 5%;
     max-width: 900px;
 
     display: flex;
@@ -80,6 +81,7 @@
     scrollbar-width: none;
 
     font-family: inherit;
+    margin-left: 20px;
 }
 
 .chat-input::placeholder {

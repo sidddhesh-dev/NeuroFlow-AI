@@ -1,22 +1,8 @@
-const BASE_URL = "http://127.0.0.1:8000";
-
-import { getAccessToken } from "./authApi";
+import { BASE_URL, authenticatedFetch } from "./authApi";
 
 export async function getModelStatus() {
-    const token = getAccessToken();
-    const response = await fetch(
-        `${BASE_URL}/workspace/model/`,
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        }
-    );
+    const response = await authenticatedFetch(`${BASE_URL}/workspace/model/`);
     const data = await response.json();
-    if (!response.ok) {
-        throw new Error(
-            data.detail || "Failed to load model status."
-        );
-    }
+    if (!response.ok) throw new Error(data.detail || "Failed to load model status.");
     return data;
 }

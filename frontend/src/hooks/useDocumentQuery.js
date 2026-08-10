@@ -5,7 +5,6 @@ export function useDocumentsQuery() {
     return useQuery({
         queryKey: ["documents"],
         queryFn: getDocuments,
-
         refetchInterval: 3000,
         refetchOnWindowFocus: true,
     });

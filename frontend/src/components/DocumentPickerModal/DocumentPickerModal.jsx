@@ -1,92 +1,112 @@
-import "./DocumentPickerModal.css";
+import "./ChatSection.css";
+import { useEffect, useRef, useState } from "react";
 
-function DocumentPickerModal({
+import EmptyState from "../Chat/EmptyState/EmptyState";
+import ChatMessages from "../Chat/ChatMessages/ChatMessages";
+import ChatInput from "../Chat/ChatInput/ChatInput";
+import TypingIndicator from "../Chat/TypingIndicator/TypingIndicator";
 
-    isOpen,
+import { askQuestion } from "../../api/documentApi";
 
-    documents,
-
-    onClose,
-
-    onSelect,
-
+function ChatSection({
+    sessionId,
+    selectedDocument,
+    initialMessages = [],
 }) {
+    const [messages, setMessages] = useState(() => initialMessages);
+    const [isTyping, setIsTyping] = useState(false);
+    const messagesEndRef = useRef(null);
 
-    if (!isOpen) return null;
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "end",
+        });
+    }, [messages, isTyping]);
+
+    async function handleSend(question) {
+        if (!question.trim()) return;
+
+        if (!selectedDocument) {
+            setMessages((previous) => [
+                ...previous,
+                {
+                    id: Date.now(),
+                    role: "assistant",
+                    content:
+                        "Please select a document before starting a conversation.",
+                },
+            ]);
+            return;
+        }
+
+        setMessages((previous) => [
+            ...previous,
+            {
+                id: Date.now(),
+                role: "user",
+                content: question,
+            },
+        ]);
+
+        setIsTyping(true);
+
+        try {
+            const response = await askQuestion(
+                selectedDocument.documentId,
+                question,
+                sessionId
+            );
+
+            setMessages((previous) => [
+                ...previous,
+                {
+                    id: Date.now() + 1,
+                    role: "assistant",
+                    content: response.answer,
+                },
+            ]);
+        } catch {
+            setMessages((previous) => [
+                ...previous,
+                {
+                    id: Date.now() + 1,
+                    role: "assistant",
+                    content:
+                        "Something went wrong while generating the response.",
+                },
+            ]);
+        } finally {
+            setIsTyping(false);
+        }
+    }
 
     return (
+        <section className="chat-section">
+            <div className="messages-area">
+                {messages.length === 0 ? (
+                    <EmptyState />
+                ) : (
+                    <ChatMessages messages={messages} />
+                )}
 
-        <div className="document-modal-overlay">
+                {isTyping && <TypingIndicator />}
 
-            <div className="document-modal">
-
-                <div className="document-modal-header">
-
-                    <h2>Choose Document</h2>
-
-                    <button
-                        className="close-modal-button"
-                        onClick={onClose}
-                    >
-                        ✕
-                    </button>
-
-                </div>
-
-                <div className="document-list">
-
-                    {documents.length === 0 ? (
-
-                        <div className="empty-document-list">
-
-                            <h3>No documents uploaded</h3>
-
-                            <p>
-                                Upload your first document to begin chatting.
-                            </p>
-
-                        </div>
-
-                    ) : (
-
-                        documents.map((document) => (
-
-                            <button
-                                key={document.id}
-                                className="document-list-item"
-                                onClick={() => onSelect(document)}
-                            >
-
-                                <div className="document-list-icon">
-                                    DOC
-                                </div>
-
-                                <div className="document-list-info">
-
-                                    <h3>{document.filename}</h3>
-
-                                    <p>
-
-                                        {document.filetype.toUpperCase()} • {document.filesize}
-
-                                    </p>
-
-                                </div>
-
-                            </button>
-
-                        ))
-
-                    )}
-
-                </div>
-
+                <div ref={messagesEndRef} />
             </div>
 
-        </div>
+            <div className="chat-input-area">
+                <ChatInput
+                    onSend={handleSend}
+                    disabled={isTyping}
+                />
 
+                <p className="chat-disclaimer">
+                    NeuroFlow AI can make mistakes. Verify important information.
+                </p>
+            </div>
+        </section>
     );
-
 }
 
-export default DocumentPickerModal;
+export default ChatSection;
