@@ -19,5 +19,5 @@ staticfiles/
 
 .DS_Store
 
-
+chromadb/
 Thumbs.db
