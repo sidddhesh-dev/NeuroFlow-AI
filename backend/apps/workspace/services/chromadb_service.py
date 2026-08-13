@@ -6,20 +6,16 @@ class VectorStoreService:
 
     @staticmethod
     def get_client():
-        return chromadb.PersistentClient(
-            path="./chromadb"
-        )
+        return chromadb.PersistentClient(path="./chromadb")
 
     @staticmethod
     def get_collection():
         client = VectorStoreService.get_client()
-
-        return client.get_or_create_collection(
-            name="document_chunks"
-        )
+        return client.get_or_create_collection(name="document_chunks")
 
     @staticmethod
     def add_chunks(document, chunks, embeddings):
+        collection = VectorStoreService.get_collection()
 
         ids = [
             f"doc_{document.id}_chunk_{i}"
@@ -34,8 +30,6 @@ class VectorStoreService:
             for i in range(len(chunks))
         ]
 
-        collection = VectorStoreService.get_collection()
-
         collection.add(
             ids=ids,
             documents=chunks,
@@ -45,43 +39,85 @@ class VectorStoreService:
 
     @staticmethod
     def search_chunks(document, question_embedding, top_k=3):
-
         collection = VectorStoreService.get_collection()
 
-        results = collection.query(
-            query_embeddings=[question_embedding],
-            n_results=top_k,
-            where={
-                "document_id": str(document.id)
-            },
+        try:
+            results = collection.query(
+                query_embeddings=[question_embedding],
+                n_results=top_k,
+                where={"document_id": str(document.id)},
+            )
+
+            if results["documents"] and results["documents"][0]:
+                return results["documents"][0]
+
+        except Exception:
+            pass
+
+        return VectorStoreService._fallback_search(
+            collection,
+            document,
+            question_embedding,
+            top_k,
         )
 
-        print("\n========== CHROMA SEARCH ==========")
-        print("Searching Document ID :", document.id)
-        print("Searching File        :", document.file.name)
-        print("Returned IDs          :", results["ids"])
-        print("Returned Documents    :", results["documents"])
-        print("===================================\n")
-
-        if not results["documents"] or not results["documents"][0]:
+    @staticmethod
+    def _fallback_search(
+        collection,
+        document,
+        question_embedding,
+        top_k,
+    ):
+        try:
+            stored_data = collection.get(
+                where={"document_id": str(document.id)},
+                include=["documents", "embeddings"],
+            )
+        except Exception:
             return []
 
-        return results["documents"][0]
+        documents = stored_data.get("documents") or []
+        embeddings = stored_data.get("embeddings") or []
+
+        if not documents or not embeddings:
+            return []
+
+        scored_chunks = []
+
+        for index, embedding in enumerate(embeddings):
+            if not embedding:
+                continue
+
+            if len(question_embedding) != len(embedding):
+                continue
+
+            distance = sum(
+                (query_value - chunk_value) ** 2
+                for query_value, chunk_value in zip(
+                    question_embedding,
+                    embedding,
+                )
+            )
+
+            scored_chunks.append((distance, index))
+
+        scored_chunks.sort(key=lambda item: item[0])
+
+        return [
+            documents[index]
+            for _, index in scored_chunks[:top_k]
+        ]
 
     @staticmethod
     def delete_vector(document):
-
         collection = VectorStoreService.get_collection()
 
         collection.delete(
-            where={
-                "document_id": str(document.id)
-            }
+            where={"document_id": str(document.id)}
         )
 
     @staticmethod
     def get_semantic_cache_collection():
-
         client = VectorStoreService.get_client()
 
         return client.get_or_create_collection(
@@ -95,7 +131,6 @@ class VectorStoreService:
         question_embedding,
         answer,
     ):
-
         collection = (
             VectorStoreService.get_semantic_cache_collection()
         )
@@ -117,21 +152,27 @@ class VectorStoreService:
         )
 
     @staticmethod
-    def search_semantic_cache(document, question_embedding):
-
+    def search_semantic_cache(
+        document,
+        question_embedding,
+    ):
         collection = (
             VectorStoreService.get_semantic_cache_collection()
         )
 
-        results = collection.query(
-            query_embeddings=[question_embedding],
-            n_results=1,
-            where={
-                "document_id": str(document.id)
-            },
-        )
-
-        return results
+        try:
+            return collection.query(
+                query_embeddings=[question_embedding],
+                n_results=1,
+                where={"document_id": str(document.id)},
+            )
+        except Exception:
+            return {
+                "ids": [[]],
+                "documents": [[]],
+                "metadatas": [[]],
+                "distances": [[]],
+            }
 
     @staticmethod
     def get_semantic_cache_hit(
@@ -139,7 +180,6 @@ class VectorStoreService:
         question_embedding,
         threshold=0.25,
     ):
-
         results = VectorStoreService.search_semantic_cache(
             document,
             question_embedding,

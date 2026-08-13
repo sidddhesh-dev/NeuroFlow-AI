@@ -8,12 +8,12 @@ import { useNavigate } from "react-router-dom";
 import {
     FileSearch,
     MoreHorizontal,
-    Pin
+    Pin,
 } from "lucide-react";
 
 function RightSidebar({
     document,
-    history,
+    history = [],
     currentSessionId,
     onSelectChat,
     isLoading,
@@ -22,39 +22,36 @@ function RightSidebar({
     onPinChat,
     onDeleteChat,
 }) {
-
     const navigate = useNavigate();
     const [openMenuId, setOpenMenuId] = useState(null);
     const menuRef = useRef(null);
 
     useEffect(() => {
-        function handleClickOutside(event) {
-
-            if (
-                menuRef.current &&
-                !menuRef.current.contains(event.target)
-            ) {
-                setOpenMenuId(null);
-            }
+    function handleClickOutside(event) {
+        if (
+            menuRef.current &&
+            !menuRef.current.contains(event.target)
+        ) {
+            setOpenMenuId(null);
         }
+    }
 
-        window.document.addEventListener(
+    window.document.addEventListener(
+        "mousedown",
+        handleClickOutside
+    );
+
+    return () => {
+        window.document.removeEventListener(
             "mousedown",
             handleClickOutside
         );
-
-        return () => {
-            window.document.removeEventListener(
-                "mousedown",
-                handleClickOutside
-            );
-        };
-    }, []);
+    };
+}, []);
 
     const hasDocument = Boolean(
         document?.documentId &&
         document?.documentName
-
     );
 
     const extension = hasDocument
@@ -76,243 +73,200 @@ function RightSidebar({
     };
 
     const documentType =
-        documentTypes[extension] ??
-        "Document";
+        documentTypes[extension] ?? "Document";
 
     function handleRename(chat) {
-        if (!onRenameChat) return;
-        onRenameChat(chat);
+        setOpenMenuId(null);
+        onRenameChat?.(chat);
     }
 
     function handlePin(chat) {
-        if (!onPinChat) return;
-        onPinChat(chat);
+        setOpenMenuId(null);
+        onPinChat?.(chat);
     }
+
     function handleDelete(chat) {
-        if (!onDeleteChat) return;
-        onDeleteChat(chat);
+        setOpenMenuId(null);
+        onDeleteChat?.(chat);
+    }
+
+    function handleSelectChat(id) {
+        setOpenMenuId(null);
+        onSelectChat?.(Number(id));
     }
 
     return (
-        
-      <aside className="right-sidebar">
-
-        <section className="context-section">
-
-            <div className="section-header">
-                <h2>Current Context</h2>
-
-                <button
-                    type="button"
-                    className="change-document-button"
-                    onClick={() => navigate("/documents")}
-                >
-                    Browse
-                </button>
-            </div>
-
-            {hasDocument ? (
-                <div className="selected-context">
-
-                    <div className="selected-context-icon">
-                        {extension}
-                    </div>
-
-                    <div className="selected-context-content">
-                        <h3 title={document.documentName}>
-                            {document.documentName}
-                        </h3>
-
-                        <p>{documentType}</p>
-                    </div>
-
-                </div>
-            ) : (
-                <div className="empty-context">
-
-                    <div className="empty-context-icon">
-                        <FileSearch size={18} />
-                    </div>
-
-                    <div className="empty-context-content">
-                        <h3>No document selected</h3>
-                        <p className="empty-context-line">
-                            Browse your documents to start chatting.
-                        </p>
-                    </div>
-
-                </div>
-            )}
-
-        </section>
-
-        <section className="chat-history-section">
-
-            <div className="section-header">
-
-                <h2>Chat History</h2>
-
-                <button
-                    type="button"
-                    className="view-all-button"
-                >
-                    View all
-                </button>
-
-            </div>
-
-            <div
-                className="chat-list"
-                ref={menuRef}
-            >
-
-                {isLoading ? (
-
+        <aside className="right-sidebar">
+            <section className="context-section">
+                <div className="section-header">
+                    <h2>Current Context</h2>
                     <button
-                        className="chat-item"
-                        disabled
+                        type="button"
+                        className="change-document-button"
+                        onClick={() => navigate("/documents")}
                     >
-                        <div className="chat-item-content">
-                            <h3>Loading...</h3>
-                        </div>
+                        Browse
                     </button>
+                </div>
 
-                ) : error ? (
+                {hasDocument ? (
+                    <div className="selected-context">
+                        <div className="selected-context-icon">
+                            {extension}
+                        </div>
+
+                        <div className="selected-context-content">
+                            <h3 title={document.documentName}>
+                                {document.documentName}
+                            </h3>
+                            <p>{documentType}</p>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="empty-context">
+                        <div className="empty-context-icon">
+                            <FileSearch size={18} />
+                        </div>
+
+                        <div className="empty-context-content">
+                            <h3>No document selected</h3>
+                            <p className="empty-context-line">
+                                Browse your documents to start chatting.
+                            </p>
+                        </div>
+                    </div>
+                )}
+            </section>
+
+            <section className="chat-history-section">
+                <div className="section-header">
+                    <h2>Chat History</h2>
 
                     <button
-                        className="chat-item"
-                        disabled
+                        type="button"
+                        className="view-all-button"
                     >
-                        <div className="chat-item-content">
+                        View all
+                    </button>
+                </div>
+
+                <div
+                    className="chat-list"
+                    ref={menuRef}
+                >
+                    {isLoading ? (
+                        <div className="chat-list-state">
+                            <h3>Loading chats...</h3>
+                        </div>
+                    ) : error ? (
+                        <div className="chat-list-state">
                             <h3>Failed to load chats</h3>
                         </div>
-                    </button>
-
-                ) : history.length === 0 ? (
-
-                    <button
-                        className="chat-item"
-                        disabled
-                    >
-                        <div className="chat-item-content">
+                    ) : history.length === 0 ? (
+                        <div className="chat-list-state">
                             <h3>No chats yet</h3>
                         </div>
-                    </button>
+                    ) : (
+                        history.map((chat) => {
+                            const chatId = Number(chat.id);
+                            const isActive =
+                                Number(currentSessionId) === chatId;
 
-                ) : (
-
-                    history.map((chat) => (
-
-                        <div
-                            key={chat.id}
-                            className={`chat-item-wrapper ${
-                                currentSessionId === chat.id
-                                    ? "chat-item-active"
-                                    : ""
-                            }`}
-                        >
-
-                            <button
-                                type="button"
-                                className="chat-item"
-                                onClick={() => onSelectChat(chat.id)}
-                            >
-
-                                <div className="chat-item-content">
-
-                                    <h3 className="chat-title">
-
-                                        {chat.is_pinned && (
-                                      
-                                             <Pin size={11} className="chat-pin"/>
-                                        )}
-
-                                        <span className="chat-title-text">
-                                      
-                                            {chat.title || "Untitled Chat"}
-                                      
-                                        </span>
-                                      
-                                    </h3>
-
-                                    <p>
-                                        {chat.document_name ?? "No document"}
-                                    </p>
-
-                                </div>
-
-                            </button>
-
-                            <button
-                                type="button"
-                                className="chat-menu-button"
-                                onClick={(event) => {
-
-                                    event.stopPropagation();
-
-                                    setOpenMenuId(
-                                        openMenuId === chat.id
-                                            ? null
-                                            : chat.id
-                                    );
-
-                                }}
-                            >
-                                <MoreHorizontal size={16} />
-                            </button>
-
-                            {openMenuId === chat.id && (
-
-                                <div className="chat-menu">
-
+                            return (
+                                <div
+                                    key={chatId}
+                                    className={`chat-item-wrapper ${
+                                        isActive
+                                            ? "chat-item-active"
+                                            : ""
+                                    }`}
+                                >
                                     <button
                                         type="button"
-                                        onClick={() => {
-                                            setOpenMenuId(null);
-                                            handleRename(chat);
-                                        }}
+                                        className="chat-item"
+                                        onClick={() =>
+                                            handleSelectChat(chatId)
+                                        }
                                     >
-                                        Rename
-                                    </button>
+                                        <div className="chat-item-content">
+                                            <h3 className="chat-title">
+                                                {chat.is_pinned && (
+                                                    <Pin
+                                                        size={11}
+                                                        className="chat-pin"
+                                                    />
+                                                )}
 
-                                    <button type="button" onClick={() => {
-                                        setOpenMenuId(null);
-                                        handlePin(chat);
-                                    }}>
-                                        {chat.is_pinned
-                                            ? "Unpin Chat"
-                                            : "Pin Chat"}
+                                                <span className="chat-title-text">
+                                                    {chat.title ||
+                                                        "Untitled Chat"}
+                                                </span>
+                                            </h3>
+
+                                            <p>
+                                                {chat.document_name ||
+                                                    "No document"}
+                                            </p>
+                                        </div>
                                     </button>
 
                                     <button
                                         type="button"
-                                        className="danger"
-                                        onClick={() => {
-                                            setOpenMenuId(null);
-                                            handleDelete(chat);
+                                        className="chat-menu-button"
+                                        aria-label="Chat options"
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+                                            setOpenMenuId(
+                                                openMenuId === chatId
+                                                    ? null
+                                                    : chatId
+                                            );
                                         }}
                                     >
-                                        Delete
+                                        <MoreHorizontal size={16} />
                                     </button>
 
+                                    {openMenuId === chatId && (
+                                        <div className="chat-menu">
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    handleRename(chat)
+                                                }
+                                            >
+                                                Rename
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    handlePin(chat)
+                                                }
+                                            >
+                                                {chat.is_pinned
+                                                    ? "Unpin Chat"
+                                                    : "Pin Chat"}
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                className="danger"
+                                                onClick={() =>
+                                                    handleDelete(chat)
+                                                }
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
-
-                            )}
-
-                        </div>
-
-                    ))
-
-                )}
-
-            </div>
-
-            
-
-        </section>
-
-    </aside>
-);
+                            );
+                        })
+                    )}
+                </div>
+            </section>
+        </aside>
+    );
 }
 
 export default RightSidebar;

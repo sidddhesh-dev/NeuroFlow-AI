@@ -16,17 +16,11 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load environment variables from backend/.env during local development.
-load_dotenv(BASE_DIR / ".env")
-
-
+ENV_FILE = os.getenv("DJANGO_ENV_FILE", ".env")
+load_dotenv(BASE_DIR / ENV_FILE)
 
 def env_bool(name, default=False):
-    return os.getenv(name, str(default)).lower() in (
-        "true",
-        "1",
-        "yes",
-        "on",
-    )
+    return os.getenv(name, str(default)).lower() in ( "true", "1", "yes", "on")
 
 
 def env_list(name, default=""):
@@ -150,8 +144,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
@@ -160,14 +152,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-
-
 STATIC_URL = "/static/"
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
-
 
 MEDIA_URL = "/media/"
 
