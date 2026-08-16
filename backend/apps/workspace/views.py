@@ -85,7 +85,7 @@ class DocumentCreateView(APIView):
         if serializer.is_valid():
             uploaded_file=serializer.validated_data["file"]
             filename=os.path.basename(uploaded_file.name)
-            storage_path=f"documents/{request.user.id}/{uuid.uuid4()}_{filename}"
+            storage_path=f"documents/{request.user.id}/{uuid.uuid4()}/{filename}"
             content_type=getattr(uploaded_file,"content_type",None)
 
             SupabaseStorageService.upload_file(
