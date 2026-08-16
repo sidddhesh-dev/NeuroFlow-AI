@@ -32,13 +32,17 @@ class Document(models.Model):
     extracted_data=models.TextField(null=True,blank=True)
     content_hash = models.CharField(max_length=64,unique=False,null=True,blank=True)
 
-    def delete(self, *args, **kwargs):
-        if self.file and os.path.isfile(self.file.path):
-            os.remove(self.file.path)
-        super().delete(*args, **kwargs)
-    
-    def __str__(self):
-        return self.file.name
+    def delete(self,*args,**kwargs):
+        from apps.workspace.services.supabase_service import SupabaseStorageService
+        if self.file and self.file.name:
+            try:
+                SupabaseStorageService.delete_file(self.file.name)
+            except Exception:
+                pass
+        super().delete(*args,**kwargs)
+        
+        def __str__(self):
+            return self.file.name
     
 class DocumentChunk(models.Model):
     document=models.ForeignKey(Document,on_delete=models.CASCADE,related_name='chunks')

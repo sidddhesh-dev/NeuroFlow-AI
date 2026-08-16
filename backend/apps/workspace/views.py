@@ -1,5 +1,7 @@
 from django.shortcuts import render,get_object_or_404
 from rest_framework.views import APIView
+import uuid
+import os
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Note,Document
@@ -18,6 +20,7 @@ from apps.workspace.models import ChatSession
 from apps.workspace.services.search_service import SearchService
 from apps.workspace.services.history_service import HistoryService
 from apps.workspace.services.llm_service import LLMService
+from apps.workspace.services.supabase_service import SupabaseStorageService
 
 
 
@@ -77,24 +80,34 @@ class DocumentCreateView(APIView):
         serializer=DocumentSerializer(document,many=True)
         return Response(serializer.data)
     
-    def post(self, request):
-        serializer = DocumentSerializer(data=request.data)
+    def post(self,request):
+        serializer=DocumentSerializer(data=request.data)
         if serializer.is_valid():
+            uploaded_file=serializer.validated_data["file"]
+            filename=os.path.basename(uploaded_file.name)
+            storage_path=f"documents/{request.user.id}/{uuid.uuid4()}_{filename}"
+            content_type=getattr(uploaded_file,"content_type",None)
 
-            document = serializer.save(user=request.user)
+            SupabaseStorageService.upload_file(
+                storage_path,
+                uploaded_file,
+                content_type,
+            )
 
-            document.status = "processing"
-            document.save(update_fields=["status"])
+            document=Document.objects.create(
+                user=request.user,
+                file=storage_path,
+                status="processing",
+            )
 
             process_document.delay(document.id)
 
             return Response(
-                {"message": f"File {document.file.name} uploaded successfully. Processing started."},
+                {"message":f"File {filename} uploaded successfully. Processing started."},
                 status=status.HTTP_201_CREATED
             )
 
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-
 class DocumentDetailView(APIView):
     permission_classes=[IsAuthenticated,IsOwner]
 
