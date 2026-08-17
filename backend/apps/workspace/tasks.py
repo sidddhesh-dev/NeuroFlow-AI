@@ -2,6 +2,8 @@ from celery import shared_task
 import logging
 
 from apps.workspace.services.document_processor import DocumentProcessor
+from apps.workspace.services.retrieval_service import RetrievalService
+from apps.workspace.models import Document
 from apps.workspace.exceptions import (
     RetryableProcessingError,
     NonRetryableProcessingError,
@@ -48,3 +50,9 @@ def process_document(self, document_id):
 
         DocumentProcessor.update_status(document_id, "failed")
         return False
+
+
+@shared_task(bind=True)
+def retrieve_context_task(self, question, document_id):
+    document = Document.objects.get(id=document_id)
+    return RetrievalService.retrieve_context(question, document)

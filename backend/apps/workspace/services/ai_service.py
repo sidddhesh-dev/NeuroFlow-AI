@@ -6,6 +6,7 @@ from apps.workspace.services.summary_service import SummaryService
 from apps.workspace.services.cache_keys import generate_cache_key
 from apps.workspace.services.redis_service import RedisService
 from apps.workspace.services.prompt_service import PromptService
+from apps.workspace.tasks import retrieve_context_task
 import logging
 logger=logging.getLogger(__name__)
 
@@ -24,7 +25,7 @@ class AiService:
             ChatService.save_messages(session, "assistant", cached_answer)
             return cached_answer
         chat_history = ChatService.get_chat_history(session)
-        retrieved_context = RetrievalService.retrieve_context(question,document)
+        retrieved_context = retrieve_context_task.delay(question, document.id).get(timeout=60)
         context = ContextService.context_builder(question=question,
             retrieved_context=retrieved_context,
             chat_history=chat_history,
