@@ -3,6 +3,7 @@ import logging
 
 from apps.workspace.services.document_processor import DocumentProcessor
 from apps.workspace.services.retrieval_service import RetrievalService
+from apps.workspace.services.llm_service import LLMService
 from apps.workspace.models import Document
 from apps.workspace.exceptions import (
     RetryableProcessingError,
@@ -21,7 +22,6 @@ def process_document(self, document_id):
         return DocumentProcessor.process(document_id)
 
     except RetryableProcessingError as e:
-
         logger.warning(
             f"Retry {self.request.retries + 1}/{MAX_RETRIES} "
             f"for document {document_id}: {e}"
@@ -32,21 +32,26 @@ def process_document(self, document_id):
         except Exception as cleanup_error:
             logger.warning(
                 f"Artifact cleanup failed for document "
-                f"{document_id}: {cleanup_error}")
+                f"{document_id}: {cleanup_error}"
+            )
 
         if self.request.retries >= MAX_RETRIES:
             logger.error(
-                f"Maximum retry attempts exceeded for document {document_id}")
+                f"Maximum retry attempts exceeded for document {document_id}"
+            )
             DocumentProcessor.update_status(document_id, "failed")
             return False
 
         raise self.retry(
             exc=e,
-            countdown=RETRY_DELAY * (2 ** self.request.retries),)
+            countdown=RETRY_DELAY * (2 ** self.request.retries),
+        )
+
     except NonRetryableProcessingError as e:
         logger.error(
             f"Permanent failure while processing document "
-            f"{document_id}: {e}")
+            f"{document_id}: {e}"
+        )
 
         DocumentProcessor.update_status(document_id, "failed")
         return False
@@ -56,3 +61,8 @@ def process_document(self, document_id):
 def retrieve_context_task(self, question, document_id):
     document = Document.objects.get(id=document_id)
     return RetrievalService.retrieve_context(question, document)
+
+
+@shared_task(bind=True)
+def generate_llm_answer_task(self, prompt):
+    return LLMService.generate(prompt)
