@@ -1,5 +1,7 @@
 import chromadb
 import hashlib
+
+# Retrieve document chunks using semantic vector search with a Python fallback.
 class VectorStoreService:
     @staticmethod
     def get_client():
